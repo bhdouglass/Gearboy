@@ -268,7 +268,7 @@ bool Cartridge::LoadFromFile(const char* path)
     }
     else
     {
-        Log("There was a problem loading the file %s...", path);
+        Log("There was a problem opening the file %s...", path);
         m_bLoaded = false;
     }
 

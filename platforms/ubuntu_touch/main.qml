@@ -4,8 +4,10 @@ import Ubuntu.Components 1.3
 import Ubuntu.Content 1.3
 import Ubuntu.Components.Popups 1.3
 
-Item {
+MainView {
 	id: root
+	applicationName: "gearboy.rpattison"
+	
 
 	property color gb_white: Qt.lighter("#CDCDCD", 1.1)
 	property color gb_white_accent: "#EDEDED"
@@ -16,12 +18,6 @@ Item {
 	property color gb_black_accent: "#343434"
 	property color gb_purple: "#B01561"
 	property color gb_purple_accent: Qt.darker("#CF2463", 1.4)
-
-	property color gb_grape: "#4B51A4"
-	property color gb_dandelion: "#E1A929"
-	property color gb_berry: "#C31E44"
-	property color gb_kiwi: "#62AD33"
-	property color gb_teal: "#009189"
 
 	property color gb_blue: "#45457e"
 
@@ -112,7 +108,7 @@ Item {
 		id: help
 		text: i18n.tr("Open ROM…")
 		fontSize: "x-large"
-		color: gb_blue //gb_white_accent
+		color: gb_blue 
 		anchors.centerIn: loaderArea
 		font.bold: true
 	}
@@ -165,7 +161,7 @@ Item {
 			border.color: gb_gray_dark
 
 			text: i18n.tr("SELECT")
-			textColor: gb_gray //gb_blue //Qt.lighter(emu.color, 1.2)
+			textColor: gb_gray 
 			fontSize: "medium"
 		}
 	}

@@ -20,21 +20,21 @@ load(ubuntu-click)
 QT += core gui widgets multimedia qml quick
 CONFIG += c++11
 
-RESOURCES += GearBoy.qrc
+RESOURCES += gearboy.qrc
 
 QML_FILES += $$files(*.qml,true) \
              $$files(*.js,true)
 
-CONF_FILES +=  GearBoy.apparmor \
-	       content-hub.json \
-               GearBoy.png 
+CONF_FILES +=  gearboy.apparmor \
+	       gearboy-content.json \
+               gearboy.png 
 
 OTHER_FILES += $${CONF_FILES} \
                $${QML_FILES} \
-               GearBoy.desktop 
+               gearboy.rpattison.desktop 
 
 #specify where the qml/js files are installed to
-qml_files.path = /GearBoy
+qml_files.path = /gearboy
 qml_files.files += $${QML_FILES}
 
 #specify where the config files are installed to
@@ -42,7 +42,7 @@ config_files.path = /
 config_files.files += $${CONF_FILES}
 
 desktop_file.path = /
-desktop_file.files = $$OUT_PWD/GearBoy.desktop 
+desktop_file.files = $$OUT_PWD/gearboy.rpattison.desktop 
 desktop_file.CONFIG += no_check_exist 
 
 

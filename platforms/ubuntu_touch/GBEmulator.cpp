@@ -116,17 +116,20 @@ void GBEmulator::bReleased() { keyReleased(B_Key); }
 
 bool GBEmulator::loadRom(QString path)
 {
+	save();
 	std::string cppstr = path.toStdString();
    	const char *local_path = cppstr.c_str(); 
-	save();
 	m_lock->lock();
 	bool result = m_core->LoadROM(local_path, false);
 	if (result) {
 		QString save_path = defaultSavePath();
 		if (!save_path.isNull()) {
 			m_core->LoadRam(save_path.toStdString().c_str());
+		} else {
+			qDebug() << "No Save Found";
 		}
 	}
+	qDebug() << local_path;
 	m_lock->unlock();
 	return result;
 }
