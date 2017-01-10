@@ -47,8 +47,13 @@ MainView {
 	}
 
 	function importItems(items)  {
-		var path = items[0].url.toString().replace("file://", "");
+		load(items[0].url);
+	}
+
+	function load(url) {
+		var path = url.toString().replace("file://", "");
 		console.log("importing...");
+		console.log(path);
 		if (path) {
 			if (emu.loadRom(path)) {
 				help.visible = false;
@@ -70,8 +75,8 @@ MainView {
 				peer = p;
 			}
 		}
-		if (peer == null) {
-			picker.visible = true;
+		if (peer == null) { 
+			picker.visible = true; /* didn't find ubuntu's file manager, maybe they have another app */
 		} else {
 			root.activeTransfer = peer.request(); 
 		}
@@ -238,10 +243,10 @@ MainView {
 			id: peerPicker
 			visible: parent.visible
 			handler: ContentHandler.Source
-			contentType: ContentType.All
+			contentType: ContentType.Documents
 
 			onPeerSelected: {
-				peer.contentType = ContentType.All;
+				peer.contentType = ContentType.Documents;
 				peer.selectionType = ContentTransfer.Single;
 				root.activeTransfer = peer.request();
 				picker.visible = false;

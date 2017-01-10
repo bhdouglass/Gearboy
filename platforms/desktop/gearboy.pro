@@ -1,21 +1,5 @@
-UBUNTU_MANIFEST_FILE=manifest.json.in
-
-UBUNTU_TRANSLATION_DOMAIN="gearboy.rpattison"
-
-UBUNTU_TRANSLATION_SOURCES+= \
-    $$files(*.qml,true) \
-    $$files(*.js,true)  \
-    $$files(*.cpp,true) \
-    $$files(*.h,true) \
-    $$files(*.desktop,true)
-
-
-UBUNTU_PO_FILES+=$$files(po/*.po)
-
 TEMPLATE = app
 TARGET = gearboy
-
-load(ubuntu-click)
 
 QT += core gui widgets multimedia qml quick
 CONFIG += c++11
@@ -25,9 +9,7 @@ RESOURCES += gearboy.qrc
 QML_FILES += $$files(*.qml,true) \
              $$files(*.js,true)
 
-CONF_FILES +=  gearboy.apparmor \
-	       gearboy-content.json \
-               gearboy.png 
+CONF_FILES +=  gearboy.png 
 
 OTHER_FILES += $${CONF_FILES} \
                $${QML_FILES} \
@@ -44,7 +26,6 @@ config_files.files += $${CONF_FILES}
 desktop_file.path = /
 desktop_file.files = $$OUT_PWD/gearboy.rpattison.desktop 
 desktop_file.CONFIG += no_check_exist 
-
 
 SOURCES += \
     ../../src/audio/Blip_Buffer.cpp \
@@ -114,6 +95,6 @@ HEADERS  += \
     ../../src/GBEmulator.h \
     ../../src/PixelRenderer.h 
 
-target.path = $${UBUNTU_CLICK_BINARY_PATH}
+target.path = ./build
 
 INSTALLS += target config_files qml_files desktop_file 
