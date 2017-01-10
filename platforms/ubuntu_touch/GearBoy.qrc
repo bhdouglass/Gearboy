@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>DirectionalPad.qml</file>
+        <file>GBButton.qml</file>
+        <file>TouchSensor.qml</file>
+    </qresource>
+</RCC>
