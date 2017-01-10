@@ -13,6 +13,10 @@
 GBEmulator::GBEmulator() : m_renderer(0)
 {
 	GB_Color white = {.red=255, .green=255, .blue=255, .alpha=255};
+	GB_Color lgray = {.red=170, .green=170, .blue=170, .alpha=255};
+	GB_Color dgray = {.red=85, .green=85, .blue=85, .alpha=255};
+	GB_Color black = {.red=0, .green=0, .blue=0, .alpha=255};
+
 	for (int i = 0; i < GAMEBOY_HEIGHT * GAMEBOY_WIDTH; ++i) {
 		m_buffer[i] = white;
 	}
@@ -21,6 +25,8 @@ GBEmulator::GBEmulator() : m_renderer(0)
 	m_core = new GearboyCore();
 	m_timer = new QTimer(this);
 	m_core->Init();
+
+	m_core->SetDMGPalette(white, lgray, dgray, black);
 
 	connect(this, &QQuickItem::windowChanged, this, &GBEmulator::handleWindowChanged);
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(tick()));
