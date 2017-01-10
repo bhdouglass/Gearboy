@@ -9,11 +9,11 @@ Item {
 
 	property color gb_white: Qt.lighter("#CDCDCD", 1.1)
 	property color gb_white_accent: "#EDEDED"
-	property color gb_gray: Qt.lighter("#A3A3A3", 1.1)  //text
-	property color gb_gray_dark: Qt.lighter("#999999", 1.3) //1.2) //border
-	property color gb_gray_accent: Qt.lighter("#999999", 1.7) // fill
+	property color gb_gray: Qt.lighter("#A3A3A3", 1.1)  
+	property color gb_gray_dark: Qt.lighter("#999999", 1.3)
+	property color gb_gray_accent: Qt.lighter("#999999", 1.7)
 	property color gb_black: "#2A2A2A"
-	property color gb_black_accent: "#343434" //, 2)
+	property color gb_black_accent: "#343434"
 	property color gb_purple: "#B01561"
 	property color gb_purple_accent: Qt.darker("#CF2463", 1.4)
 
@@ -57,7 +57,6 @@ Item {
 			} else {
 				help.text = i18n.tr("ROM failed to load");
 				help.visible = true;
-				//PopupUtils.open(romfailed, root)	;
 			}
 		}
 	}
@@ -72,7 +71,6 @@ Item {
 			}
 		}
 		if (peer == null) {
-			PopupUtils.open(findfilemanager, root);
 			picker.visible = true;
 		} else {
 			peer.request(); 
@@ -169,20 +167,7 @@ Item {
 			text: i18n.tr("SELECT")
 			textColor: gb_gray //gb_blue //Qt.lighter(emu.color, 1.2)
 			fontSize: "medium"
-			//bold: true
 		}
-
-		Label {
-			anchors.top: select.bottom
-			anchors.topMargin: units.gu(1)
-			anchors.horizontalCenter: select.horizontalCenter
-
-			//text: i18n.tr("SELECT")
-			color: gb_blue // Qt.lighter(emu.color, 1.2)
-			fontSize: "medium"
-			font.bold: select.bold
-		}
-
 	}
 
 	Item {
@@ -211,17 +196,6 @@ Item {
 
 			border.color: select.border.color
 			color: select.color
-		}
-
-		Label {
-			anchors.top: start.bottom
-			anchors.topMargin: units.gu(1)
-			anchors.horizontalCenter: start.horizontalCenter
-
-			//text: i18n.tr("START")
-			//color: gb_blue //Qt.lighter(emu.color, 1.2)
-			font.bold: select.bold
-			fontSize: "medium"
 		}
 
 		GBButton {
@@ -296,19 +270,4 @@ Item {
 			}
 		}
 	}
-
-	Component {
-		id: findfilemanager
-		GBDialog {
-			text: i18n.tr("You need to install Ubuntu File Manager from the store.")
-		}
-	}
-
-	/*
-	Component {
-		id: romfailed
-		GBDialog {
-			text: i18n.tr("ROM failed to load")
-		}
-	} */
 }

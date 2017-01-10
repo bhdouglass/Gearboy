@@ -43,15 +43,6 @@ Audio::~Audio()
 
 void Audio::Init()
 {
-    int error = SDL_Init(SDL_INIT_AUDIO);
-    
-    if (error < 0)
-    {
-        Log("--> ** (%d) SDL Audio not initialized: %s", error, SDL_GetError());
-    }
-
-    atexit(SDL_Quit);
-
     m_pSampleBuffer = new blip_sample_t[kSampleBufferSize];
 
     m_pApu = new Gb_Apu();

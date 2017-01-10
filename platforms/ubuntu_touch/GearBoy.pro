@@ -52,6 +52,7 @@ SOURCES += \
     ../../src/audio/Gb_Apu.cpp \
     ../../src/audio/Gb_Oscs.cpp \
     ../../src/audio/Multi_Buffer.cpp \
+    ../../src/audio/Sound_Queue.cpp \
     ../../src/Audio.cpp \
     ../../src/Cartridge.cpp \
     ../../src/CommonMemoryRule.cpp \
@@ -71,7 +72,6 @@ SOURCES += \
     ../../src/RomOnlyMemoryRule.cpp \
     ../../src/Video.cpp \
     ../../src/miniz/miniz.c \
-    ./Sound_Queue.cpp \
     ./PixelRenderer.cpp \
     ./GBEmulator.cpp \
     ./main.cpp 
@@ -85,6 +85,7 @@ HEADERS  += \
     ../../src/audio/Gb_Apu.h \
     ../../src/audio/Gb_Oscs.h \
     ../../src/audio/Multi_Buffer.h \
+    ../../src/audio/Sound_Queue.h \
     ../../src/Audio.h \
     ../../src/boot_roms.h \
     ../../src/Cartridge.h \
@@ -110,7 +111,6 @@ HEADERS  += \
     ../../src/RomOnlyMemoryRule.h \
     ../../src/SixteenBitRegister.h \
     ../../src/Video.h \
-    ./Sound_Queue.h \
     ./GBEmulator.h \
     ./PixelRenderer.h 
 

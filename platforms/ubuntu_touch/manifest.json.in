@@ -2,7 +2,7 @@
     "name": "gearboy",
     "description": "A Nintendo Gameboy Color Emulator for Ubuntu Touch",
     "architecture": "@CLICK_ARCH@",
-    "title": "GearBoy",
+    "title": "Gear Boy Touch",
     "hooks": {
         "GearBoy": {
             "apparmor": "GearBoy.apparmor",
