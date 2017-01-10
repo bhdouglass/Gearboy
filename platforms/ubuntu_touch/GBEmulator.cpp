@@ -25,6 +25,8 @@ GBEmulator::GBEmulator() : m_renderer(0)
 	connect(this, &QQuickItem::windowChanged, this, &GBEmulator::handleWindowChanged);
 	connect(m_timer, SIGNAL(timeout()), this, SLOT(tick()));
 	windowChanged(window());
+	m_isPaused = true;
+	m_timer->start(16);  // 16ms ~ 60 FPS
 }
 
 void GBEmulator::setColor(QColor c) 
@@ -41,16 +43,6 @@ void GBEmulator::setRect(QRect r)
 	if (r != m_rect) {
 		m_rect = r;
 		emit rectChanged();
-	}
-}
-
-
-void GBEmulator::stateChanged(Qt::ApplicationState state) 
-{
-	if (state == Qt::ApplicationActive) {
-		play();
-	} else {
-		pause();
 	}
 }
 
@@ -123,11 +115,15 @@ bool GBEmulator::loadRom(QString path)
 	bool result = m_core->LoadROM(local_path, false);
 	if (result) {
 		QString save_path = defaultSavePath();
-		if (!save_path.isNull()) {
-			m_core->LoadRam(save_path.toStdString().c_str());
+		qDebug() << "checking for save" << save_path;
+		if (QFileInfo::exists(save_path)) {
+            m_core->LoadRam(save_path.toStdString().c_str());
+                qDebug() << "save loading";
 		} else {
 			qDebug() << "No Save Found";
 		}
+	} else {
+		qDebug() << "failed to load ROM";
 	}
 	qDebug() << local_path;
 	m_lock->unlock();
@@ -148,7 +144,7 @@ void GBEmulator::tick()
 QString GBEmulator::defaultPath() const
 {
 	Cartridge *cartridge = m_core->GetCartridge();
-	if (cartridge == NULL) {
+    if (cartridge == NULL || !cartridge->IsLoadedROM()) {
 		return QString();
 	}
 	QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
@@ -205,21 +201,19 @@ void GBEmulator::keyReleased(Gameboy_Keys key)
 
 void GBEmulator::pause()
 {
-    m_timer->stop();
-    m_lock->lock();
-    m_core->Pause(true);
-    m_lock->unlock();
-    m_isPaused = true;
+    if (!m_isPaused) {
+	    qDebug() << "pause";
+	    m_isPaused = true;
+    }
 }
 
 
 void GBEmulator::play()
 {
-    m_lock->lock();
-    m_core->Pause(false);
-    m_lock->unlock();
-    m_isPaused = false;
-    m_timer->start(16);  // 16ms ~ 60 FPS
+    if (m_isPaused) {
+	qDebug() << "play";
+	m_isPaused = false;
+   }
 }
 
 
@@ -227,6 +221,7 @@ void GBEmulator::save()
 {
 	QString path = defaultSavePath();
     if (!path.isNull()) {
+	qDebug() << "saving to " << path;
 	    m_lock->lock();
 	    m_core->SaveRam(path.toStdString().c_str());
 	    m_lock->unlock();

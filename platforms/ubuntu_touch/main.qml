@@ -6,8 +6,10 @@ import Ubuntu.Components.Popups 1.3
 
 MainView {
 	id: root
-	applicationName: "gearboy.rpattison"
+	height: units.gu(80)
+	width: units.gu(45)
 	
+	applicationName: "gearboy.rpattison" 
 
 	property color gb_white: Qt.lighter("#CDCDCD", 1.1)
 	property color gb_white_accent: "#EDEDED"
@@ -46,6 +48,7 @@ MainView {
 
 	function importItems(items)  {
 		var path = items[0].url.toString().replace("file://", "");
+		console.log("importing...");
 		if (path) {
 			if (emu.loadRom(path)) {
 				help.visible = false;
@@ -58,6 +61,7 @@ MainView {
 	}
 
 	function requestROM() {
+		emu.pause();
 		var peer = null;
 		for (var i = 0; i < model.peers.length; ++i) {
 			var p = model.peers[i];
@@ -69,7 +73,7 @@ MainView {
 		if (peer == null) {
 			picker.visible = true;
 		} else {
-			peer.request(); 
+			root.activeTransfer = peer.request(); 
 		}
 	}
 
@@ -119,10 +123,7 @@ MainView {
 		height: emu.rect.height
 		anchors.horizontalCenter: root.horizontalCenter
 		anchors.top: root.top
-		onClicked: {
-			emu.pause();
-			requestROM();
-		}	
+		onClicked: requestROM();
 	}
 
 	Item {
@@ -244,10 +245,10 @@ MainView {
 				peer.selectionType = ContentTransfer.Single;
 				root.activeTransfer = peer.request();
 				picker.visible = false;
-				console.log(peer.appId);
 			}
 
 			onCancelPressed: {
+				console.log("load cancelled");
 				picker.visible = false;
 				emu.play();
 			}

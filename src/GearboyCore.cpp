@@ -283,15 +283,13 @@ void GearboyCore::SaveRam(const char* szPath)
         if (IsValidPointer(szPath))
         {
             strcpy(path, szPath);
-            strcat(path, "/");
-            strcat(path, m_pCartridge->GetFileName());
         }
         else
         {
             strcpy(path, m_pCartridge->GetFilePath());
+	    strcat(path, ".gearboy");
         }
 
-        strcat(path, ".gearboy");
 
         Log("Save file: %s", path);
 
@@ -331,15 +329,13 @@ void GearboyCore::LoadRam(const char* szPath)
         if (IsValidPointer(szPath))
         {
             strcpy(path, szPath);
-            strcat(path, "/");
-            strcat(path, m_pCartridge->GetFileName());
         }
         else
         {
             strcpy(path, m_pCartridge->GetFilePath());
+            strcat(path, ".gearboy");
         }
 
-        strcat(path, ".gearboy");
 
         Log("Opening save file: %s", path);
 

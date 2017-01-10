@@ -65,7 +65,6 @@ public slots:
 	void bReleased();
 
 	void tick();
-	void stateChanged(Qt::ApplicationState state);
 
 private slots:
 	void handleWindowChanged(QQuickWindow *win);
