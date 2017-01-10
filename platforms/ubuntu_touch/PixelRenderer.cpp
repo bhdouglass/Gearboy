@@ -94,7 +94,7 @@ void PixelRenderer::paintGL()
     m_texture->bind(0, QOpenGLTexture::ResetTextureUnit);
     m_program->setUniformValue("s_texture", 0);
 
-    setClear();
+    glClearColor(m_color.redF(), m_color.greenF(), m_color.blueF(), m_color.alphaF());
     glViewport(0, 0, m_width, m_height);
     glDisable(GL_DEPTH_TEST);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -110,12 +110,6 @@ void PixelRenderer::paintGL()
     m_program->release();
 
    glFinish();
-}
-
-
-void PixelRenderer::setClear()
-{
-    glClearColor(m_color.redF(), m_color.greenF(), m_color.blueF(), m_color.alphaF());
 }
 
 

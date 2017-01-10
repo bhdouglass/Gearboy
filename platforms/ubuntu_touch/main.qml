@@ -121,8 +121,8 @@ MainView {
 		id: loaderArea
 		width: emu.rect.width
 		height: emu.rect.height
-		anchors.horizontalCenter: root.horizontalCenter
-		anchors.top: root.top
+		anchors.horizontalCenter: parent.horizontalCenter
+		anchors.top: parent.top
 		onClicked: requestROM();
 	}
 

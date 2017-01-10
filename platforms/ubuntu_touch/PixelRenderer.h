@@ -25,7 +25,7 @@ public:
 	void setWindow(QQuickWindow *window) { m_window = window; }
 	void setBufferLock(QMutex *lock) { m_lock = lock; }
 	void setBufferSize(int width, int height) { m_buffer_width = width; m_buffer_height = height; }
-	void setColor(QColor c) { m_color = c; setClear(); }
+	void setColor(QColor c) { m_color = c; }
 	void setViewRect(QRect rect) { resizeGL(rect.width(), rect.height()); }
 	QRect viewRect() { return m_viewRect; }
 	QColor color() { return m_color; }
@@ -38,7 +38,6 @@ protected:
 	void paintGL();
 	void resizeGL(int width, int height);
 	void setViewport();
-	void setClear();
 
 private:
 	QOpenGLShaderProgram *m_program;
