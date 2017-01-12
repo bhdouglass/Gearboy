@@ -3,7 +3,7 @@
 
 #include <QtQuick/QQuickItem>
 #include <QMutex>
-#include <QTimer>
+#include <QTime>
 
 #include "gearboy.h"
 #include "PixelRenderer.h"
@@ -64,10 +64,10 @@ public slots:
 	void aReleased();
 	void bReleased();
 
-	void tick();
-
 private slots:
 	void handleWindowChanged(QQuickWindow *win);
+protected:
+	void timerEvent(QTimerEvent *event) Q_DECL_OVERRIDE;
 
 private:
 	void keyPressed(Gameboy_Keys key);
@@ -78,10 +78,9 @@ private:
 	QMutex* m_lock;
 	bool m_isPaused;
 	GearboyCore* m_core;
-	QTimer *m_timer;
 	QRect m_rect;
 	QColor m_color;
 };
 
-#endif	/* EMULATOR_H */
+#endif	/* GBEMULATOR_H */
 
