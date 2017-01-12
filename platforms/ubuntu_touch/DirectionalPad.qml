@@ -11,7 +11,7 @@ Item {
 	property int dpad_line: units.gu(0.25)
 
 	property var direction : null
-	property int dead_zone : units.gu(1)
+	property int dead_zone : centreSize / 2
 
 	signal rightPressed();
 	signal leftPressed();
@@ -94,12 +94,15 @@ Item {
 
 	MultiPointTouchArea {
 		anchors.fill: parent
+
 		onReleased: {
 			release();
 		}
+
 		onCanceled: {
 			release();
 		}
+
 		onTouchUpdated: {
 			for (var i = 0; i < touchPoints.length; ++i) {
 				var p = touchPoints[i];
