@@ -1,6 +1,6 @@
 [Desktop Entry]
 Version=1.0
-Exec=gearboy %U
+Exec=gearboy
 Icon=gearboy.png
 Terminal=false
 Type=Application

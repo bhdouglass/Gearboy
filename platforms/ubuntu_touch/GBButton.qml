@@ -18,11 +18,7 @@ Rectangle {
 	}
 
 	TouchSensor {
-		onPushed: {
-			root.pressed();	
-		}
-		onUnpushed: {
-			root.released();
-		}
+		onPushed: root.pressed();	
+		onUnpushed: root.released();
 	}
 }
