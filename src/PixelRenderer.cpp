@@ -42,66 +42,76 @@ void PixelRenderer::setBufferSize(int width, int height)
 
 void PixelRenderer::initializeGL()
 {
-    initializeOpenGLFunctions();
+	initializeOpenGLFunctions();
+	GLenum err = 0;
+	m_texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
+	if ((err = glGetError())) qDebug() << "error new failed: " << err;
+	m_texture->setFormat(QOpenGLTexture::RGBA8_UNorm);
+	if ((err = glGetError())) qDebug() << "error setFormat: " << err;
+	m_texture->setSize(m_p2width, m_p2height);
+	if ((err = glGetError())) qDebug() << "error setSize: " << err;
+	m_texture->allocateStorage();
+	if ((err = glGetError())) qDebug() << "error allocate: " << err;
+	m_texture->setMinMagFilters(QOpenGLTexture::Nearest, QOpenGLTexture::Nearest);
+	if ((err = glGetError())) qDebug() << "error in setmin-mag: " << err;
+	m_texture->setWrapMode(QOpenGLTexture::Repeat);
+	if ((err = glGetError())) qDebug() << "error in setWrap: " << err;
+	readPixels();
+	m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt8, m_tex_pixels);
+	if ((err = glGetError())) qDebug() << "error in setData: " << err;
+	qDebug() << "Finished Texture with: " << err;
 
-    m_texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
-    m_texture->setMinMagFilters(QOpenGLTexture::Nearest, QOpenGLTexture::Nearest);
-    m_texture->setSize(m_p2width, m_p2height);
-    m_texture->setFormat(QOpenGLTexture::RGBA8_UNorm);
-    m_texture->setWrapMode(QOpenGLTexture::Repeat);
-    m_texture->allocateStorage();
+	GLfloat w = m_buffer_width / (double)m_p2width;
+	GLfloat h = m_buffer_height / (double)m_p2height;
 
-    GLfloat w = m_buffer_width / (double)m_p2width;
-    GLfloat h = m_buffer_height / (double)m_p2height;
+	QVector<GLfloat> vertData {
+	-1.0f, -1.0f, 0.0f, 	0.0f, h,
+	 1.0f, -1.0f, 0.0f, 	   w, h,
+	-1.0f, 1.0f, 0.0f, 	0.0f, 0.0f,
+	 1.0f, 1.0f, 0.0f, 	   w, 0.0f
+	};
+	m_vertices = new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
+	m_vertices->create();
+	m_vertices->bind();
 
-    QVector<GLfloat> vertData {
-        -1.0f, -1.0f, 0.0f, 	0.0f, h,
-         1.0f, -1.0f, 0.0f, 	   w, h,
-        -1.0f, 1.0f, 0.0f, 	0.0f, 0.0f,
-         1.0f, 1.0f, 0.0f, 	   w, 0.0f
-    };
-    m_vertices = new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
-    m_vertices->create();
-    m_vertices->bind();
+	m_vertices->allocate(vertData.constData(), vertData.count() * sizeof (GLfloat));
 
-    m_vertices->allocate(vertData.constData(), vertData.count() * sizeof (GLfloat));
+	glDisable(GL_DEPTH_TEST);
 
-    glDisable(GL_DEPTH_TEST);
+	#define PROGRAM_VERTEX_ATTRIBUTE 0
+	#define PROGRAM_TEXCOORD_ATTRIBUTE 1
 
-    #define PROGRAM_VERTEX_ATTRIBUTE 0
-    #define PROGRAM_TEXCOORD_ATTRIBUTE 1
+	const char *vshader_src =
+	"attribute vec4 a_position;\n"
+	"attribute vec2 a_texCoord;\n"
+	"varying vec2 v_texCoord;\n"
+	"void main()\n"
+	"{\n"
+	"    gl_Position = a_position;\n"
+	"    v_texCoord = a_texCoord;\n"
+	"}\n";
 
-    const char *vshader_src =
-        "attribute vec4 a_position;\n"
-        "attribute vec2 a_texCoord;\n"
-        "varying vec2 v_texCoord;\n"
-        "void main()\n"
-        "{\n"
-        "    gl_Position = a_position;\n"
-        "    v_texCoord = a_texCoord;\n"
-        "}\n";
+	const char *fshader_src =
+	"varying mediump vec2 v_texCoord;\n"
+	"uniform sampler2D s_texture;\n"
+	"void main()\n"
+	"{\n"
+	"   gl_FragColor =  texture2D(s_texture, v_texCoord.st);\n"
+	"}\n";
 
-    const char *fshader_src =
-        "varying mediump vec2 v_texCoord;\n"
-        "uniform sampler2D s_texture;\n"
-        "void main()\n"
-        "{\n"
-        "   gl_FragColor =  texture2D(s_texture, v_texCoord.st);\n"
-        "}\n";
+	QOpenGLShader *vshader = new QOpenGLShader(QOpenGLShader::Vertex, this);
+	QOpenGLShader *fshader = new QOpenGLShader(QOpenGLShader::Fragment, this);
+	vshader->compileSourceCode(vshader_src);
+	fshader->compileSourceCode(fshader_src);
 
-    QOpenGLShader *vshader = new QOpenGLShader(QOpenGLShader::Vertex, this);
-    QOpenGLShader *fshader = new QOpenGLShader(QOpenGLShader::Fragment, this);
-    vshader->compileSourceCode(vshader_src);
-    fshader->compileSourceCode(fshader_src);
-
-    m_program = new QOpenGLShaderProgram;
-    m_program->addShader(vshader);
-    m_program->addShader(fshader);
-    m_program->bindAttributeLocation("a_position", PROGRAM_VERTEX_ATTRIBUTE);
-    m_program->bindAttributeLocation("a_texCoord", PROGRAM_TEXCOORD_ATTRIBUTE);
-    m_program->link();
-    m_program->bind();
-    m_program->setUniformValue("s_texture", 0);
+	m_program = new QOpenGLShaderProgram;
+	m_program->addShader(vshader);
+	m_program->addShader(fshader);
+	m_program->bindAttributeLocation("a_position", PROGRAM_VERTEX_ATTRIBUTE);
+	m_program->bindAttributeLocation("a_texCoord", PROGRAM_TEXCOORD_ATTRIBUTE);
+	m_program->link();
+	m_program->bind();
+	m_program->setUniformValue("s_texture", 0);
 }
 
 
