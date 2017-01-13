@@ -140,6 +140,7 @@ void PixelRenderer::paintGL()
 	m_program->setAttributeBuffer(PROGRAM_TEXCOORD_ATTRIBUTE, GL_FLOAT, 3 * sizeof (GLfloat), 2, 5 * sizeof (GLfloat));
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	glFinish();
 }
 
 
