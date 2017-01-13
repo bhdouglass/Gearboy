@@ -8,9 +8,6 @@
 
 #include <algorithm>
 
-// RGBA channels
-#define CHAN_COUNT 4
-
 PixelRenderer::PixelRenderer(int width, int height, void *buffer)
 {
         m_program = 0;
@@ -36,7 +33,7 @@ void PixelRenderer::setBufferSize(int width, int height)
 	while (height > m_p2height) m_p2height <<= 1;
 	m_buffer_width = width;
 	m_buffer_height = height;
-	m_tex_pixels = new unsigned char [m_p2width * m_p2height * CHAN_COUNT];
+	m_tex_pixels = new unsigned char [m_p2width * m_p2height * 2]; // 2 bytes for RGB5A1
 }
 
 
@@ -46,7 +43,7 @@ void PixelRenderer::initializeGL()
 	GLenum err = 0;
 	m_texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
 	if ((err = glGetError())) qDebug() << "error new failed: " << err;
-	m_texture->setFormat(QOpenGLTexture::RGBA8_UNorm);
+	m_texture->setFormat(QOpenGLTexture::RGBAFormat);
 	if ((err = glGetError())) qDebug() << "error setFormat: " << err;
 	m_texture->setSize(m_p2width, m_p2height);
 	if ((err = glGetError())) qDebug() << "error setSize: " << err;
@@ -57,7 +54,7 @@ void PixelRenderer::initializeGL()
 	m_texture->setWrapMode(QOpenGLTexture::Repeat);
 	if ((err = glGetError())) qDebug() << "error in setWrap: " << err;
 	readPixels();
-	m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt8, m_tex_pixels);
+	m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt16_RGB5A1, m_tex_pixels);
 	if ((err = glGetError())) qDebug() << "error in setData: " << err;
 	qDebug() << "Finished Texture with: " << err;
 
@@ -119,9 +116,22 @@ void PixelRenderer::readPixels()
 {
 	m_lock->lock();
 	for (int y = 0; y < m_buffer_height; ++y) {
-		std::copy(&m_pixels[CHAN_COUNT * m_buffer_width * y],
-			&m_pixels[CHAN_COUNT * m_buffer_width * (y + 1)],
-			&m_tex_pixels[CHAN_COUNT * m_p2width * y]);
+		for (int x = 0; x < m_buffer_width; ++x) {
+			int src = 4 * (m_buffer_width * y + x);
+			int dest = (y * m_p2width + x) * 2;
+			unsigned char r = m_pixels[src + 0];
+			unsigned char g = m_pixels[src + 1];
+			unsigned char b = m_pixels[src + 2];
+			//unsigned char a = m_pixels[src + 3];
+			//((a >> 4) ? 1 : 0); force alpha on for now
+			// bits   channel
+			// 11--15  Red
+			//  6--10  Green
+			//  1--5   Blue
+			//  0      Alpha  
+			m_tex_pixels[dest + 0] = ((g << 3) & 0xC0) | (b >> 2) | 1;
+			m_tex_pixels[dest + 1] = (r & 0xF8) | (g >> 5);
+		}
 	}
 	m_lock->unlock();
 }
@@ -133,7 +143,7 @@ void PixelRenderer::paintGL()
 
 	m_program->bind();
 	m_texture->bind(0, QOpenGLTexture::ResetTextureUnit);
-	m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt8, m_tex_pixels);
+	m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt16_RGB5A1, m_tex_pixels);
 
 	m_vertices->bind();
 
