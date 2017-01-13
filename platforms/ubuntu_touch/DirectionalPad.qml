@@ -89,6 +89,7 @@ Item {
 			} else if (direction == "down") {
 				downPressed();
 			}
+			Haptics.play();
 		}
 	}
 
