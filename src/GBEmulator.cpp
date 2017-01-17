@@ -1,6 +1,7 @@
 #include <QDebug>
 #include <QtQuick/qquickwindow.h>
 #include <QFile>
+#include <QDir>
 #include <QThread>
 #include <QFileInfo>
 #include <QStandardPaths>
@@ -133,7 +134,7 @@ bool GBEmulator::loadRom(QString path)
 			m_core->LoadRam(save_path.toStdString().c_str());
 			qDebug() << "Loaded Save File";
 		} else {
-			qDebug() << "No Save File Found";
+			qDebug() << "No Save File Found. checked: " << save_path;
 		}
 	} else {
 		qDebug() << "Failed to Load ROM";
@@ -150,6 +151,12 @@ QString GBEmulator::defaultPath() const
 		return QString();
 	}
 	QString path = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+	QDir saveloc(path);
+	if (!saveloc.exists()) {
+        if (not saveloc.mkpath(".")) {
+			qDebug() << "Failed to create save path: " << path;
+		}
+	}
 	std::string name = cartridge->GetName();
 	name.erase(remove_if(name.begin(), name.end(), ::isspace), name.end());
         path.append(QString(("/" + name).c_str()));
@@ -221,11 +228,20 @@ void GBEmulator::save()
 {
 	QString path = defaultSavePath();
    	if (!path.isNull()) {
-		qDebug() << "Saving Game to " << path;
+		qDebug() << "Saving Game to: " << path;
 		m_lock->lock();
-		m_core->SaveRam(path.toStdString().c_str());
+		if (not m_core->SaveRam(path.toStdString().c_str())) {
+			qDebug() << "Failed to save ram to: " << path;
+		}
 		m_lock->unlock();
 	} else {
 		qDebug() << "No Game Loaded to Save";
 	}
+}
+
+
+void GBEmulator::requestROM()
+{
+
+
 }

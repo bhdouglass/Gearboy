@@ -265,12 +265,8 @@ void GearboyCore::SetDMGPalette(GB_Color& color1, GB_Color& color2, GB_Color& co
     m_DMGPalette[3].alpha = 0xFF;
 }
 
-void GearboyCore::SaveRam()
-{
-    SaveRam(NULL);
-}
 
-void GearboyCore::SaveRam(const char* szPath)
+bool GearboyCore::SaveRam(const char* szPath)
 {
     if (m_pCartridge->IsLoadedROM() && m_pCartridge->HasBattery() && IsValidPointer(m_pMemory->GetCurrentRule()))
     {
@@ -290,14 +286,13 @@ void GearboyCore::SaveRam(const char* szPath)
 	    strcat(path, ".gearboy");
         }
 
-
         Log("Save file: %s", path);
 
         ofstream file(path, ios::out | ios::binary);
-
         m_pMemory->GetCurrentRule()->SaveRam(file);
-
-        Log("RAM saved");
+	return file.good();
+    } else {
+	return true;
     }
 }
 

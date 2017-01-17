@@ -64,6 +64,8 @@ public slots:
 	void aReleased();
 	void bReleased();
 
+	void requestROM();
+
 private slots:
 	void handleWindowChanged(QQuickWindow *win);
 protected:
