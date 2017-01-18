@@ -17,11 +17,13 @@ public:
 	// Initialize with specified sample rate and channel count.
 	const char* start(long sample_rate, int chan_count = 1);
 
-	void write(const sample_t*, int count);
+	void write(const sample_t*, long count);
 
 	// Stop audio output
 	void stop();
 
+    long min_samples();
+    long max_samples();
 private:	
 	QAudioOutput *audio;
 	QIODevice *buf;

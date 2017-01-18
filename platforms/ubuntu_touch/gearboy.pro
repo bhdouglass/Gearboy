@@ -74,6 +74,7 @@ SOURCES += \
     ../../src/miniz/miniz.c \
     ../../src/PixelRenderer.cpp \
     ../../src/GBEmulator.cpp \
+    ../../src/EmulationRunner.cpp \
     ../../src/main.cpp 
 
 HEADERS  += \
@@ -112,6 +113,7 @@ HEADERS  += \
     ../../src/SixteenBitRegister.h \
     ../../src/Video.h \
     ../../src/GBEmulator.h \
+    ../../src/EmulationRunner.h \
     ../../src/PixelRenderer.h 
 
 target.path = $${UBUNTU_CLICK_BINARY_PATH}

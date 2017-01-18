@@ -8,11 +8,10 @@
 
 #include <algorithm>
 
-PixelRenderer::PixelRenderer(int width, int height, void *buffer)
+PixelRenderer::PixelRenderer(int width, int height, EmulationRunner *e) : emu(e)
 {
         m_program = 0;
 	setBufferSize(width, height);
-	setPixelBuffer(buffer);
 }
 
 
@@ -20,7 +19,6 @@ PixelRenderer::~PixelRenderer()
 {
 	// todo setcontext check null  shaders, texture, vertices ? 
 	delete m_program;
-	delete m_tex_pixels;
 }
 
 
@@ -33,7 +31,6 @@ void PixelRenderer::setBufferSize(int width, int height)
 	while (height > m_p2height) m_p2height <<= 1;
 	m_buffer_width = width;
 	m_buffer_height = height;
-	m_tex_pixels = new unsigned char [m_p2width * m_p2height * 2]; // 2 bytes for RGB5A1
 }
 
 
@@ -53,8 +50,9 @@ void PixelRenderer::initializeGL()
 	if ((err = glGetError())) qDebug() << "error in setmin-mag: " << err;
 	m_texture->setWrapMode(QOpenGLTexture::Repeat);
 	if ((err = glGetError())) qDebug() << "error in setWrap: " << err;
-	readPixels();
-	m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt16_RGB5A1, m_tex_pixels);
+	unsigned char *pixels = emu->openPixels();
+	m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt16_RGB5A1, pixels);
+	emu->closePixels();
 	if ((err = glGetError())) qDebug() << "error in setData: " << err;
 	qDebug() << "Finished Texture with: " << err;
 
@@ -112,47 +110,22 @@ void PixelRenderer::initializeGL()
 }
 
 
-void PixelRenderer::readPixels()
-{
-	m_lock->lock();
-	for (int y = 0; y < m_buffer_height; ++y) {
-		for (int x = 0; x < m_buffer_width; ++x) {
-			int src = 4 * (m_buffer_width * y + x);
-			int dest = (y * m_p2width + x) * 2;
-			unsigned char r = m_pixels[src + 0];
-			unsigned char g = m_pixels[src + 1];
-			unsigned char b = m_pixels[src + 2];
-			//unsigned char a = m_pixels[src + 3];
-			//((a >> 4) ? 1 : 0); force alpha on for now
-			// bits   channel
-			// 11--15  Red
-			//  6--10  Green
-			//  1--5   Blue
-			//  0      Alpha  
-			m_tex_pixels[dest + 0] = ((g << 3) & 0xC0) | (b >> 2) | 1;
-			m_tex_pixels[dest + 1] = (r & 0xF8) | (g >> 5);
-		}
-	}
-	m_lock->unlock();
-}
-
-
 void PixelRenderer::paintGL()
 {
-	readPixels();
-
-	m_program->bind();
-	m_texture->bind(0, QOpenGLTexture::ResetTextureUnit);
-	m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt16_RGB5A1, m_tex_pixels);
-
-	m_vertices->bind();
-
 	glClearColor(m_color.redF(), m_color.greenF(), m_color.blueF(), m_color.alphaF());
 	glViewport(0, 0, m_width, m_height);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	setViewport();
 
+	m_program->bind();
+	m_texture->bind(0, QOpenGLTexture::ResetTextureUnit);
+
+	unsigned char *pixels = emu->openPixels();
+	m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt16_RGB5A1, pixels);
+	emu->closePixels();
+
+	m_vertices->bind();
 	m_program->setUniformValue("s_texture", 0);
 	m_program->enableAttributeArray(PROGRAM_VERTEX_ATTRIBUTE);
 	m_program->enableAttributeArray(PROGRAM_TEXCOORD_ATTRIBUTE);
@@ -160,6 +133,8 @@ void PixelRenderer::paintGL()
 	m_program->setAttributeBuffer(PROGRAM_TEXCOORD_ATTRIBUTE, GL_FLOAT, 3 * sizeof (GLfloat), 2, 5 * sizeof (GLfloat));
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	m_program->release();
+
 	glFinish();
 }
 
@@ -191,8 +166,7 @@ void PixelRenderer::paint()
 {
 	if (!m_program) {
 		initializeGL();
-	}
-
+	} 
 	paintGL();
 	m_window->resetOpenGLState();
 }

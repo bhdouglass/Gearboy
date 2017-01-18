@@ -52,7 +52,6 @@ MainView {
 
 	function load(url) {
 		var path = url.toString().replace("file://", "");
-		console.log("importing...");
 		console.log(path);
 		if (path) {
 			if (emu.loadRom(path)) {
