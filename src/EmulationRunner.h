@@ -6,6 +6,7 @@
 #include <QString>
 #include <QThread>
 #include <QTime>
+#include <QThread>
 
 #include "GearboyCore.h"
 #include "gearboy.h"
@@ -18,6 +19,12 @@ public:
 	EmulationRunner(QObject *parent);
 	~EmulationRunner();
 
+	static void waitAll() {
+		foreach (QThread *t, threads) {
+			t->wait();
+		}
+	}
+
 	/* blocks and reads the frame into pixels in RGB5A1 format, pixel's width must be at least GAMEBOY_WIDTH */
 	unsigned char *openPixels();
 	void closePixels();
@@ -27,6 +34,7 @@ public:
 	void save();
 	void play();
 	void pause();
+	void stop();
 
 	void keyPressed(Gameboy_Keys key);
 	void keyReleased(Gameboy_Keys key);
@@ -46,6 +54,9 @@ private:
 	bool m_isPaused;
 	bool m_isRunning;
 	QTime m_time;
+
+
+	static QList<QThread *> threads;
 };
 
 #endif 

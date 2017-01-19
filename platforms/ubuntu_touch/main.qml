@@ -82,11 +82,11 @@ MainView {
 	}
 
 	Component.onCompleted: {
-		a.pressed.connect(emu.aPressed);		
-		a.released.connect(emu.aReleased);
+		btns.aPressed.connect(emu.aPressed);		
+		btns.aReleased.connect(emu.aReleased);
 
-		b.pressed.connect(emu.bPressed);
-		b.released.connect(emu.bReleased);
+		btns.bPressed.connect(emu.bPressed);
+		btns.bReleased.connect(emu.bReleased);
 
 		select.pressed.connect(emu.selectPressed);
 		select.released.connect(emu.selectReleased);
@@ -110,6 +110,7 @@ MainView {
 	Component.onDestruction: {
 		emu.pause();
 		emu.save();
+		emu.stop();
 	}
 
 	Label {
@@ -133,7 +134,7 @@ MainView {
 	Item {
 		id: lefthand
 		width: units.gu(19)
-		height: units.gu(38)
+		height: units.gu(35)
 
 		anchors.left: parent.left
 		anchors.bottom: parent.bottom
@@ -176,7 +177,7 @@ MainView {
 		anchors.right: parent.right
 		anchors.bottom: parent.bottom
 		width: units.gu(19)
-		height: units.gu(38)
+		height: units.gu(35)
 
 		GBButton {
 			id: start
@@ -199,37 +200,11 @@ MainView {
 			color: select.color
 		}
 
-		GBButton {
-			id: a
-			x: units.gu(9)
-			y: 0
-			width: units.gu(9)
-			height: units.gu(9)
-			radius: units.gu(4.5)
-			color: gb_purple
-			border.color: gb_purple_accent
-			border.width: outline
-			text: "A"
-			textColor: gb_white_accent
-			fontSize: "x-large"
-			bold: true
-		}
-
-		GBButton {
-			id: b
-			x: units.gu(1)
-			y: units.gu(9)
-			text: "B"
-
-			width: a.width
-			height: a.height
-			radius: a.radius
-			color: a.color 
-			border.color: a.border.color
-			border.width: a.border.width
-			textColor: a.textColor
-			fontSize: a.fontSize
-			bold: a.bold
+		ButtonPad {
+			y: units.gu(2)
+			width: parent.width
+			height: units.gu(18)
+			id: btns
 		}
 	}
 

@@ -18,14 +18,12 @@ GBEmulator::GBEmulator() : m_renderer(0)
 	windowChanged(window());
 	m_emu = new EmulationRunner(this);
 	m_emu->start(QThread::TimeCriticalPriority);
-	startTimer(16, Qt::PreciseTimer);
 }
 
-void GBEmulator::timerEvent(QTimerEvent *)
+void GBEmulator::redraw()
 {
 	window()->update();
 }
-
 
 void GBEmulator::setColor(QColor c) 
 {
@@ -53,7 +51,8 @@ void GBEmulator::handleWindowChanged(QQuickWindow *win)
 	if (win) {
 		connect(win, &QQuickWindow::beforeSynchronizing, this, &GBEmulator::sync, Qt::DirectConnection);
 		connect(win, &QQuickWindow::sceneGraphInvalidated, this, &GBEmulator::cleanup, Qt::DirectConnection);
-		win->setClearBeforeRendering(false);
+        connect(win, &QQuickWindow::frameSwapped, this, &GBEmulator::redraw, Qt::DirectConnection);
+        win->setClearBeforeRendering(false);
 	} 
 }
 

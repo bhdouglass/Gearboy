@@ -6,31 +6,42 @@
 
 #include "PixelRenderer.h"
 
-#include <algorithm>
 
-PixelRenderer::PixelRenderer(int width, int height, EmulationRunner *e) : emu(e)
+PixelRenderer::PixelRenderer(int width, int height, EmulationRunner *e) 
+	: emu(e)
+	, m_program(0)
+	, m_texture(0)
+	, m_vertices(0)
 {
-        m_program = 0;
 	setBufferSize(width, height);
 }
 
 
 PixelRenderer::~PixelRenderer()
 {
-	// todo setcontext check null  shaders, texture, vertices ? 
-	delete m_program;
+	if (m_program) delete m_program;
+	if (m_texture) delete m_texture;
+	if (m_vertices) delete m_vertices;
+}
+
+
+static int ceilpow2(int v)
+{
+	int c = 1;
+	while (c < v) {
+		c <<= 1;
+	}
+	return c;
 }
 
 
 void PixelRenderer::setBufferSize(int width, int height)
 { 
-	// opengl es 2 wants powers of 2 for dimensions
-	m_p2width = 1;
-	m_p2height = 1;
-	while (width > m_p2width) m_p2width <<= 1;
-	while (height > m_p2height) m_p2height <<= 1;
-	m_buffer_width = width;
-	m_buffer_height = height;
+    // opengl es 2 needs powers of 2 dimensions
+	m_tex_width = ceilpow2(width);
+	m_tex_height = ceilpow2(height);
+	m_image_width = width;
+	m_image_height = height;
 }
 
 
@@ -39,25 +50,24 @@ void PixelRenderer::initializeGL()
 	initializeOpenGLFunctions();
 	GLenum err = 0;
 	m_texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
-	if ((err = glGetError())) qDebug() << "error new failed: " << err;
+	if ((err = glGetError())) qDebug() << "Error texture::new: " << err;
 	m_texture->setFormat(QOpenGLTexture::RGBAFormat);
-	if ((err = glGetError())) qDebug() << "error setFormat: " << err;
-	m_texture->setSize(m_p2width, m_p2height);
-	if ((err = glGetError())) qDebug() << "error setSize: " << err;
+	if ((err = glGetError())) qDebug() << "Error textuer::setFormat: " << err;
+	m_texture->setSize(m_tex_width, m_tex_height);
+	if ((err = glGetError())) qDebug() << "Error texture::setSize: " << err;
 	m_texture->allocateStorage();
-	if ((err = glGetError())) qDebug() << "error allocate: " << err;
+	if ((err = glGetError())) qDebug() << "Error texture::allocate: " << err;
 	m_texture->setMinMagFilters(QOpenGLTexture::Nearest, QOpenGLTexture::Nearest);
-	if ((err = glGetError())) qDebug() << "error in setmin-mag: " << err;
+	if ((err = glGetError())) qDebug() << "Error texture::setMinMag: " << err;
 	m_texture->setWrapMode(QOpenGLTexture::Repeat);
-	if ((err = glGetError())) qDebug() << "error in setWrap: " << err;
-	unsigned char *pixels = emu->openPixels();
+	if ((err = glGetError())) qDebug() << "Error texture::setWrap: " << err;
+	unsigned char *pixels = emu->openPixels(); // to it now to trigger any errors for format
 	m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt16_RGB5A1, pixels);
 	emu->closePixels();
-	if ((err = glGetError())) qDebug() << "error in setData: " << err;
-	qDebug() << "Finished Texture with: " << err;
+	if ((err = glGetError())) qDebug() << "Error texture::setData: " << err;
 
-	GLfloat w = m_buffer_width / (double)m_p2width;
-	GLfloat h = m_buffer_height / (double)m_p2height;
+	GLfloat w = m_image_width / (double)m_tex_width;
+	GLfloat h = m_image_height / (double)m_tex_height;
 
 	QVector<GLfloat> vertData {
 	-1.0f, -1.0f, 0.0f, 	0.0f, h,
@@ -94,14 +104,9 @@ void PixelRenderer::initializeGL()
 	"   gl_FragColor =  texture2D(s_texture, v_texCoord.st);\n"
 	"}\n";
 
-	QOpenGLShader *vshader = new QOpenGLShader(QOpenGLShader::Vertex, this);
-	QOpenGLShader *fshader = new QOpenGLShader(QOpenGLShader::Fragment, this);
-	vshader->compileSourceCode(vshader_src);
-	fshader->compileSourceCode(fshader_src);
-
 	m_program = new QOpenGLShaderProgram;
-	m_program->addShader(vshader);
-	m_program->addShader(fshader);
+	m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, vshader_src);
+	m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fshader_src);
 	m_program->bindAttributeLocation("a_position", PROGRAM_VERTEX_ATTRIBUTE);
 	m_program->bindAttributeLocation("a_texCoord", PROGRAM_TEXCOORD_ATTRIBUTE);
 	m_program->link();
@@ -143,15 +148,18 @@ void PixelRenderer::resizeGL(int width, int height)
 {
 	m_width = width;
 	m_height = height;
-	int xscale = width / m_buffer_width;
-	int yscale = height / m_buffer_height;
+    // image is scaled by integer multiples
+    int xscale = width / m_image_width;
+    int yscale = height / m_image_height;
 	int scale = qMin(xscale, yscale);
-	int w = m_buffer_width * scale;
-	int h = m_buffer_height * scale;
+    int w = m_image_width * scale;
+    int h = m_image_height * scale;
 	int x_remaining = width - w;
 	int y_remaining = height - h;
+	// centred horizontally
 	int x = x_remaining / 2;
-	int y = y_remaining - qMin(x_remaining, y_remaining) / 8;
+	// anchored to the top with a "small" margin
+	int y = y_remaining - qMin(x_remaining, y_remaining) / 8; 
 	m_viewRect = QRect(x, y, w, h); 
 }
 

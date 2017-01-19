@@ -29,6 +29,9 @@ signals:
 	void rectChanged();
 
 public slots:
+
+    void redraw();
+
 	void sync();
 	void cleanup();
 
@@ -59,8 +62,6 @@ public slots:
 	void aReleased();
 	void bReleased();
 
-protected:
-	void timerEvent(QTimerEvent *);
 private slots:
 	void handleWindowChanged(QQuickWindow *win);
 

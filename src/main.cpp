@@ -14,5 +14,9 @@ int main(int argc, char *argv[])
 	view.setSource(QUrl("qrc:///main.qml"));
 	view.show();
 
-	return app.exec();
+	int result = app.exec();
+
+	EmulationRunner::waitAll();	
+
+	return result;
 }

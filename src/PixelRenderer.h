@@ -40,16 +40,17 @@ protected:
 	void setBufferSize(int width, int height);
 
 private:
+	EmulationRunner *emu;
 	QOpenGLShaderProgram *m_program;
 	QOpenGLTexture *m_texture;
 	QOpenGLBuffer *m_vertices;
+
 	QQuickWindow *m_window;
-    	QRect m_viewRect;
 	QColor m_color;
-	int m_buffer_width, m_buffer_height;
+    	QRect m_viewRect; 
+	int m_image_width, m_image_height;
 	int m_width, m_height;
-	int m_p2width, m_p2height;
-	EmulationRunner *emu;
+	int m_tex_width, m_tex_height;
 };
 
 #endif 

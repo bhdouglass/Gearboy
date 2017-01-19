@@ -8,6 +8,8 @@
 
 #include "EmulationRunner.h"
 
+QList<QThread *> EmulationRunner::threads;
+
 EmulationRunner::EmulationRunner(QObject *parent) : QThread(parent)
 {
 	GB_Color llgreen = {.red=0x9F, .green=0xBF, .blue=0x1B, .alpha=255};
@@ -20,6 +22,7 @@ EmulationRunner::EmulationRunner(QObject *parent) : QThread(parent)
 		m_buffer[i] = white;
 	}
 
+	threads.append(this);
 	m_core.Init();
 	m_core.SetDMGPalette(llgreen, lgreen, dgreen, ddgreen);
 	m_isPaused = true;
@@ -50,14 +53,14 @@ void EmulationRunner::run()
 
 unsigned char *EmulationRunner::openPixels()
 {
-    m_pixel_lock.lock();
+   	m_pixel_lock.lock();
 	return m_pixels;
 }
 
 
 void EmulationRunner::closePixels()
 {
-    m_pixel_lock.unlock();
+	m_pixel_lock.unlock();
 }
 
 
@@ -113,6 +116,11 @@ void EmulationRunner::pause()
 void EmulationRunner::play()
 {
 	m_isPaused = false;
+}
+
+void EmulationRunner::stop()
+{
+	m_isRunning = false;
 }
 
 
