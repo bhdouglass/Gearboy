@@ -34,7 +34,6 @@ public:
     void Reset(bool bCGB, bool soft=false);
     void Enable(bool enabled);
     bool IsEnabled() const;
-    void SetSampleRate(int rate);
     u8 ReadAudioRegister(u16 address);
     void WriteAudioRegister(u16 address, u8 value);
     void EndFrame();
@@ -52,7 +51,7 @@ private:
     bool m_bCGB;
 };
 
-const int kSampleBufferSize = 9068;
+const int kSampleBufferSize = 3456 * 2;
 const long kSoundFrameLength = 10000;
 const u8 kSoundMask[] = {
     0x80, 0x3F, 0x00, 0xFF, 0xBF,                       // NR10-NR14 (0xFF10-0xFF14)

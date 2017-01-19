@@ -20,6 +20,9 @@
 #include "Audio.h"
 #include "Memory.h"
 
+
+#include <QDebug>
+
 Audio::Audio()
 {
     m_bCGB = false;
@@ -43,21 +46,28 @@ Audio::~Audio()
 
 void Audio::Init()
 {
+    int msecs = 250;
+    int channels = 2;
     m_pSampleBuffer = new blip_sample_t[kSampleBufferSize];
 
     m_pApu = new Gb_Apu();
     m_pBuffer = new Stereo_Buffer();
     m_pSound = new Sound_Queue();
 
-    m_pBuffer->clock_rate(4194304);
-    m_pBuffer->set_sample_rate(m_iSampleRate);
+    m_pSound->start(m_iSampleRate, channels);
+    qDebug() << "Min Samples: " << m_pSound->min_samples();
+    qDebug() << "Max Samples: " << m_pSound->max_samples();
+    qDebug() << "Buffer Size: " << kSampleBufferSize;
+    qDebug() << "Blip Samples: " << int(m_iSampleRate * msecs / 1000.0); 
 
-    m_pApu->treble_eq(-15.0);
-    m_pBuffer->bass_freq(100);
+    m_pBuffer->clock_rate(4194304);
+    m_pBuffer->set_sample_rate(m_iSampleRate, msecs);
+
+    m_pApu->reduce_clicks();
+    //m_pApu->treble_eq(-15.0);
+    //m_pBuffer->bass_freq(100);
 
     m_pApu->set_output(m_pBuffer->center(), m_pBuffer->left(), m_pBuffer->right());
-
-    m_pSound->start(m_iSampleRate, 2);
 }
 
 void Audio::Reset(bool bCGB, bool soft)
@@ -69,7 +79,6 @@ void Audio::Reset(bool bCGB, bool soft)
         Gb_Apu::mode_t mode = m_bCGB ? Gb_Apu::mode_cgb : Gb_Apu::mode_dmg;
         m_pApu->reset(mode);
         m_pBuffer->clear();
-        
         for (int reg = 0xFF10; reg <= 0xFF3F; reg++)
         {
             u8 value = m_bCGB ? kInitialValuesForColorFFXX[reg - 0xFF00] : kInitialValuesForFFXX[reg - 0xFF00];
@@ -78,9 +87,6 @@ void Audio::Reset(bool bCGB, bool soft)
         m_Time = 0;
         m_AbsoluteTime = 0;
     }
-    
-    m_pSound->stop();
-    m_pSound->start(m_iSampleRate, 2);
 }
 
 void Audio::Enable(bool enabled)
@@ -93,31 +99,21 @@ bool Audio::IsEnabled() const
     return m_bEnabled;
 }
 
-void Audio::SetSampleRate(int rate)
-{
-    if (rate != m_iSampleRate)
-    {
-        m_iSampleRate = rate;
-        m_pBuffer->set_sample_rate(m_iSampleRate);
-        m_pSound->stop();
-        m_pSound->start(m_iSampleRate, 2);
-    }
-}
 
 void Audio::EndFrame()
 {
-    m_pApu->end_frame(m_AbsoluteTime);
-    m_pBuffer->end_frame(m_AbsoluteTime);
+	m_pApu->end_frame(m_AbsoluteTime);
+	m_pBuffer->end_frame(m_AbsoluteTime);
 
-    while (m_pBuffer->samples_avail() >= m_pSound->min_samples()) {
-        long max_read = qMin(m_pBuffer->samples_avail(), m_pSound->max_samples());
-        long chunks = max_read / m_pSound->min_samples();
-        long copy_size = qMin((long)kSampleBufferSize, chunks * m_pSound->min_samples());
-	if (copy_size) {
-         long count = m_pBuffer->read_samples(m_pSampleBuffer, copy_size);
-	     if (m_bEnabled) {
-		    m_pSound->write(m_pSampleBuffer, count);
-	     }
+	while (m_pBuffer->samples_avail() >= m_pSound->min_samples()) {
+		long max_read = qMin(m_pBuffer->samples_avail(), m_pSound->max_samples());
+		long chunks = max_read / m_pSound->min_samples();
+		long copy_size = qMin((long)kSampleBufferSize, chunks * m_pSound->min_samples());
+		if (copy_size) {
+			long count = m_pBuffer->read_samples(m_pSampleBuffer, copy_size);
+			if (m_bEnabled) {
+				m_pSound->write(m_pSampleBuffer, count);
+			}
+		}
 	}
-    }
 }

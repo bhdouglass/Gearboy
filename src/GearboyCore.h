@@ -55,7 +55,6 @@ public:
     void ResetROM(bool forceDMG);
     void EnableSound(bool enabled);
     void ResetSound(bool soft = false);
-    void SetSoundSampleRate(int rate);
     void SetDMGPalette(GB_Color& color1, GB_Color& color2, GB_Color& color3, GB_Color& color4);
     bool SaveRam(const char* szPath=NULL);
     void LoadRam();

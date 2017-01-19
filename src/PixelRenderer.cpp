@@ -76,6 +76,7 @@ void PixelRenderer::initializeGL()
 	 1.0f, 1.0f, 0.0f, 	   w, 0.0f
 	};
 	m_vertices = new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
+	m_vertices->setUsagePattern(QOpenGLBuffer::StaticDraw);
 	m_vertices->create();
 	m_vertices->bind();
 
@@ -148,12 +149,12 @@ void PixelRenderer::resizeGL(int width, int height)
 {
 	m_width = width;
 	m_height = height;
-    // image is scaled by integer multiples
-    int xscale = width / m_image_width;
-    int yscale = height / m_image_height;
+	// image is scaled by integer multiples
+	int xscale = width / m_image_width;
+	int yscale = height / m_image_height;
 	int scale = qMin(xscale, yscale);
-    int w = m_image_width * scale;
-    int h = m_image_height * scale;
+	int w = m_image_width * scale;
+	int h = m_image_height * scale;
 	int x_remaining = width - w;
 	int y_remaining = height - h;
 	// centred horizontally

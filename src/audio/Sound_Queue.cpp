@@ -19,15 +19,34 @@ const char* Sound_Queue::start(long sample_rate, int chan_count)
 	QAudioFormat as;
 	as.setSampleType(QAudioFormat::SignedInt);
 	as.setSampleSize(16);
-
+	as.setCodec("audio/pcm");
 	as.setSampleRate((int)sample_rate);
 	as.setChannelCount(chan_count);
+	QAudioDeviceInfo info(QAudioDeviceInfo::defaultOutputDevice());
+
 	if (audio == 0) {
-		audio = new QAudioOutput(as, this);
-		audio->setBufferSize(sample_rate * 2);
+	        if (!info.isFormatSupported(as)) {
+			qDebug() << "The requested format is not supported: " << as;
+			qDebug() << "The nearest format is: " << info.nearestFormat(as);
+			qDebug() << "And the prefferred format is: " << info.preferredFormat();
+			return "format not supported";
+		} else {
+			audio = new QAudioOutput(as, this);
+		}
 	}
-	buf = audio->start();
+
+    buf = audio->start();
+	qDebug() << "Preferred audio format: " << info.preferredFormat();
+	qDebug() << "Audio Buffer Size" << audio->bufferSize();
 	return NULL;
+}
+
+
+void Sound_Queue::restart()
+{
+	if (audio) {
+		audio->reset();
+	}
 }
 
 
@@ -49,10 +68,10 @@ void Sound_Queue::write(const sample_t* in, long count)
 
 long Sound_Queue::min_samples()
 {
-	return audio->periodSize() / sizeof (sample_t);
+	return audio ? audio->periodSize() / sizeof (sample_t) : 1;
 }
 
 long Sound_Queue::max_samples()
 {
-	return audio->bytesFree() / sizeof (sample_t);
+	return audio ? audio->bytesFree() / sizeof (sample_t) : 100000;
 }

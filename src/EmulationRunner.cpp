@@ -140,25 +140,30 @@ void EmulationRunner::save()
 }
 
 
+static inline void rgb5a1(GB_Color color, unsigned char *out)
+{
+    unsigned char r = color.red;
+    unsigned char g = color.green;
+    unsigned char b = color.blue;
+    //unsigned char a = color.alpha;
+    //((a >> 4) ? 1 : 0); force alpha on, not meaningful
+    // bits   channel
+    // 11--15  Red
+    //  6--10  Green
+    //  1--5   Blue
+    //  0      Alpha
+    out[0] = ((g << 3) & 0xC0) | (b >> 2) | 1;
+    out[1] = (r & 0xF8) | (g >> 5);
+}
+
+
 void EmulationRunner::readFrame(unsigned char *pixels, int width)
 {
 	for (int y = 0; y < GAMEBOY_HEIGHT; ++y) {
 		for (int x = 0; x < GAMEBOY_WIDTH; ++x) {
 			int src = (GAMEBOY_WIDTH * y + x); 
 			int dest = (y * width + x) * 2;
-			GB_Color color = m_buffer[src];
-			unsigned char r = color.red;
-			unsigned char g = color.green;
-			unsigned char b = color.blue;
-			//unsigned char a = m_pixels[src + 3];
-			//((a >> 4) ? 1 : 0); force alpha on, not meaningful
-			// bits   channel
-			// 11--15  Red
-			//  6--10  Green
-			//  1--5   Blue
-			//  0      Alpha  
-			pixels[dest + 0] = ((g << 3) & 0xC0) | (b >> 2) | 1;
-			pixels[dest + 1] = (r & 0xF8) | (g >> 5);
+            rgb5a1(m_buffer[src], &pixels[dest]);
 		}
 	}
 }

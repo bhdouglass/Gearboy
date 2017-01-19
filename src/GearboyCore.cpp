@@ -247,11 +247,6 @@ void GearboyCore::ResetSound(bool soft)
     m_pAudio->Reset(m_bCGB, soft);
 }
 
-void GearboyCore::SetSoundSampleRate(int rate)
-{
-    m_pAudio->SetSampleRate(rate);
-}
-
 void GearboyCore::SetDMGPalette(GB_Color& color1, GB_Color& color2, GB_Color& color3,
         GB_Color& color4)
 {

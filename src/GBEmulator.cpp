@@ -9,6 +9,8 @@
 #include <QIODevice>
 #include <QTime>
 
+#include <QFileDialog>
+
 #include "GBEmulator.h"
 
 
@@ -18,11 +20,17 @@ GBEmulator::GBEmulator() : m_renderer(0)
 	windowChanged(window());
 	m_emu = new EmulationRunner(this);
 	m_emu->start(QThread::TimeCriticalPriority);
+	//startTimer(16);
+}
+
+void GBEmulator::timerEvent(QTimerEvent *)
+{
+    window()->update();
 }
 
 void GBEmulator::redraw()
 {
-	window()->update();
+    window()->update();
 }
 
 void GBEmulator::setColor(QColor c) 
@@ -51,8 +59,8 @@ void GBEmulator::handleWindowChanged(QQuickWindow *win)
 	if (win) {
 		connect(win, &QQuickWindow::beforeSynchronizing, this, &GBEmulator::sync, Qt::DirectConnection);
 		connect(win, &QQuickWindow::sceneGraphInvalidated, this, &GBEmulator::cleanup, Qt::DirectConnection);
-        connect(win, &QQuickWindow::frameSwapped, this, &GBEmulator::redraw, Qt::DirectConnection);
-        win->setClearBeforeRendering(false);
+		connect(win, &QQuickWindow::frameSwapped, this, &GBEmulator::redraw, Qt::DirectConnection);
+		win->setClearBeforeRendering(false);
 	} 
 }
 
@@ -110,4 +118,13 @@ void GBEmulator::play() { m_emu->play(); }
 void GBEmulator::save()
 {
 	m_emu->save();
+}
+
+
+bool GBEmulator::requestRom()
+{
+    QString path = QFileDialog::getOpenFileName(NULL, "Load Rom", "", "*.*");
+    bool result = loadRom(path);
+    qDebug() << "result" << result << "for path" << path;
+    return result;
 }
