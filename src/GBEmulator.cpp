@@ -17,8 +17,8 @@ GBEmulator::GBEmulator() : m_renderer(0)
 	connect(this, &QQuickItem::windowChanged, this, &GBEmulator::handleWindowChanged);
 	windowChanged(window());
 	m_emu = new EmulationRunner(this);
-	m_emu->start();
-	//startTimer(16, Qt::PreciseTimer);
+	m_emu->start(QThread::TimeCriticalPriority);
+	startTimer(16, Qt::PreciseTimer);
 }
 
 void GBEmulator::timerEvent(QTimerEvent *)
