@@ -36,10 +36,11 @@ void EmulationRunner::run()
 				m_lock.lock();
 				m_core.RunToVBlank(m_buffer);
 				m_lock.unlock();
+				/*
 				if (m_pixel_lock.tryLock(i)) { 
 					readFrame(m_pixels, 256);
 					m_pixel_lock.unlock();
-				}
+				} */
 			}
 		}
 		int rest = 50 - m_time.elapsed();
