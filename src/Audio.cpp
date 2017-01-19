@@ -109,10 +109,10 @@ void Audio::EndFrame()
     m_pApu->end_frame(m_AbsoluteTime);
     m_pBuffer->end_frame(m_AbsoluteTime);
 
-    if (m_pBuffer->samples_avail() >= m_pSound->min_samples()) {
-        long max_read = m_pBuffer->samples_avail();//, m_pSound->max_samples());
-        //long chunks = max_read / m_pSound->min_samples();
-        long copy_size = qMin((long)kSampleBufferSize, max_read); //chunks * m_pSound->min_samples());
+    while (m_pBuffer->samples_avail() >= m_pSound->min_samples()) {
+        long max_read = qMin(m_pBuffer->samples_avail(), m_pSound->max_samples());
+        long chunks = max_read / m_pSound->min_samples();
+        long copy_size = qMin((long)kSampleBufferSize, chunks * m_pSound->min_samples());
 	if (copy_size) {
          long count = m_pBuffer->read_samples(m_pSampleBuffer, copy_size);
 	     if (m_bEnabled) {

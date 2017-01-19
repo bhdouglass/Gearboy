@@ -33,9 +33,9 @@ void EmulationRunner::run()
 		m_time.start();
 		for (int i = 0; i < 3; ++i) { // run 3 frames, at 60 fps, 50ms for 3.
 			if (!m_isPaused) {
-				m_lock.lock();
+				//m_lock.lock();
 				m_core.RunToVBlank(m_buffer);
-				m_lock.unlock();
+				//m_lock.unlock();
 				/*
 				if (m_pixel_lock.tryLock(i)) { 
 					readFrame(m_pixels, 256);
