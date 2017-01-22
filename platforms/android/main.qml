@@ -84,7 +84,7 @@ Item {
 	Item {
 		id: lefthand
 		width: 15 * 19
-		height: 15 * 38
+		height: 15 * 35
 
 		anchors.left: parent.left
 		anchors.bottom: parent.bottom
@@ -103,7 +103,7 @@ Item {
 
 		GBButton {
 			id: select
-			y: 28 * 15
+			y: 25 * 15
 
 			anchors.right: parent.right
 			anchors.rightMargin: 15
@@ -115,10 +115,6 @@ Item {
 
 			color: gb_gray_accent
 			border.color: gb_gray_dark
-
-			text: "SELECT"
-			textColor: gb_gray 
-			fontSize: 14
 		}
 	}
 
@@ -126,17 +122,12 @@ Item {
 		id: righthand
 		anchors.right: parent.right
 		anchors.bottom: parent.bottom
-		width: 15 * 19
-		height: 15 * 38
+		width: lefthand.width
+		height: lefthand.height
 
 		GBButton {
 			id: start
 			y: select.y
-
-			text: "START"
-			textColor: select.textColor
-			fontSize: select.fontSize
-			bold: select.bold
 
 			anchors.left: parent.left
 			anchors.leftMargin: 15 * 1
@@ -160,27 +151,18 @@ Item {
 			color: gb_purple
 			border.color: gb_purple_accent
 			border.width: outline
-			text: "A"
-			textColor: gb_white_accent
-			fontSize: 24
-			bold: true
 		}
 
 		GBButton {
 			id: b
 			x: 15 
 			y: 15 * 9
-			text: "B"
-
 			width: a.width
 			height: a.height
 			radius: a.radius
 			color: a.color 
 			border.color: a.border.color
 			border.width: a.border.width
-			textColor: a.textColor
-			fontSize: a.fontSize
-			bold: a.bold
 		}
 	}
 }

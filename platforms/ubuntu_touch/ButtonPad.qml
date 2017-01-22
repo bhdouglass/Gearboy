@@ -31,6 +31,7 @@ MultiPointTouchArea {
 			color: gb_white_accent
 			text: "A"
 			fontSize: "x-large"
+			font.bold: true
 		}
 	}
 
@@ -51,6 +52,7 @@ MultiPointTouchArea {
 			text: "B"
 			color: gb_white_accent
 			fontSize: "x-large"
+			font.bold: true
 		}
 	}
 
@@ -85,7 +87,6 @@ MultiPointTouchArea {
 		if (!aIsDown) {
 			aIsDown = true;
 			aPressed();
-			//Haptics.play();
 		}
 	}
 
@@ -93,7 +94,6 @@ MultiPointTouchArea {
 		if (!bIsDown) {
 			bIsDown = true;
 			bPressed();
-			//Haptics.play();
 		}
 	}
 

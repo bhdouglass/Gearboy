@@ -73,8 +73,6 @@ void Audio::Init()
     m_pApu->reduce_clicks();
     m_pApu->treble_eq(-15.0);
     m_pBuffer->bass_freq(100);
-
-
 }
 
 void Audio::Reset(bool bCGB, bool soft)
@@ -112,7 +110,7 @@ void Audio::EndFrame()
 	m_pApu->end_frame(m_AbsoluteTime);
 	m_pBuffer->end_frame(m_AbsoluteTime);
 
-    if (m_pBuffer->samples_avail() >= kSampleBufferSize) {
+    if (m_pBuffer->samples_avail() >= kSampleBufferSize) { // while (m_pBuffer->samples_avail())
             long count = m_pBuffer->read_samples(m_pSampleBuffer, kSampleBufferSize);
 			if (m_bEnabled) {
                 m_pSound->write(m_pSampleBuffer, count);

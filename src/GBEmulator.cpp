@@ -20,7 +20,7 @@ GBEmulator::GBEmulator() : m_renderer(0)
 	windowChanged(window());
 	m_emu = new EmulationRunner(this);
 	m_emu->start(QThread::TimeCriticalPriority);
-	//startTimer(16);
+    startTimer(16);
 }
 
 void GBEmulator::timerEvent(QTimerEvent *)
@@ -59,7 +59,7 @@ void GBEmulator::handleWindowChanged(QQuickWindow *win)
 	if (win) {
 		connect(win, &QQuickWindow::beforeSynchronizing, this, &GBEmulator::sync, Qt::DirectConnection);
 		connect(win, &QQuickWindow::sceneGraphInvalidated, this, &GBEmulator::cleanup, Qt::DirectConnection);
-		connect(win, &QQuickWindow::frameSwapped, this, &GBEmulator::redraw, Qt::DirectConnection);
+        //connect(win, &QQuickWindow::frameSwapped, this, &GBEmulator::redraw, Qt::DirectConnection);
 		win->setClearBeforeRendering(false);
 	} 
 }
@@ -95,6 +95,7 @@ void GBEmulator::startPressed()   { m_emu->keyPressed(Start_Key); }
 void GBEmulator::selectPressed()  { m_emu->keyPressed(Select_Key); }
 void GBEmulator::aPressed()       { m_emu->keyPressed(A_Key); }
 void GBEmulator::bPressed()       { m_emu->keyPressed(B_Key); }
+
 void GBEmulator::upReleased()     { m_emu->keyReleased(Up_Key); }
 void GBEmulator::leftReleased()   { m_emu->keyReleased(Left_Key); }
 void GBEmulator::rightReleased()  { m_emu->keyReleased(Right_Key); }

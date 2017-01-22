@@ -10,14 +10,14 @@ MultiPointTouchArea {
 	function release() {
 		if (isDown) {
 			isDown = false;
-			pushed();
+			unpushed();
 		}
 	}
 
 	function press() {
 		if (!isDown) {
 			isDown = true;
-			unpushed();
+			pushed();
 		}
 	}
 

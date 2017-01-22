@@ -69,10 +69,43 @@ typedef void (*RamChangedCallback) (void);
 
 struct GB_Color
 {
+	// bits are in RGB5A1 format
+	u16 bits;
 
-    u8 low;    u8 high;
+	inline u8 gblow() const { 
+            return ((bits >> 11) & 0x1F) | ((bits >> 1) & 0xE0);
+	}
 
+	inline u8 gbhigh() const { 
+            return  0x80 | ((bits << 1) & 0x7C) | ((bits >> 6) & 0x03);
+	}
+
+	inline void gblow(u16 l) { 
+		bits &= 0x063F;
+		bits |= (l << 11);
+		bits |= (l << 1) & 0x01C0;
+	}
+
+	inline void gbhigh(u16 h) { 
+		bits &= 0xF9C0;
+		bits |= ((h >> 1) & 0x3E) | 1;
+        bits |= (h << 9) & 0x0600;
+	}
+
+    GB_Color (u16 red, u16 green, u16 blue) {
+	    float to5bit = 31.0 / 255.0;
+	    red *= to5bit;
+	    green *= to5bit;
+	    blue *= to5bit;
+        bits = (red << 11) | (green << 6) | (blue << 1) | 1;
+	}
+
+    GB_Color()
+    {
+        bits = 0;
+    }
 };
+
 
 enum Gameboy_Keys
 {
@@ -85,18 +118,6 @@ enum Gameboy_Keys
     Select_Key = 6,
     Start_Key = 7
 };
-
-inline GB_Color color(u8 red, u8 green, u8 blue)
-{
-    GB_Color c;
-    float to5bit = 31.0 / 255.0;
-    red *= to5bit;
-    green *= to5bit;
-    blue *= to5bit;
-    c.high = 0x80 | (blue << 2) | (green >> 3);
-    c.low = (green << 5) | red;
-    return c;
-}
 
 #ifdef DEBUG_GEARBOY
 #define Log(msg, ...) (Log_func(msg, ##__VA_ARGS__))

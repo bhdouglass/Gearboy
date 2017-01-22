@@ -169,6 +169,7 @@ MainView {
 			text: i18n.tr("SELECT")
 			textColor: gb_gray 
 			fontSize: "medium"
+			bold: true
 		}
 	}
 

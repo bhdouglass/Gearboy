@@ -67,7 +67,7 @@ void Video::Reset(bool bCGB)
     for (int i = 0; i < (GAMEBOY_WIDTH * GAMEBOY_HEIGHT); i++)
         m_pSpriteXCacheBuffer[i] = m_pFrameBuffer[i] = m_pColorCacheBuffer[i] = 0;
 
-    GB_Color black = color(0, 0, 0);
+    GB_Color black(0, 0, 0);
     for (int p = 0; p < 8; p++) {
         for (int c = 0; c < 4; c++) {
             m_CGBBackgroundPalettes[p][c] = m_CGBSpritePalettes[p][c] = black;
@@ -364,9 +364,9 @@ void Video::UpdatePaletteToSpecification(bool background, u8 value)
     u8 final_value = 0;
 
     if (hl) {
-	final_value = color.high;
+	final_value = color.gbhigh();
     } else {
-	final_value = color.low;
+	final_value = color.gblow();
     }
 
     m_pMemory->Load(background ? 0xFF69 : 0xFF6B, final_value);
@@ -391,15 +391,15 @@ void Video::SetColorPalette(bool background, u8 value)
 
     if (hl) {
         if (background) {
-            m_CGBBackgroundPalettes[pal][index].high = value;
+            m_CGBBackgroundPalettes[pal][index].gbhigh(value);
         } else {
-            m_CGBSpritePalettes[pal][index].high = value;
+            m_CGBSpritePalettes[pal][index].gbhigh(value);
         }
     } else {
         if (background) {
-		m_CGBBackgroundPalettes[pal][index].low = value;
+		m_CGBBackgroundPalettes[pal][index].gblow(value);
         } else {
-            m_CGBSpritePalettes[pal][index].low = value;
+            m_CGBSpritePalettes[pal][index].gblow(value);
         }
     }
 }
@@ -433,7 +433,7 @@ void Video::ScanLine(int line)
             int line_width = (line * GAMEBOY_WIDTH);
             if (m_bCGB)
             {
-                GB_Color black = color(0, 0, 0);
+                GB_Color black(0, 0, 0);
                 for (int x = 0; x < GAMEBOY_WIDTH; x++) {
                     m_pColorFrameBuffer[line_width + x] = black;
                 }

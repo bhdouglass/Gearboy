@@ -395,10 +395,10 @@ void GearboyCore::SetRamModificationCallback(RamChangedCallback callback)
 
 void GearboyCore::InitDMGPalette()
 {
-    m_DMGPalette[0] = color(0x87, 0x96, 0x03);
-    m_DMGPalette[1] = color(0x4d,  0x6b, 0x03);
-    m_DMGPalette[2] = color(0x2b, 0x55, 0x03);
-    m_DMGPalette[3] = color(0x14, 0x44, 0x03);
+    m_DMGPalette[0] = GB_Color(0x87, 0x96, 0x03);
+    m_DMGPalette[1] = GB_Color(0x4d,  0x6b, 0x03);
+    m_DMGPalette[2] = GB_Color(0x2b, 0x55, 0x03);
+    m_DMGPalette[3] = GB_Color(0x14, 0x44, 0x03);
 }
 
 void GearboyCore::InitMemoryRules()
