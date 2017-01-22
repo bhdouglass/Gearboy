@@ -51,7 +51,6 @@ private:
     void RenderWindow(int line);
     void RenderSprites(int line);
     void UpdateStatRegister();
-    GB_Color ConvertTo8BitColor(GB_Color color);
 
 private:
     Memory* m_pMemory;

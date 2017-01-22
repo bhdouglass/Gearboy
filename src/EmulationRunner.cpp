@@ -12,19 +12,18 @@ QList<QThread *> EmulationRunner::threads;
 
 EmulationRunner::EmulationRunner(QObject *parent) : QThread(parent)
 {
-	GB_Color llgreen = {.red=0x9F, .green=0xBF, .blue=0x1B, .alpha=255};
-	GB_Color lgreen  = {.red=0x82, .green=0x9B, .blue=0x0D, .alpha=255};
-	GB_Color dgreen  = {.red=0x30, .green=0x62, .blue=0x30, .alpha=255};
-	GB_Color ddgreen = {.red=0x0F, .green=0x38, .blue=0x0F, .alpha=255};
-	GB_Color white   = {.red=0xFF, .green=0xFF, .blue=0xFF, .alpha=255};
+    GB_Color llgreen = color(0x9F, 0xBF, 0x1B);
+    GB_Color lgreen  = color(0x82, 0x9B, 0x0D);
+    GB_Color dgreen  = color(0x30, 0x62, 0x30);
+    GB_Color ddgreen = color(0x0F, 0x38, 0x0F);
+    GB_Color white   = color(0xFF, 0xFF, 0xFF);
 
 	for (int i = 0; i < GAMEBOY_WIDTH * GAMEBOY_HEIGHT; ++i) { 
 		m_buffer[i] = white;
 	}
-
 	threads.append(this);
 	m_core.Init();
-	m_core.SetDMGPalette(llgreen, lgreen, dgreen, ddgreen);
+    m_core.SetDMGPalette(llgreen, lgreen, dgreen, ddgreen);
 	m_isPaused = true;
 	m_isRunning = true;
 }
@@ -33,20 +32,21 @@ EmulationRunner::EmulationRunner(QObject *parent) : QThread(parent)
 void EmulationRunner::run()
 {
 	while (m_isRunning) {
-		m_time.start();
+            m_time.start();
 		for (int i = 0; i < 3; ++i) { // run 3 frames, at 60 fps, 50ms for 3.
 			if (!m_isPaused) {
-				m_lock.lock();
+                m_lock.lock();
 				m_core.RunToVBlank(m_buffer);
-				m_lock.unlock();
-				if (m_pixel_lock.tryLock(i)) { 
-					readFrame(m_pixels, 256);
+                m_lock.unlock();
+                if (m_pixel_lock.tryLock(1)) {
+                    readFrame(m_pixels, 256);
 					m_pixel_lock.unlock();
 				} 
 			}
 		}
-		int rest = 50 - m_time.elapsed();
-		if (rest > 0) msleep(rest);
+        int elapsed = m_time.elapsed();
+        int rest = 50 - elapsed;
+        if (rest > 0) msleep(rest);
 	}
 }
 
@@ -140,34 +140,21 @@ void EmulationRunner::save()
 }
 
 
-static inline void rgb5a1(GB_Color color, unsigned char *out)
-{
-    unsigned char r = color.red;
-    unsigned char g = color.green;
-    unsigned char b = color.blue;
-    //unsigned char a = color.alpha;
-    //((a >> 4) ? 1 : 0); force alpha on, not meaningful
-    // bits   channel
-    // 11--15  Red
-    //  6--10  Green
-    //  1--5   Blue
-    //  0      Alpha
-    out[0] = ((g << 3) & 0xC0) | (b >> 2) | 1;
-    out[1] = (r & 0xF8) | (g >> 5);
-}
-
-
 void EmulationRunner::readFrame(unsigned char *pixels, int width)
 {
-	for (int y = 0; y < GAMEBOY_HEIGHT; ++y) {
-		for (int x = 0; x < GAMEBOY_WIDTH; ++x) {
-			int src = (GAMEBOY_WIDTH * y + x); 
-			int dest = (y * width + x) * 2;
-            rgb5a1(m_buffer[src], &pixels[dest]);
-		}
-	}
-}
+    // reverse the bit order, gameboy is A1B5R5G5, need R5G5B5A1.
+    GB_Color *buff = reinterpret_cast<GB_Color*>(pixels);
+    for (int y = 0; y < GAMEBOY_HEIGHT; ++y) {
+        for (int x = 0; x < GAMEBOY_WIDTH; ++x) {
+            GB_Color abrg = m_buffer[y * GAMEBOY_WIDTH + x];
+            GB_Color out;
+            out.high = (abrg.low << 3) | ((abrg.high & 0x03) << 1) | (abrg.low >> 7);
+            out.low = (((abrg.high >> 1) | 1) & 0x3F)  | ((abrg.low << 1) & 0xA0);
+            buff[y * width + x] = out;
 
+        }
+    }
+}
 
 QString EmulationRunner::defaultPath()
 {

@@ -62,7 +62,7 @@ void PixelRenderer::initializeGL()
 	m_texture->setWrapMode(QOpenGLTexture::Repeat);
 	if ((err = glGetError())) qDebug() << "Error texture::setWrap: " << err;
 	unsigned char *pixels = emu->openPixels(); // to it now to trigger any errors for format
-	m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt16_RGB5A1, pixels);
+    m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt16_RGB5A1, pixels);
 	emu->closePixels();
 	if ((err = glGetError())) qDebug() << "Error texture::setData: " << err;
 
@@ -128,7 +128,7 @@ void PixelRenderer::paintGL()
 	m_texture->bind(0, QOpenGLTexture::ResetTextureUnit);
 
 	unsigned char *pixels = emu->openPixels();
-	m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt16_RGB5A1, pixels);
+    m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt16_RGB5A1, pixels);
 	emu->closePixels();
 
 	m_vertices->bind();

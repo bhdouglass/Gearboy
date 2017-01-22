@@ -4,6 +4,7 @@
 #include <QAudioOutput>
 #include <QIODevice>
 #include <QObject>
+#include "../RingBuffer.h"
 
 class Sound_Queue : public QObject 
 {
@@ -15,18 +16,14 @@ public:
 	typedef short sample_t;
 
 	const char* start(long sample_rate, int chan_count = 1);
-
-	void write(const sample_t*, long count);
-
 	void stop();
 	void restart();
 
-	long min_samples();
-	long max_samples();
+	void write(const sample_t*, long count);
 
 private:	
+	RingBuffer buffer;
 	QAudioOutput *audio;
-	QIODevice *buf;
 };
 
 #endif

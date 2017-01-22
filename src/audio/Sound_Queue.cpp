@@ -1,10 +1,11 @@
-#include "Sound_Queue.h"
+#include <algorithm>
 
 #include <QDebug>
 
-Sound_Queue::Sound_Queue() : audio(0), buf(0)
-{ 
-}
+#include "Sound_Queue.h"
+
+
+Sound_Queue::Sound_Queue() : buffer(0), audio(0){ }
 
 Sound_Queue::~Sound_Queue() 
 { 
@@ -32,12 +33,16 @@ const char* Sound_Queue::start(long sample_rate, int chan_count)
 			return "format not supported";
 		} else {
 			audio = new QAudioOutput(as, this);
+            buffer.start();
+			audio->start(&buffer);
+            buffer.setSamplePeriod(audio->periodSize() / sizeof (sample_t));
 		}
 	}
 
-    buf = audio->start();
 	qDebug() << "Preferred audio format: " << info.preferredFormat();
-	qDebug() << "Audio Buffer Size" << audio->bufferSize();
+    qDebug() << "The requested format is: " << as;
+    qDebug() << "Audio Buffer Size:" << audio->bufferSize();
+    qDebug() << "Audio Period Size:" << audio->periodSize();
 	return NULL;
 }
 
@@ -57,21 +62,7 @@ void Sound_Queue::stop()
 	}
 }
 
-
-void Sound_Queue::write(const sample_t* in, long count)
+void Sound_Queue::write(const sample_t *in, long count)
 {
-	if (buf) { 
-		buf->write((const char *)in, count * sizeof (sample_t));
-	}
-}
-
-
-long Sound_Queue::min_samples()
-{
-	return audio ? audio->periodSize() / sizeof (sample_t) : 1;
-}
-
-long Sound_Queue::max_samples()
-{
-	return audio ? audio->bytesFree() / sizeof (sample_t) : 100000;
+	buffer.write_samples(in, count);
 }

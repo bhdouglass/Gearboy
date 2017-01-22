@@ -69,23 +69,34 @@ typedef void (*RamChangedCallback) (void);
 
 struct GB_Color
 {
-    u8 red;
-    u8 green;
-    u8 blue;
-    u8 alpha;
+
+    u8 low;    u8 high;
+
 };
 
 enum Gameboy_Keys
 {
-    A_Key = 4,
-    B_Key = 5,
-    Start_Key = 7,
-    Select_Key = 6,
     Right_Key = 0,
     Left_Key = 1,
     Up_Key = 2,
-    Down_Key = 3
+    Down_Key = 3,
+    A_Key = 4,
+    B_Key = 5,
+    Select_Key = 6,
+    Start_Key = 7
 };
+
+inline GB_Color color(u8 red, u8 green, u8 blue)
+{
+    GB_Color c;
+    float to5bit = 31.0 / 255.0;
+    red *= to5bit;
+    green *= to5bit;
+    blue *= to5bit;
+    c.high = 0x80 | (blue << 2) | (green >> 3);
+    c.low = (green << 5) | red;
+    return c;
+}
 
 #ifdef DEBUG_GEARBOY
 #define Log(msg, ...) (Log_func(msg, ##__VA_ARGS__))

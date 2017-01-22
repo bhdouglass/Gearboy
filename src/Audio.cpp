@@ -51,23 +51,30 @@ void Audio::Init()
     m_pSampleBuffer = new blip_sample_t[kSampleBufferSize];
 
     m_pApu = new Gb_Apu();
-    m_pBuffer = new Stereo_Buffer();
+
     m_pSound = new Sound_Queue();
 
     m_pSound->start(m_iSampleRate, channels);
-    qDebug() << "Min Samples: " << m_pSound->min_samples();
-    qDebug() << "Max Samples: " << m_pSound->max_samples();
-    qDebug() << "Buffer Size: " << kSampleBufferSize;
-    qDebug() << "Blip Samples: " << int(m_iSampleRate * msecs / 1000.0); 
+    qDebug() << "Sample Buffer Size: " << kSampleBufferSize;
+    qDebug() << "Blargg Blip Sample Szie: " << int(m_iSampleRate * channels * msecs / 1000.0);
+    if (channels == 2) {
+        Stereo_Buffer *buffer = new Stereo_Buffer();
+        m_pBuffer = buffer;
+         m_pApu->set_output(buffer->center(), buffer->left(), buffer->right());
+    } else {
+        Mono_Buffer* buffer = new Mono_Buffer();
+        m_pBuffer = buffer;
+        m_pApu->set_output(buffer->center());
+    }
 
     m_pBuffer->clock_rate(4194304);
     m_pBuffer->set_sample_rate(m_iSampleRate, msecs);
 
     m_pApu->reduce_clicks();
-    //m_pApu->treble_eq(-15.0);
-    //m_pBuffer->bass_freq(100);
+    m_pApu->treble_eq(-15.0);
+    m_pBuffer->bass_freq(100);
 
-    m_pApu->set_output(m_pBuffer->center(), m_pBuffer->left(), m_pBuffer->right());
+
 }
 
 void Audio::Reset(bool bCGB, bool soft)
@@ -105,15 +112,10 @@ void Audio::EndFrame()
 	m_pApu->end_frame(m_AbsoluteTime);
 	m_pBuffer->end_frame(m_AbsoluteTime);
 
-	while (m_pBuffer->samples_avail() >= m_pSound->min_samples()) {
-		long max_read = qMin(m_pBuffer->samples_avail(), m_pSound->max_samples());
-		long chunks = max_read / m_pSound->min_samples();
-		long copy_size = qMin((long)kSampleBufferSize, chunks * m_pSound->min_samples());
-		if (copy_size) {
-			long count = m_pBuffer->read_samples(m_pSampleBuffer, copy_size);
+    if (m_pBuffer->samples_avail() >= kSampleBufferSize) {
+            long count = m_pBuffer->read_samples(m_pSampleBuffer, kSampleBufferSize);
 			if (m_bEnabled) {
-				m_pSound->write(m_pSampleBuffer, count);
+                m_pSound->write(m_pSampleBuffer, count);
 			}
-		}
 	}
 }

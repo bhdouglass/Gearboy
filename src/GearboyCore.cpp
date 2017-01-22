@@ -254,10 +254,6 @@ void GearboyCore::SetDMGPalette(GB_Color& color1, GB_Color& color2, GB_Color& co
     m_DMGPalette[1] = color2;
     m_DMGPalette[2] = color3;
     m_DMGPalette[3] = color4;
-    m_DMGPalette[0].alpha = 0xFF;
-    m_DMGPalette[1].alpha = 0xFF;
-    m_DMGPalette[2].alpha = 0xFF;
-    m_DMGPalette[3].alpha = 0xFF;
 }
 
 
@@ -395,27 +391,14 @@ void GearboyCore::SetRamModificationCallback(RamChangedCallback callback)
     m_pRamChangedCallback = callback;
 }
 
+
+
 void GearboyCore::InitDMGPalette()
 {
-    m_DMGPalette[0].red = 0x87;
-    m_DMGPalette[0].green = 0x96;
-    m_DMGPalette[0].blue = 0x03;
-    m_DMGPalette[0].alpha = 0xFF;
-
-    m_DMGPalette[1].red = 0x4d;
-    m_DMGPalette[1].green = 0x6b;
-    m_DMGPalette[1].blue = 0x03;
-    m_DMGPalette[1].alpha = 0xFF;
-
-    m_DMGPalette[2].red = 0x2b;
-    m_DMGPalette[2].green = 0x55;
-    m_DMGPalette[2].blue = 0x03;
-    m_DMGPalette[2].alpha = 0xFF;
-
-    m_DMGPalette[3].red = 0x14;
-    m_DMGPalette[3].green = 0x44;
-    m_DMGPalette[3].blue = 0x03;
-    m_DMGPalette[3].alpha = 0xFF;
+    m_DMGPalette[0] = color(0x87, 0x96, 0x03);
+    m_DMGPalette[1] = color(0x4d,  0x6b, 0x03);
+    m_DMGPalette[2] = color(0x2b, 0x55, 0x03);
+    m_DMGPalette[3] = color(0x14, 0x44, 0x03);
 }
 
 void GearboyCore::InitMemoryRules()

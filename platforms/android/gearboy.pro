@@ -1,37 +1,13 @@
-UBUNTU_MANIFEST_FILE=manifest.json.in
-
-UBUNTU_TRANSLATION_DOMAIN="gearboy.rpattison"
-
-UBUNTU_TRANSLATION_SOURCES+= \
-    $$files(*.qml,true) \
-    $$files(*.js,true)  \
-    $$files(*.cpp,true) \
-    $$files(*.h,true) \
-    $$files(*.desktop,true)
-
-
-UBUNTU_PO_FILES+=$$files(po/*.po)
-
 TEMPLATE = app
 TARGET = gearboy
-
-load(ubuntu-click)
 
 QT += core gui widgets multimedia qml quick
 CONFIG += c++11
 
 RESOURCES += gearboy.qrc
-
+CONF_FILES += gearboy.png
 QML_FILES += $$files(*.qml,true) \
              $$files(*.js,true)
-
-CONF_FILES +=  gearboy.apparmor \
-	       gearboy-content.json \
-               gearboy.png 
-
-OTHER_FILES += $${CONF_FILES} \
-               $${QML_FILES} \
-               gearboy.rpattison.desktop 
 
 #specify where the qml/js files are installed to
 qml_files.path = /gearboy
@@ -40,10 +16,6 @@ qml_files.files += $${QML_FILES}
 #specify where the config files are installed to
 config_files.path = /
 config_files.files += $${CONF_FILES}
-
-desktop_file.path = /
-desktop_file.files = $$OUT_PWD/gearboy.rpattison.desktop 
-desktop_file.CONFIG += no_check_exist 
 
 
 SOURCES += \
@@ -71,9 +43,9 @@ SOURCES += \
     ../../src/Processor.cpp \
     ../../src/RomOnlyMemoryRule.cpp \
     ../../src/Video.cpp \
+    ../../src/RingBuffer.cpp \
     ../../src/miniz/miniz.c \
     ../../src/PixelRenderer.cpp \
-    ../../src/RingBuffer.cpp \
     ../../src/GBEmulator.cpp \
     ../../src/EmulationRunner.cpp \
     ../../src/main.cpp 
@@ -90,6 +62,7 @@ HEADERS  += \
     ../../src/audio/Sound_Queue.h \
     ../../src/Audio.h \
     ../../src/boot_roms.h \
+    ../../src/RingBuffer.h \
     ../../src/Cartridge.h \
     ../../src/CommonMemoryRule.h \
     ../../src/definitions.h \
@@ -113,11 +86,10 @@ HEADERS  += \
     ../../src/RomOnlyMemoryRule.h \
     ../../src/SixteenBitRegister.h \
     ../../src/Video.h \
-    ../../src/RingBuffer.h \
     ../../src/GBEmulator.h \
     ../../src/EmulationRunner.h \
     ../../src/PixelRenderer.h 
 
-target.path = $${UBUNTU_CLICK_BINARY_PATH}
+target.path = ./gearboy
 
-INSTALLS += target config_files qml_files desktop_file 
+INSTALLS += target qml_files  config_files
