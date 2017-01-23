@@ -47,12 +47,16 @@ qint64 RingBuffer::readData(char *data, qint64 maxSize)
 		const char *buf = reinterpret_cast<char*>(&buffers[read_i]);
 		qint64 sample_size = qMin(sample_count - read_i, read_count);
 		qint64 bytes_size = sample_size * sizeof(sample_t);
-		std::copy(buf, &buf[bytes_size], data);
+        if (bytes_size) {
+            std::copy(buf, &buf[bytes_size], data);
+        }
 		read_i += sample_size;
 		if (read_i >= sample_count) {
 			qint64 remain = read_count - sample_size;
 			const char *buf = reinterpret_cast<char*>(buffers);
-			std::copy(buf, &buf[remain * sizeof(sample_t)], data + bytes_size);
+            if (remain) {
+                std::copy(buf, &buf[remain * sizeof(sample_t)], data + bytes_size);
+            }
 			read_i = remain;
 		}
 		write.release(read_count);

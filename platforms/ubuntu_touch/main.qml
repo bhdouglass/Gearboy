@@ -74,10 +74,18 @@ MainView {
 				peer = p;
 			}
 		}
-		if (peer == null) { 
+        if (peer != null) {
+            root.activeTransfer = peer.request();
+        } else if (model.peers.length > 0) {
 			picker.visible = true; /* didn't find ubuntu's file manager, maybe they have another app */
 		} else {
-			root.activeTransfer = peer.request(); 
+            if (emu.requestRom()) {
+                    help.visible = false;
+                    emu.play();
+            } else {
+                    help.text = i18n.tr("ROM failed to load");
+                    help.visible = true;
+            }
 		}
 	}
 
@@ -247,4 +255,73 @@ MainView {
 			}
 		}
 	}
+
+    property var startKey: Qt.Key_Return
+    property var selectKey: Qt.Key_Backspace
+    property var upKey: Qt.Key_Up
+    property var downKey: Qt.Key_Down
+    property var leftKey: Qt.Key_Left
+    property var rightKey: Qt.Key_Right
+    property var aKey: Qt.Key_A
+    property var bKey: Qt.Key_B
+
+    Keys.onPressed: {
+            var key = event.key;
+            if (key == leftKey) {
+                emu.leftPressed();
+                event.accepted = true;
+            } else if (key == rightKey) {
+                emu.rightPressed();
+                event.accepted = true;
+            } else if (key == downKey) {
+                emu.downPressed();
+                event.accepted = true;
+            } else if (key == upKey) {
+                emu.upPressed();
+                event.accepted = true;
+            } else if (key == aKey) {
+                emu.aPressed();
+                event.accepted = true;
+            } else if (key == bKey) {
+                emu.bPressed();
+                event.accepted = true;
+            } else if (key == startKey) {
+                emu.startPressed();
+                event.accepted = true;
+            } else if (key == selectKey) {
+                emu.selectPressed();
+                event.accepted = true;
+            } else {
+                console.log("pressed unmapped key: " + key);
+            }
+        }
+
+    Keys.onReleased: {
+            var key = event.key;
+            if (key == leftKey) {
+                emu.leftReleased();
+                event.accepted = true;
+            } else if (key == rightKey) {
+                emu.rightReleased();
+                event.accepted = true;
+            } else if (key == downKey) {
+                emu.downReleased();
+                event.accepted = true;
+            } else if (key == upKey) {
+                emu.upReleased();
+                event.accepted = true;
+            } else if (key == aKey) {
+                emu.aReleased();
+                event.accepted = true;
+            } else if (key == bKey) {
+                emu.bReleased();
+                event.accepted = true;
+            } else if (key == startKey) {
+                emu.startReleased();
+                event.accepted = true;
+            } else if (key == selectKey) {
+                emu.selectReleased();
+                event.accepted = true;
+            }
+    }
 }

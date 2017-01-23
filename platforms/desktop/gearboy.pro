@@ -50,11 +50,13 @@ SOURCES += \
     ../../src/opcodes_cb.cpp \
     ../../src/opcodes.cpp \
     ../../src/Processor.cpp \
+    ../../src/RingBuffer.cpp \
     ../../src/RomOnlyMemoryRule.cpp \
     ../../src/Video.cpp \
     ../../src/miniz/miniz.c \
     ../../src/PixelRenderer.cpp \
     ../../src/GBEmulator.cpp \
+    ../../src/EmulationRunner.cpp \
     ../../src/main.cpp 
 
 HEADERS  += \
@@ -70,6 +72,7 @@ HEADERS  += \
     ../../src/Audio.h \
     ../../src/boot_roms.h \
     ../../src/Cartridge.h \
+    ../../src/RingBuffer.h \
     ../../src/CommonMemoryRule.h \
     ../../src/definitions.h \
     ../../src/EightBitRegister.h \
@@ -91,6 +94,7 @@ HEADERS  += \
     ../../src/Processor.h \
     ../../src/RomOnlyMemoryRule.h \
     ../../src/SixteenBitRegister.h \
+    ../../src/EmulationRunner.h \
     ../../src/Video.h \
     ../../src/GBEmulator.h \
     ../../src/PixelRenderer.h 

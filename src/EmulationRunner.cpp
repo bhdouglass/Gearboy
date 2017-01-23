@@ -42,7 +42,7 @@ void EmulationRunner::run()
                 if (m_pixel_lock.tryLock(2)) {
                     readFrame(m_pixels, 256);
 					m_pixel_lock.unlock();
-				} 
+                }
 			}
 		}
         int elapsed = m_time.elapsed();
@@ -94,17 +94,17 @@ bool EmulationRunner::loadRom(QString path)
 
 void EmulationRunner::keyPressed(Gameboy_Keys key)
 {
-	m_lock.lock();
+    //m_lock.lock();
 	m_core.KeyPressed(key);
-	m_lock.unlock();
+    //m_lock.unlock();
 }
 
 
 void EmulationRunner::keyReleased(Gameboy_Keys key)
 {
-	m_lock.lock();
+    //m_lock.lock();
 	m_core.KeyReleased(key);
-	m_lock.unlock();
+    //m_lock.unlock();
 }
 
 
