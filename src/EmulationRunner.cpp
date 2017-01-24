@@ -12,19 +12,20 @@ QList<QThread *> EmulationRunner::threads;
 
 EmulationRunner::EmulationRunner(QObject *parent) : QThread(parent)
 {
-    GB_Color llgreen(0x9F, 0xBF, 0x1B);
-    GB_Color lgreen(0x82, 0x9B, 0x0D);
-    GB_Color dgreen(0x30, 0x62, 0x30);
-    GB_Color ddgreen(0x0F, 0x38, 0x0F);
-    GB_Color white(0xFF, 0xFF, 0xFF);
+	GB_Color very_light_green(0x9F, 0xBF, 0x1B);
+	GB_Color light_green(0x82, 0x9B, 0x0D);
+	GB_Color dark_green(0x30, 0x62, 0x30);
+	GB_Color very_dark_green(0x0F, 0x38, 0x0F);
+	GB_Color white(0xFF, 0xFF, 0xFF);
 
 	for (int i = 0; i < GAMEBOY_WIDTH * GAMEBOY_HEIGHT; ++i) { 
 		m_buffer[i] = white;
 	}
-    readFrame(m_pixels, 256);
+
+	readFrame(m_pixels, 256);
 	threads.append(this);
 	m_core.Init();
-    m_core.SetDMGPalette(llgreen, lgreen, dgreen, ddgreen);
+	m_core.SetDMGPalette(very_light_green, light_green, dark_green, very_dark_green);
 	m_isPaused = true;
 	m_isRunning = true;
 }
@@ -33,21 +34,21 @@ EmulationRunner::EmulationRunner(QObject *parent) : QThread(parent)
 void EmulationRunner::run()
 {
 	while (m_isRunning) {
-            m_time.start();
+		m_time.start();
 		for (int i = 0; i < 3; ++i) { // run 3 frames, at 60 fps, 50ms for 3.
 			if (!m_isPaused) {
-                m_lock.lock();
+				m_lock.lock();
 				m_core.RunToVBlank(m_buffer);
-                m_lock.unlock();
-                if (m_pixel_lock.tryLock(2)) {
-                    readFrame(m_pixels, 256);
+				m_lock.unlock();
+				if (m_pixel_lock.tryLock(2)) {
+					readFrame(m_pixels, 256);
 					m_pixel_lock.unlock();
-                }
+				}
 			}
 		}
-        int elapsed = m_time.elapsed();
-        int rest = 50 - elapsed;
-        if (rest > 0) msleep(rest);
+		int elapsed = m_time.elapsed();
+		int rest = 50 - elapsed;
+		if (rest > 0) msleep(rest);
 	}
 }
 
@@ -72,7 +73,6 @@ bool EmulationRunner::loadRom(QString path)
 {
 	std::string cppstr = path.toStdString();
    	const char *local_path = cppstr.c_str(); 
-	m_lock.lock();
 	bool result = m_core.LoadROM(local_path, false);
 	if (result) {
 		qDebug() << "successful load ROM";
@@ -87,24 +87,19 @@ bool EmulationRunner::loadRom(QString path)
 	} else {
 		qDebug() << "Failed to Load ROM";
 	}
-	m_lock.unlock();
 	return result;
 }
 
 
 void EmulationRunner::keyPressed(Gameboy_Keys key)
 {
-    //m_lock.lock();
 	m_core.KeyPressed(key);
-    //m_lock.unlock();
 }
 
 
 void EmulationRunner::keyReleased(Gameboy_Keys key)
 {
-    //m_lock.lock();
 	m_core.KeyReleased(key);
-    //m_lock.unlock();
 }
 
 
@@ -127,7 +122,6 @@ void EmulationRunner::stop()
 
 void EmulationRunner::save()
 {
-	m_lock.lock();
 	QString path = defaultSavePath();
    	if (!path.isNull()) {
 		qDebug() << "Saving Game to: " << path;
@@ -137,17 +131,16 @@ void EmulationRunner::save()
 	} else {
 		qDebug() << "No Game Loaded to Save";
 	}
-	m_lock.unlock();
 }
 
 
 void EmulationRunner::readFrame(unsigned char *pixels, int width)
 {
-    u16 *buff = reinterpret_cast<u16*>(pixels);
-    u16 *src = reinterpret_cast<u16*>(m_buffer);
-    for (int y = 0; y < GAMEBOY_HEIGHT; ++y) {
-        std::copy(&src[y * GAMEBOY_WIDTH], &src[(y + 1) * GAMEBOY_WIDTH], &buff[y * width]);
-    }
+	u16 *buff = reinterpret_cast<u16*>(pixels);
+	u16 *src = reinterpret_cast<u16*>(m_buffer);
+	for (int y = 0; y < GAMEBOY_HEIGHT; ++y) {
+		std::copy(&src[y * GAMEBOY_WIDTH], &src[(y + 1) * GAMEBOY_WIDTH], &buff[y * width]);
+	}
 }
 
 

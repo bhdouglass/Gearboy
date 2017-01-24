@@ -3,7 +3,6 @@
 
 #include "GBEmulator.h"
 
-
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
@@ -15,8 +14,6 @@ int main(int argc, char *argv[])
 	view.show();
 
 	int result = app.exec();
-
 	EmulationRunner::waitAll();	
-
 	return result;
 }

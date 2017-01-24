@@ -32,7 +32,6 @@ public slots:
     void timerEvent(QTimerEvent *);
 
     void redraw();
-
 	void sync();
 	void cleanup();
 
@@ -40,6 +39,7 @@ public slots:
 	void save();
 	void play();
 	void pause();
+    void shutdown();
 
 	void upPressed();
 	void leftPressed();

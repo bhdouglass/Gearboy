@@ -20,7 +20,8 @@ GBEmulator::GBEmulator() : m_renderer(0)
 	windowChanged(window());
 	m_emu = new EmulationRunner(this);
 	m_emu->start(QThread::TimeCriticalPriority);
-    startTimer(16);
+	startTimer(16);
+    connect(qApp, SIGNAL(lastWindowClosed()), this, SLOT(shutdown()));
 }
 
 void GBEmulator::timerEvent(QTimerEvent *)
@@ -61,7 +62,7 @@ void GBEmulator::handleWindowChanged(QQuickWindow *win)
 		connect(win, &QQuickWindow::sceneGraphInvalidated, this, &GBEmulator::cleanup, Qt::DirectConnection);
         //connect(win, &QQuickWindow::frameSwapped, this, &GBEmulator::redraw, Qt::DirectConnection);
 		win->setClearBeforeRendering(false);
-	} 
+    }
 }
 
 
@@ -115,6 +116,13 @@ bool GBEmulator::loadRom(QString path)
 void GBEmulator::pause() { m_emu->pause(); }
 void GBEmulator::play() { m_emu->play(); }
 
+void GBEmulator::shutdown()
+{
+    qDebug() << "GOING DOWN";
+    m_emu->pause();
+    m_emu->save();
+    m_emu->stop();
+}
 
 void GBEmulator::save()
 {

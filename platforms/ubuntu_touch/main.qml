@@ -116,9 +116,8 @@ MainView {
 	}
 
 	Component.onDestruction: {
-		emu.pause();
-		emu.save();
-		emu.stop();
+		//console.log("shutdown");
+		//emu.shutdown();
 	}
 
 	Label {
@@ -292,7 +291,6 @@ MainView {
                 emu.selectPressed();
                 event.accepted = true;
             } else {
-                console.log("pressed unmapped key: " + key);
             }
         }
 
