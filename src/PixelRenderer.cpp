@@ -45,28 +45,75 @@ void PixelRenderer::setBufferSize(int width, int height)
 }
 
 
+
+bool PixelRenderer::initializeTexture(QOpenGLTexture::TextureFormat format)
+{
+        GLenum err = 0;
+    m_texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
+    if ((err = glGetError())) {
+        qDebug() << "Error texture::new: " << err;
+        delete m_texture;
+        return false;
+    }
+    m_texture->setFormat(format);
+    if ((err = glGetError())) {
+        qDebug() << "Error texture::setFormat: " << err;
+        delete m_texture;
+        return false;
+    }
+
+    m_texture->setSize(m_tex_width, m_tex_height);
+    if ((err = glGetError())) {
+        qDebug() << "Error texture::setSize: " << err;
+        delete m_texture;
+        return false;
+    }
+
+    m_texture->allocateStorage();
+    if ((err = glGetError())) {
+        qDebug() << "Error texture::allocate: " << err;
+        delete m_texture;
+        return false;
+    }
+
+    m_texture->setMinMagFilters(QOpenGLTexture::Nearest, QOpenGLTexture::Nearest);
+    if ((err = glGetError())) {
+        qDebug() << "Error texture::setMinMag: " << err;
+        delete m_texture;
+        return false;
+    }
+
+    m_texture->setWrapMode(QOpenGLTexture::Repeat);
+    if ((err = glGetError())) {
+        qDebug() << "Error texture::setWrap: " << err;
+        delete m_texture;
+        return false;
+    }
+
+    m_texture->bind(0);
+    unsigned char *pixels = emu->openPixels(); // do it now to trigger any errors for format
+    m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt16_RGB5A1, pixels);
+    emu->closePixels();
+
+    if ((err = glGetError())) {
+        qDebug() << "Error texture::setData: " << err;
+        m_texture->release();
+        delete m_texture;
+        return false;
+    }
+    return true;
+}
+
+
 void PixelRenderer::initializeGL()
 {
 	initializeOpenGLFunctions();
 	GLenum err = 0;
-	m_texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
-	if ((err = glGetError())) qDebug() << "Error texture::new: " << err;
-    m_texture->setFormat(QOpenGLTexture::RGB5A1);
-	if ((err = glGetError())) qDebug() << "Error textuer::setFormat: " << err;
-	m_texture->setSize(m_tex_width, m_tex_height);
-	if ((err = glGetError())) qDebug() << "Error texture::setSize: " << err;
-	m_texture->allocateStorage();
-	if ((err = glGetError())) qDebug() << "Error texture::allocate: " << err;
-	m_texture->setMinMagFilters(QOpenGLTexture::Nearest, QOpenGLTexture::Nearest);
-	if ((err = glGetError())) qDebug() << "Error texture::setMinMag: " << err;
-	m_texture->setWrapMode(QOpenGLTexture::Repeat);
-	if ((err = glGetError())) qDebug() << "Error texture::setWrap: " << err;
 
-    m_texture->bind(0);
-    unsigned char *pixels = emu->openPixels(); // to it now to trigger any errors for format
-    m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt16_RGB5A1, pixels);
-    emu->closePixels();
-    if ((err = glGetError())) qDebug() << "Error texture::setData: " << err;
+    if (not initializeTexture(QOpenGLTexture::RGBAFormat)) {
+        qDebug() << "Initializing Texture Unit Failed.";
+        //initializeTexture(QOpenGLTexture::RGB5A1);
+    }
 
 	GLfloat w = m_image_width / (double)m_tex_width;
 	GLfloat h = m_image_height / (double)m_tex_height;
@@ -78,12 +125,12 @@ void PixelRenderer::initializeGL()
 	 1.0f, 1.0f, 0.0f, 	   w, 0.0f
 	};
 	m_vertices = new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
-    if ((err = glGetError())) qDebug() << "Error buffer vertex " << err;
+	if ((err = glGetError())) qDebug() << "Error buffer vertex " << err;
 
 	m_vertices->setUsagePattern(QOpenGLBuffer::StaticDraw);
-    if ((err = glGetError())) qDebug() << "Error usage pattern " << err;
+	if ((err = glGetError())) qDebug() << "Error usage pattern " << err;
 	m_vertices->create();
-    m_vertices->bind();
+	m_vertices->bind();
 
 	m_vertices->allocate(vertData.constData(), vertData.count() * sizeof (GLfloat));
 
@@ -115,34 +162,34 @@ void PixelRenderer::initializeGL()
 	m_program->addShaderFromSourceCode(QOpenGLShader::Fragment, fshader_src);
 
 	m_program->bindAttributeLocation("a_position", PROGRAM_VERTEX_ATTRIBUTE);
-    if ((err = glGetError())) qDebug() << "Error bind vertex loc " << err;
+	if ((err = glGetError())) qDebug() << "Error bind vertex loc " << err;
 
 	m_program->bindAttributeLocation("a_texCoord", PROGRAM_TEXCOORD_ATTRIBUTE);
-    if ((err = glGetError())) qDebug() << "Error bind texture loc " << err;
+	if ((err = glGetError())) qDebug() << "Error bind texture loc " << err;
 
 	m_program->link();
-    m_vertices->release();
-    m_texture->release();
-    //m_program->bind();
-    //m_program->setUniformValue("s_texture", 0);
-    //if ((err = glGetError())) qDebug() << "Error program::setUniformValue: " << err;
+	m_vertices->release();
+	m_texture->release();
+	m_program->bind();
+	m_program->setUniformValue("s_texture", 0);
+	if ((err = glGetError())) qDebug() << "Error program::setUniformValue: " << err;
 }
 
 
 void PixelRenderer::paintGL()
 {
-    glClearColor(m_color.redF(), m_color.greenF(), m_color.blueF(), m_color.alphaF());
-    glViewport(0, 0, m_width, m_height);
-    glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(m_color.redF(), m_color.greenF(), m_color.blueF(), m_color.alphaF());
+	glViewport(0, 0, m_width, m_height);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 	setViewport();
 
-    m_program->bind();
-    m_texture->bind(0);//, QOpenGLTexture::ResetTextureUnit);
-    m_vertices->bind();
+	m_program->bind();
+	m_texture->bind(0, QOpenGLTexture::ResetTextureUnit);
+	m_vertices->bind();
 
 	unsigned char *pixels = emu->openPixels();
-    m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt16_RGB5A1, pixels);
+	m_texture->setData(QOpenGLTexture::RGBA, QOpenGLTexture::UInt16_RGB5A1, pixels);
 	emu->closePixels();
 
 	m_program->setUniformValue("s_texture", 0);
@@ -153,13 +200,13 @@ void PixelRenderer::paintGL()
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    m_program->disableAttributeArray(PROGRAM_VERTEX_ATTRIBUTE);
-    m_program->disableAttributeArray(PROGRAM_TEXCOORD_ATTRIBUTE);
-    m_texture->release();
-    m_vertices->release();
-    m_program->release();
+	//m_program->disableAttributeArray(PROGRAM_VERTEX_ATTRIBUTE);
+	//m_program->disableAttributeArray(PROGRAM_TEXCOORD_ATTRIBUTE);
+	//m_texture->release();
+	//m_vertices->release();
+	m_program->release();
 
-    //glFinish();
+    glFinish();
 }
 
 

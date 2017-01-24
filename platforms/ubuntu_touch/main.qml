@@ -116,8 +116,8 @@ MainView {
 	}
 
 	Component.onDestruction: {
-		//console.log("shutdown");
-		//emu.shutdown();
+		console.log("shutdown");
+		emu.shutdown();
 	}
 
 	Label {

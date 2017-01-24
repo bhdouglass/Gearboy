@@ -4,6 +4,7 @@
 #include <QOpenGLFunctions>
 #include <QtGui/QOpenGLShaderProgram>
 #include <QtGui/QOpenGLFunctions>
+#include <QOpenGLTexture>
 #include <QQuickWindow>
 #include <QMutex>
 #include <QDebug>
@@ -38,6 +39,7 @@ protected:
 	void resizeGL(int width, int height);
 	void setViewport();
 	void setBufferSize(int width, int height);
+    bool initializeTexture(QOpenGLTexture::TextureFormat format);
 
 private:
 	EmulationRunner *emu;

@@ -56,7 +56,7 @@ void Audio::Init()
 
     m_pSound->start(m_iSampleRate, channels);
     qDebug() << "Sample Buffer Size: " << kSampleBufferSize;
-    qDebug() << "Blargg Blip Sample Szie: " << int(m_iSampleRate * channels * msecs / 1000.0);
+    qDebug() << "Blargg Blip Sample Size: " << int(m_iSampleRate * channels * msecs / 1000.0);
     if (channels == 2) {
         Stereo_Buffer *buffer = new Stereo_Buffer();
         m_pBuffer = buffer;
