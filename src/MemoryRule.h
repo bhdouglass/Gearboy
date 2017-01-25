@@ -22,6 +22,8 @@
 
 #include "definitions.h"
 #include <vector>
+#include <fstream>
+#include <string>
 
 class Memory;
 class Video;
@@ -42,6 +44,8 @@ public:
     virtual void SaveRam(std::ofstream &file);
     virtual bool LoadRam(std::ifstream &file, s32 fileSize);
     virtual void SetRamChangedCallback(RamChangedCallback callback);
+    virtual void SetFileStore(std::string);
+    virtual void RAMChanged();
 
 protected:
     Processor* m_pProcessor;
@@ -52,6 +56,7 @@ protected:
     Audio* m_pAudio;
     bool m_bCGB;
     RamChangedCallback m_pRamChangedCallback;
+    std::string *m_pFileStore;
 };
 
 #endif	/* MEMORYRULE_H */

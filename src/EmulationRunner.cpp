@@ -75,17 +75,22 @@ bool EmulationRunner::loadRom(QString path)
    	const char *local_path = cppstr.c_str(); 
 	bool result = m_core.LoadROM(local_path, false);
 	if (result) {
-		qDebug() << "successful load ROM";
+        qDebug() << "Loaded ROM:" << QString(local_path);
 		QString save_path = defaultSavePath();
 		if (QFileInfo::exists(save_path)) {
-			qDebug() << "Loading ram save file";
 			m_core.LoadRam(save_path.toStdString().c_str());
-			qDebug() << "Loaded Save File";
+            qDebug() << "Loaded RAM Save File:" << save_path;
 		} else {
-			qDebug() << "No Save File Found. checked: " << save_path;
+            qDebug() << "No Save File Found: " << save_path;
+		}
+        if (m_core.GetCartridge()->HasBattery()) {
+            if (!save_path.isNull()) {
+                qDebug() << "Setting RAM Save File: " << save_path;
+                m_core.GetMemory()->GetCurrentRule()->SetFileStore(save_path.toStdString());
+			}
 		}
 	} else {
-		qDebug() << "Failed to Load ROM";
+        qDebug() << "Failed to Load ROM:" << QString(local_path);
 	}
 	return result;
 }

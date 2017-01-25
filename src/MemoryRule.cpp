@@ -19,6 +19,9 @@
 
 #include "MemoryRule.h"
 
+#include <QDebug>
+
+
 MemoryRule::MemoryRule(Processor* pProcessor, Memory* pMemory,
         Video* pVideo, Input* pInput, Cartridge* pCartridge, Audio* pAudio)
 {
@@ -30,11 +33,26 @@ MemoryRule::MemoryRule(Processor* pProcessor, Memory* pMemory,
     m_pAudio = pAudio;
     m_bCGB = false;
     InitPointer(m_pRamChangedCallback);
+    InitPointer(m_pFileStore);
 }
 
 MemoryRule::~MemoryRule()
 {
+    SafeDelete(m_pFileStore);
+}
 
+
+void MemoryRule::RAMChanged()
+{
+	if (IsValidPointer(m_pRamChangedCallback)) {
+	    (*m_pRamChangedCallback)();
+	}
+
+	qDebug() << "RAM SAVED";
+	if (IsValidPointer(m_pFileStore)) {
+        std::ofstream out(m_pFileStore->c_str(), std::ofstream::out | std::ofstream::binary);
+        SaveRam(out);
+	}
 }
 
 void MemoryRule::SaveRam(std::ofstream&)
@@ -46,6 +64,11 @@ bool MemoryRule::LoadRam(std::ifstream&, s32)
 {
     Log("Load RAM not implemented");
     return false;
+}
+
+void MemoryRule::SetFileStore(std::string filestore)
+{
+    m_pFileStore = new std::string(filestore);
 }
 
 void MemoryRule::SetRamChangedCallback(RamChangedCallback callback)
