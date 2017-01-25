@@ -46,48 +46,60 @@ void PixelRenderer::setBufferSize(int width, int height)
 
 
 
-bool PixelRenderer::initializeTexture(QOpenGLTexture::TextureFormat format)
+bool PixelRenderer::initializeTexture(QOpenGLTexture::TextureFormat format, bool cleanup)
 {
         GLenum err = 0;
     m_texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
     if ((err = glGetError())) {
         qDebug() << "Error texture::new: " << err;
-        delete m_texture;
-        return false;
+	if (cleanup) {
+		delete m_texture;
+        	return false;
+	}
     }
     m_texture->setFormat(format);
     if ((err = glGetError())) {
         qDebug() << "Error texture::setFormat: " << err;
-        delete m_texture;
-        return false;
+	if (cleanup) {
+		delete m_texture;
+		return false;
+	}
     }
 
     m_texture->setSize(m_tex_width, m_tex_height);
     if ((err = glGetError())) {
         qDebug() << "Error texture::setSize: " << err;
-        delete m_texture;
-        return false;
+	if (cleanup) {
+		delete m_texture;
+		return false;
+	}
     }
 
     m_texture->allocateStorage();
     if ((err = glGetError())) {
         qDebug() << "Error texture::allocate: " << err;
-        delete m_texture;
-        return false;
+	if (cleanup) {
+		delete m_texture;
+		return false;
+	}
     }
 
     m_texture->setMinMagFilters(QOpenGLTexture::Nearest, QOpenGLTexture::Nearest);
     if ((err = glGetError())) {
         qDebug() << "Error texture::setMinMag: " << err;
-        delete m_texture;
-        return false;
+	if (cleanup) {
+		delete m_texture;
+		return false;
+	}
     }
 
     m_texture->setWrapMode(QOpenGLTexture::Repeat);
     if ((err = glGetError())) {
         qDebug() << "Error texture::setWrap: " << err;
-        delete m_texture;
-        return false;
+	if (cleanup) {
+		delete m_texture;
+		return false;
+	}
     }
 
     m_texture->bind(0);
@@ -97,8 +109,10 @@ bool PixelRenderer::initializeTexture(QOpenGLTexture::TextureFormat format)
 
     if ((err = glGetError())) {
         qDebug() << "Error texture::setData: " << err;
-        m_texture->release();
-        delete m_texture;
+	if (cleanup) {
+		m_texture->release();
+		delete m_texture;
+	}
         return false;
     }
     return true;
@@ -110,9 +124,10 @@ void PixelRenderer::initializeGL()
 	initializeOpenGLFunctions();
 	GLenum err = 0;
 
-    if (not initializeTexture(QOpenGLTexture::RGBAFormat)) {
+    if (not initializeTexture(QOpenGLTexture::RGBAFormat, true)) {
         qDebug() << "Initializing Texture Unit Failed.";
-        //initializeTexture(QOpenGLTexture::RGB5A1);
+	// ignore errors now
+        initializeTexture(QOpenGLTexture::RGB5A1, false);
     }
 
 	GLfloat w = m_image_width / (double)m_tex_width;
@@ -206,7 +221,7 @@ void PixelRenderer::paintGL()
 	//m_vertices->release();
 	m_program->release();
 
-    glFinish();
+    //glFinish();
 }
 
 

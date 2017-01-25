@@ -39,7 +39,7 @@ protected:
 	void resizeGL(int width, int height);
 	void setViewport();
 	void setBufferSize(int width, int height);
-    bool initializeTexture(QOpenGLTexture::TextureFormat format);
+    bool initializeTexture(QOpenGLTexture::TextureFormat format, bool cleanup);
 
 private:
 	EmulationRunner *emu;
