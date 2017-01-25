@@ -34,6 +34,8 @@ EmulationRunner::EmulationRunner(QObject *parent) : QThread(parent)
 void EmulationRunner::run()
 {
 	while (m_isRunning) {
+       // m_fps_time.start();
+        //for (int j = 0; j < 20; ++j) {
 		m_time.start();
 		for (int i = 0; i < 3; ++i) { // run 3 frames, at 60 fps, 50ms for 3.
 			if (!m_isPaused) {
@@ -49,20 +51,24 @@ void EmulationRunner::run()
 		int elapsed = m_time.elapsed();
 		int rest = 50 - elapsed;
 		if (rest > 0) msleep(rest);
+        //else msleep(1);
+        //}
+       // int elapsed = m_fps_time.elapsed();
+        //qDebug() << "FPS:" << 60.0 * 1000.0 / elapsed;
 	}
 }
 
 
 unsigned char *EmulationRunner::openPixels()
 {
-   	m_pixel_lock.lock();
+    m_pixel_lock.lock();
 	return m_pixels;
 }
 
 
 void EmulationRunner::closePixels()
 {
-	m_pixel_lock.unlock();
+    m_pixel_lock.unlock();
 }
 
 
@@ -73,15 +79,19 @@ bool EmulationRunner::loadRom(QString path)
 {
 	std::string cppstr = path.toStdString();
    	const char *local_path = cppstr.c_str(); 
+	m_lock.lock();
 	bool result = m_core.LoadROM(local_path, false);
+	m_lock.unlock();
 	if (result) {
-        qDebug() << "Loaded ROM:" << QString(local_path);
+		qDebug() << "Loaded ROM:" << QString(local_path);
 		QString save_path = defaultSavePath();
 		if (QFileInfo::exists(save_path)) {
+			m_lock.lock();
 			m_core.LoadRam(save_path.toStdString().c_str());
-            qDebug() << "Loaded RAM Save File:" << save_path;
+			    qDebug() << "Loaded RAM Save File:" << save_path;
+			m_lock.unlock();
 		} else {
-            qDebug() << "No Save File Found: " << save_path;
+		    qDebug() << "No Save File Found: " << save_path;
 		}
         if (m_core.GetCartridge()->HasBattery()) {
             if (!save_path.isNull()) {
@@ -98,13 +108,17 @@ bool EmulationRunner::loadRom(QString path)
 
 void EmulationRunner::keyPressed(Gameboy_Keys key)
 {
+	m_lock.lock();
 	m_core.KeyPressed(key);
+	m_lock.unlock();
 }
 
 
 void EmulationRunner::keyReleased(Gameboy_Keys key)
 {
+	m_lock.lock();
 	m_core.KeyReleased(key);
+	m_lock.unlock();
 }
 
 
@@ -127,6 +141,7 @@ void EmulationRunner::stop()
 
 void EmulationRunner::save()
 {
+	m_lock.lock();	
 	QString path = defaultSavePath();
    	if (!path.isNull()) {
 		qDebug() << "Saving Game to: " << path;
@@ -136,6 +151,7 @@ void EmulationRunner::save()
 	} else {
 		qDebug() << "No Game Loaded to Save";
 	}
+	m_lock.unlock();
 }
 
 

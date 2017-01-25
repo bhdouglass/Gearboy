@@ -38,11 +38,11 @@ void RingBuffer::stop()
 qint64 RingBuffer::readData(char *data, qint64 maxSize)
 {
 	qint64 buf_size = buf_len * sizeof(sample_t);
-    long chunks_writeable = maxSize / buf_size;
+    long chunks_ready = maxSize / buf_size;
     long chunks_readable = read.available() / buf_len;
-    long read_count = buf_len * qMin(chunks_writeable, chunks_readable);
+    long read_count = buf_len * qMin(chunks_ready, chunks_readable);
 
-	if (read_count) {
+    if (read_count > 0) {
 		read.acquire(read_count);
 		const char *buf = reinterpret_cast<char*>(&buffers[read_i]);
 		qint64 sample_size = qMin(sample_count - read_i, read_count);
@@ -62,7 +62,7 @@ qint64 RingBuffer::readData(char *data, qint64 maxSize)
 		write.release(read_count);
 		return read_count * sizeof(sample_t);
 	} else {
-        qint64 size = qMin(buf_size, maxSize);
+        qint64 size = maxSize;
         memset(data, 0, size);
         return size;
 	}
@@ -83,15 +83,19 @@ void RingBuffer::write_samples(const sample_t *in, long count)
 {
 	while (count) {
         long write_count = qMin(count, sample_count - write_i);
-        if (not write.tryAcquire(write_count)) {
-            write_count = qMin(buf_len, write_count);
-            write.acquire(write_count);
+        if (write_count) {
+            if (not write.tryAcquire(write_count)) {
+                write_count = qMin(buf_len, write_count);
+                if (not write.tryAcquire(write_count)) {
+                    return;
+                }
+            }
+            std::copy(in, &in[write_count], &buffers[write_i]);
+            read.release(write_count);
+            count -= write_count;
+            write_i += write_count;
+            in += write_count;
         }
-		std::copy(in, &in[write_count], &buffers[write_i]);
-		read.release(write_count);
-		count -= write_count;
-		write_i += write_count;
-		in += write_count;
         if (write_i >= sample_count) {
 			write_i = 0;
 		}

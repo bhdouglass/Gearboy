@@ -54,7 +54,7 @@ private:
 	bool m_isPaused;
 	bool m_isRunning;
 	QTime m_time;
-
+    QTime m_fps_time;
 
 	static QList<QThread *> threads;
 };
