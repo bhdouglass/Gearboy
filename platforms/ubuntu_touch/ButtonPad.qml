@@ -64,70 +64,51 @@ MultiPointTouchArea {
 	signal aReleased()
 	signal bReleased()
 
-	function release() {
-		aRelease();
-		bRelease();
-	}
-
-	function aRelease() {
-		if (aIsDown) {
-			aIsDown = false;
-			aReleased();
-		}
-	}
-
-	function bRelease() {
-		if (bIsDown) {
-			bIsDown = false;
-			bReleased();
-		}
-	}
-
-	function aPress() {
-		if (!aIsDown) {
-			aIsDown = true;
-			aPressed();
-		}
-	}
-
-	function bPress() {
-		if (!bIsDown) {
-			bIsDown = true;
-			bPressed();
-		}
-	}
-
-	onReleased: release();
-
-	onCanceled: release();
-
 	onTouchUpdated: {
-		var r = a.width / 2 
+		var r = a.radius;
 		var ax = a.x + r;
 		var bx = b.x + r;
 		var by = b.y + r;
 		var ay = a.y + r;
-		var dr = r;
-		var r2 = dr * dr;
+		var r2 = r * r;
 
-		for (var i = 0; i < touchPoints.length; ++i) {
+		var aDown = false;
+		var bDown = false;
+
+		for (var i in touchPoints) {
 			var pt = touchPoints[i];
-			var dax = ax - pt.x;
-			var day = ay - pt.y;
-			var dbx = bx - pt.x;
-			var dby = by - pt.y;
+			if (pt.pressed) {
+				var dax = ax - pt.x;
+				var day = ay - pt.y;
+				var dbx = bx - pt.x;
+				var dby = by - pt.y;
 
-			if (dax * dax + day * day < r2) {
-				aPress();
-			} else {
-				aRelease();
-			}
+				if (dax * dax + day * day <= r2) {
+					aDown = true;
+				} 
 
-			if (dbx * dbx + dby * dby < r2) {
-				bPress();
-			} else {
-				bRelease();
+				if (dbx * dbx + dby * dby <= r2) {
+					bDown = true;
+				}
 			}
 		}
-	}	
+
+		if (aDown != aIsDown) {
+			if (!aDown) {
+				aReleased();
+			} else if (!aIsDown) {
+				aPressed();
+			}
+			aIsDown = aDown;
+		}
+
+        if (bDown != bIsDown) {
+			if (!bDown) {
+				bReleased();
+			} else if (!bIsDown) {
+				bPressed();
+			}
+			bIsDown = bDown;
+		}
+	}
 }
