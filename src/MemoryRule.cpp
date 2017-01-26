@@ -47,8 +47,6 @@ void MemoryRule::RAMChanged()
 	if (IsValidPointer(m_pRamChangedCallback)) {
 	    (*m_pRamChangedCallback)();
 	}
-
-	qDebug() << "RAM SAVED";
 	if (IsValidPointer(m_pFileStore)) {
         std::ofstream out(m_pFileStore->c_str(), std::ofstream::out | std::ofstream::binary);
         SaveRam(out);

@@ -40,6 +40,8 @@ protected:
 	void setViewport();
 	void setBufferSize(int width, int height);
     bool initializeTexture(QOpenGLTexture::TextureFormat format, bool cleanup);
+    void readFrame();
+void paintScreen();
 
 private:
 	EmulationRunner *emu;
@@ -53,6 +55,8 @@ private:
 	int m_image_width, m_image_height;
 	int m_width, m_height;
 	int m_tex_width, m_tex_height;
+	GLint m_texCoordAttr, m_vertexAttr;
+    unsigned char buffer[256 * 256 * 2];
 };
 
 #endif 

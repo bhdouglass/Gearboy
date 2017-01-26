@@ -42,16 +42,17 @@ void EmulationRunner::run()
 				m_lock.lock();
 				m_core.RunToVBlank(m_buffer);
 				m_lock.unlock();
-				if (m_pixel_lock.tryLock(2)) {
+                int elapsed = m_time.elapsed();
+                int rest = ((i + 1) * 16 - elapsed);
+                if (m_pixel_lock.tryLock(rest)) {
 					readFrame(m_pixels, 256);
-					m_pixel_lock.unlock();
-				}
+                    m_pixel_lock.unlock();
+                }
 			}
 		}
 		int elapsed = m_time.elapsed();
 		int rest = 50 - elapsed;
 		if (rest > 0) msleep(rest);
-        //else msleep(1);
         //}
        // int elapsed = m_fps_time.elapsed();
         //qDebug() << "FPS:" << 60.0 * 1000.0 / elapsed;

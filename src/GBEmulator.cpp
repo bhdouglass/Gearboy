@@ -20,7 +20,7 @@ GBEmulator::GBEmulator() : m_renderer(0)
 	windowChanged(window());
 	m_emu = new EmulationRunner(this);
 	m_emu->start(QThread::TimeCriticalPriority);
-	startTimer(16);
+	//startTimer(16);
 	//connect(qApp, SIGNAL(lastWindowClosed()), this, SLOT(shutdown()));
 }
 
