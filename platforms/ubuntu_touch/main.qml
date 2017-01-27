@@ -122,11 +122,13 @@ MainView {
 
 	Label {
 		id: help
-		text: i18n.tr("Open ROM…")
-		fontSize: "x-large"
+		text: i18n.tr("OPEN ROM…")
+		//fontSize: "x-large"
+		font.pixelSize: units.gu(6) 
 		color: gb_blue 
 		anchors.centerIn: loaderArea
 		font.bold: true
+		font.italic: true
 	}
 
 	MouseArea {
@@ -160,7 +162,7 @@ MainView {
 
 		GBButton {
 			id: select
-			y: units.gu(28)
+			y: units.gu(25)
 
 			anchors.right: parent.right
 			anchors.rightMargin: units.gu(1)
@@ -321,5 +323,28 @@ MainView {
                 emu.selectReleased();
                 event.accepted = true;
             }
+    }
+
+    Rectangle {
+	width: units.gu(16)
+	height: units.gu(28)
+	color: Qt.darker(gb_white, 1.1)
+	rotation: 60
+	anchors {
+		verticalCenter: parent.bottom
+		horizontalCenter: parent.right
+	}
+    }
+
+    Icon {
+	name: "properties"
+	color: Qt.darker(gb_white, 1.3)
+	width: units.gu(5)
+	height: units.gu(5)
+	anchors {
+		bottom: parent.bottom
+		right: parent.right
+		margins: units.gu(1)
+	}
     }
 }
