@@ -9,6 +9,7 @@ MultiPointTouchArea {
 	property color gb_white_accent: "#EDEDED"
 	property color gb_purple: "#B01561"
 	property color gb_purple_accent: Qt.darker("#CF2463", 1.4)
+    property color gb_purple_pressed: gb_purple //Qt.lighter(gb_purple_accent, 1.5)
 	property real outline: units.gu(0.375)
 
 	
@@ -42,9 +43,9 @@ MultiPointTouchArea {
 		width: bsize
 		height: bsize
 		radius: bsize / 2
-		color: a.color 
-		border.color: a.border.color
-		border.width: a.border.width
+        color: gb_purple
+        border.color: gb_purple_accent
+        border.width: a.border.width
 	
 		Label {
 			id: blabel
@@ -63,6 +64,26 @@ MultiPointTouchArea {
 	signal bPressed()
 	signal aReleased()
 	signal bReleased()
+
+    onAPressed: {
+        a.border.color = gb_purple_pressed;
+        a.color = gb_purple_accent;
+    }
+
+    onAReleased: {
+        a.border.color = gb_purple_accent;
+        a.color = gb_purple;
+    }
+
+    onBPressed: {
+        b.border.color = gb_purple_pressed;
+        b.color = gb_purple_accent;
+    }
+
+    onBReleased: {
+        b.border.color = gb_purple_accent;
+        b.color = gb_purple;
+    }
 
 	onTouchUpdated: {
 		var r = a.radius;

@@ -11,7 +11,7 @@ Item {
 	property int dpad_line: units.gu(0.25)
 
 	property var direction : null
-	property int dead_zone : centreSize / 2
+    property int dead_zone : 0 //centreSize / 2
 
 	signal rightPressed();
 	signal leftPressed();
@@ -89,7 +89,6 @@ Item {
 			} else if (direction == "down") {
 				downPressed();
 			}
-			//Haptics.play();
 		}
 	}
 

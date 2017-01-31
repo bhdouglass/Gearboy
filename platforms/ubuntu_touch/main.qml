@@ -1,8 +1,11 @@
 import QtQuick 2.3
-import GearBoy 1.0
+import Qt.labs.settings 1.0
+
 import Ubuntu.Components 1.3
 import Ubuntu.Content 1.3
 import Ubuntu.Components.Popups 1.3
+
+import GearBoy 1.0
 
 MainView {
 	id: root
@@ -27,6 +30,20 @@ MainView {
 	property real thin_outline: units.gu(0.25)
 
 	property var activeTransfer: null
+
+
+    property bool muted: false
+    property bool haptics: true
+
+    onMutedChanged: {
+        emu.mute(muted);
+    }
+
+    function click() {
+        if (root.haptics) {
+            Haptics.play();
+        }
+    }
 
 	ContentPeerModel {
 		id: model
@@ -158,7 +175,12 @@ MainView {
 			wingSize: units.gu(6)
 			centerColor: gb_black_accent
 			innerColor: gb_white_accent
-		}
+
+            onLeftPressed: click();
+            onRightPressed: click();
+            onUpPressed: click();
+            onDownPressed: click();
+        }
 
 		GBButton {
 			id: select
@@ -179,6 +201,8 @@ MainView {
 			textColor: gb_gray 
 			fontSize: "medium"
 			bold: true
+
+            onPressed: click();
 		}
 	}
 
@@ -208,6 +232,8 @@ MainView {
 
 			border.color: select.border.color
 			color: select.color
+
+            onPressed: click();
 		}
 
 		ButtonPad {
@@ -215,6 +241,10 @@ MainView {
 			width: parent.width
 			height: units.gu(18)
 			id: btns
+
+            onAPressed: click();
+
+            onBPressed: click();
 		}
 	}
 
@@ -326,6 +356,7 @@ MainView {
     }
 
     Rectangle {
+	id: shaded_corner
 	width: units.gu(16)
 	height: units.gu(28)
 	color: Qt.darker(gb_white, 1.1)
@@ -336,6 +367,23 @@ MainView {
 	}
     }
 
+    Settings {
+	id: gameSettings
+    property bool vibrate: root.haptics
+    property bool sound: !root.muted
+    onSoundChanged: {
+        root.muted = !sound;
+    }
+    onVibrateChanged: {
+        root.haptics = vibrate;
+    }
+    }
+
+SettingsView {
+	id: settingsView
+	visible: false
+}
+
     Icon {
 	name: "properties"
 	color: Qt.darker(gb_white, 1.3)
@@ -345,6 +393,19 @@ MainView {
 		bottom: parent.bottom
 		right: parent.right
 		margins: units.gu(1)
+	}
+	MouseArea {
+		anchors.fill: parent
+		onClicked: {
+            //emu.pause();
+            console.log("pushing settings view");
+            settingsView.visible = !settingsView.visible;
+            if  (settingsView.visible) {
+                emu.pause();
+            } else {
+                emu.play();
+            }
+		}
 	}
     }
 }

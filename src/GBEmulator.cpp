@@ -137,3 +137,9 @@ bool GBEmulator::requestRom()
     qDebug() << "result" << result << "for path" << path;
     return result;
 }
+
+
+void GBEmulator::mute(bool m)
+{
+    m_emu->mute(m);
+}

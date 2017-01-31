@@ -6,6 +6,10 @@
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
+	app.setOrganizationName("gearboy");
+    app.setOrganizationDomain("rpattison.com");
+    app.setApplicationName("GearBoy");
+
 	qmlRegisterType<GBEmulator>("GearBoy", 1, 0, "GearBoyEmulator");
 
 	QQuickView view;
