@@ -35,7 +35,7 @@ public:
 	void play();
 	void pause();
 	void stop();
-
+    void mute(bool m);
 	void keyPressed(Gameboy_Keys key);
 	void keyReleased(Gameboy_Keys key);
 

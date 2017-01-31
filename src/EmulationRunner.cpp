@@ -60,6 +60,13 @@ void EmulationRunner::run()
 }
 
 
+void EmulationRunner::mute(bool m)
+{
+    m_lock.lock();
+    m_core.EnableSound(!m);
+    m_lock.unlock();
+}
+
 unsigned char *EmulationRunner::openPixels()
 {
     m_pixel_lock.lock();

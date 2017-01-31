@@ -17,11 +17,16 @@ Rectangle {
 		anchors.centerIn: parent
 	}
 
+    onPressed: {
+
+    }
+
+    onReleased: {
+
+    }
+
 	TouchSensor {
-		onPushed: {
-			root.pressed();	
-			Haptics.play();
-		}
+        onPushed: root.pressed();
 		onUnpushed: root.released();
 	}
 }
