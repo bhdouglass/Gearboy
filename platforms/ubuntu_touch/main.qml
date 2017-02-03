@@ -149,8 +149,8 @@ MainView {
 
     MouseArea {
         id: loaderArea
-        width: emu.rect.width
-        height: emu.rect.height
+        width: emu.rect.width * 0.8
+        height: emu.rect.height * 0.9 // keep some padding away from buttons
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
         onClicked: requestROM()
@@ -166,9 +166,9 @@ MainView {
 
         DirectionalPad {
             id: dpad
-            x: units.gu(1)
+            x: 0
             y: 0
-            width: units.gu(16)
+            width: parent.width
             height: width
             color: gb_black
             wingSize: units.gu(5.5)
@@ -229,8 +229,8 @@ MainView {
             radius: select.radius
             border.width: select.border.width
 
-            border.color: select.border.color
-            color: select.color
+            color: gb_gray_accent
+            border.color: gb_gray_dark
 
             onPressed: click()
         }
@@ -360,8 +360,8 @@ MainView {
         height: units.gu(28)
         color: Qt.darker(gb_white, 1.05)
         rotation: 50
-        border.width: units.gu(0.25)
-        border.color: Qt.lighter(gb_white, 1.05)
+        //border.width: units.gu(0.25)
+        //border.color: Qt.lighter(gb_white, 1.02)
         anchors {
             verticalCenter: parent.bottom
             horizontalCenter: parent.right

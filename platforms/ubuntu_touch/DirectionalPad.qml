@@ -6,12 +6,16 @@ Item {
     property color innerColor: "white"
     property color color: "black"
     property color centerColor: "black"
-    property int wingSize: width / 3
-    property int centreSize: Math.min(width, height) - 2 * wingSize
+
+    property int realWidth: width - units.gu(2)
+    property int wingSize: realWidth / 3
+    property int centreSize: realWidth - 2 * wingSize
     property int dpad_line: units.gu(0.25)
 
     property var direction: null
-    property int dead_zone: 0
+    property real dead_zone: units.gu(0.2)
+
+    property int displacement: units.gu(0.33)
 
     signal rightPressed
     signal leftPressed
@@ -25,8 +29,8 @@ Item {
 
     Rectangle {
         id: xAxis
-        x: 0
-        y: wingSize
+        x: units.gu(1)
+        y: wingSize + units.gu(1)
         width: wingSize * 2 + centreSize
         height: centreSize
         radius: dpad_line * 2
@@ -38,8 +42,8 @@ Item {
     Rectangle {
         id: yAxis
 
-        x: wingSize
-        y: 0
+        x: wingSize + units.gu(1)
+        y: units.gu(1)
         width: centreSize
         height: wingSize * 2 + centreSize
         radius: dpad_line * 2
@@ -51,7 +55,7 @@ Item {
 
     Rectangle {
         id: mid
-        x: wingSize - (Math.sqrt(2) - 1) * centreSize / 2
+        x: wingSize - (Math.sqrt(2) - 1) * centreSize / 2 + units.gu(1)
         y: x
         width: centreSize * Math.sqrt(2)
         height: width
@@ -59,6 +63,50 @@ Item {
         border.width: dpad_line * 6
         border.color: root.color
         color: centerColor
+    }
+
+    function vshift(v) {
+        xAxis.y += v;
+        yAxis.y += v;
+        mid.y += v;
+    }
+
+    function hshift(h) {
+        xAxis.x += h;
+        yAxis.x += h;
+        mid.x += h;
+    }
+
+    onLeftPressed: {
+        hshift(-displacement);
+    }
+
+    onLeftReleased: {
+        hshift(displacement);
+    }
+
+    onRightPressed: {
+        hshift(displacement);
+    }
+
+    onRightReleased: {
+        hshift(-displacement);
+    }
+
+    onDownPressed: {
+        vshift(displacement);
+    }
+
+    onDownReleased: {
+        vshift(-displacement);
+    }
+
+    onUpPressed: {
+        vshift(-displacement);
+    }
+
+    onUpReleased: {
+        vshift(displacement);
     }
 
     function release() {
@@ -95,13 +143,8 @@ Item {
     MultiPointTouchArea {
         anchors.fill: parent
 
-        onReleased: {
-            release()
-        }
-
-        onCanceled: {
-            release()
-        }
+        onReleased: release()
+        onCanceled: release()
 
         onTouchUpdated: {
             for (var i = 0; i < touchPoints.length; ++i) {

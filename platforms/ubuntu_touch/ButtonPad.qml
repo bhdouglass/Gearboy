@@ -85,7 +85,7 @@ MultiPointTouchArea {
     }
 
 	onTouchUpdated: {
-		var r = a.radius;
+        var r = a.radius + units.gu(1); // some extra space for edge presses
 		var ax = a.x + r;
 		var bx = b.x + r;
 		var by = b.y + r;

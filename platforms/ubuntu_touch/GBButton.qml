@@ -9,6 +9,8 @@ Rectangle {
     property alias fontSize: label.fontSize
     property alias bold: label.font.bold
 
+    property real colorChange: 1.05
+
     signal pressed
     signal released
 
@@ -18,11 +20,13 @@ Rectangle {
     }
 
     onPressed: {
-
+        root.color = Qt.darker(root.color, colorChange);
+        root.border.color = Qt.lighter(root.border.color, colorChange);
     }
 
     onReleased: {
-
+        root.color = Qt.lighter(root.color, colorChange);
+        root.border.color = Qt.darker(root.border.color, colorChange);
     }
 
     TouchSensor {
