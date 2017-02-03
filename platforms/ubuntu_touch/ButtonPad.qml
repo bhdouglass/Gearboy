@@ -3,20 +3,19 @@ import Ubuntu.Components 1.3
 
 MultiPointTouchArea {
 	id: root
-	property int unit: width / 19
-	property int bsize: unit * 9
+	property int bsize: width / 2
 
 	property color gb_white_accent: "#EDEDED"
 	property color gb_purple: "#B01561"
 	property color gb_purple_accent: Qt.darker("#CF2463", 1.4)
-    property color gb_purple_pressed: gb_purple //Qt.lighter(gb_purple_accent, 1.5)
+	property color gb_purple_pressed: gb_purple //Qt.lighter(gb_purple_accent, 1.5)
 	property real outline: units.gu(0.375)
 
 	
 	Rectangle {
 		id: a
 
-		x: bsize
+		x: bsize - units.gu(1)
 		y: 0
 		width: bsize
 		height: bsize 
@@ -39,7 +38,7 @@ MultiPointTouchArea {
 	Rectangle {
 		id: b
 		x: 0
-		y: bsize / 2
+        y: bsize / 2 + units.gu(2)
 		width: bsize
 		height: bsize
 		radius: bsize / 2

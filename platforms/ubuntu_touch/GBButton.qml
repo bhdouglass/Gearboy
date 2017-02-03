@@ -2,20 +2,20 @@ import QtQuick 2.3
 import Ubuntu.Components 1.3
 
 Rectangle {
-	id: root
+    id: root
 
-	property alias text: label.text
-	property alias textColor: label.color
-	property alias fontSize: label.fontSize
-	property alias bold: label.font.bold
+    property alias text: label.text
+    property alias textColor: label.color
+    property alias fontSize: label.fontSize
+    property alias bold: label.font.bold
 
-	signal pressed()
-	signal released()
+    signal pressed
+    signal released
 
-	Label {
-		id: label
-		anchors.centerIn: parent
-	}
+    Label {
+        id: label
+        anchors.centerIn: parent
+    }
 
     onPressed: {
 
@@ -25,8 +25,8 @@ Rectangle {
 
     }
 
-	TouchSensor {
-        onPushed: root.pressed();
-		onUnpushed: root.released();
-	}
+    TouchSensor {
+        onPushed: root.pressed()
+        onUnpushed: root.released()
+    }
 }
