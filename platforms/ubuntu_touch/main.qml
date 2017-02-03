@@ -142,9 +142,10 @@ MainView {
         text: i18n.tr("OPEN ROM…")
         fontSize: "x-large"
         color: gb_blue
-        anchors.centerIn: loaderArea
         font.bold: true
         font.italic: true
+        y: emu.rect.height / 2 - height / 2
+        anchors.horizontalCenter: parent.horizontalCenter
     }
 
     MouseArea {
@@ -152,7 +153,7 @@ MainView {
         width: emu.rect.width * 0.8
         height: emu.rect.height * 0.9 // keep some padding away from buttons
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top
+        anchors.top: parent.top 
         onClicked: requestROM()
     }
 
@@ -360,8 +361,8 @@ MainView {
         height: units.gu(28)
         color: Qt.darker(gb_white, 1.05)
         rotation: 50
-        //border.width: units.gu(0.25)
-        //border.color: Qt.lighter(gb_white, 1.02)
+        border.width: units.gu(0.25)
+        border.color: Qt.darker(gb_white, 1.07)
         anchors {
             verticalCenter: parent.bottom
             horizontalCenter: parent.right
