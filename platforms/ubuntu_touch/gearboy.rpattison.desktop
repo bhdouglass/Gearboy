@@ -7,4 +7,4 @@ Type=Application
 Name=Gearboy
 Comment=A Game Boy / Game Boy Color Emulator for Ubuntu Touch
 X-Ubuntu-Touch=true
-X-Ubuntu-Splash-Color=#CDCDCD
+X-Ubuntu-Splash-Color=#E1E1E1

@@ -14,19 +14,19 @@ MainView {
 
     applicationName: "gearboy.rpattison"
 
-    property color gb_white: Qt.lighter("#CDCDCD", 1.1)
-    property color gb_white_accent: "#EDEDED"
-    property color gb_gray: Qt.lighter("#A3A3A3", 1.05)
-    property color gb_gray_dark: Qt.lighter("#999999", 1.3)
-    property color gb_gray_accent: "#ffffff"
     property color gb_black: "#2A2A2A"
-    property color gb_black_accent: Qt.lighter("#343434", 1.15)
-    property color gb_purple: "#B01561"
-    property color gb_purple_accent: Qt.darker("#CF2463", 1.4)
+    property color gb_black_accent: "#3B3B3B"
+
+    property color gb_gray: "#ABABAB"
+    property color gb_gray_accent: "#D2D2D2"
+    property color gb_light_gray: "#D6D6D6"
+    property color gb_white: "#E1E1E1"
+    property color gb_white_accent: "#F7F7F7"
 
     property color gb_blue: "#45457e"
+    property color gb_purple: "#B01561"
+    property color gb_purple_accent: "#931946"
 
-    property real outline: units.gu(0.375)
     property real thin_outline: units.gu(0.25)
 
     property var activeTransfer: null
@@ -70,7 +70,7 @@ MainView {
         x: emu.rect.x - border.width
         y: parent.height - (emu.rect.y - border.width) - height // OpenGL coordinates to screen
         color: "transparent"
-        border.color: Qt.darker(gb_white, 1.07)
+        border.color: gb_gray_accent
         border.width: thin_outline
         radius: units.gu(0.5)
     }
@@ -203,15 +203,15 @@ MainView {
 
             anchors.right: parent.right
 
-            buttonWidth: units.gu(11) - 2 * thin_outline
-            buttonHeight: units.gu(3) * 1.2 - 2 * thin_outline
+            buttonWidth: units.gu(10.5)
+            buttonHeight: units.gu(3)
             touchPadding: units.gu(1)
 
             radius: height / 2
             border.width: thin_outline * 2
 
-            color: gb_gray_accent
-            border.color: Qt.darker(gb_white, 1.07)
+            color: gb_white_accent
+            border.color: gb_gray_accent
 
             text: i18n.tr("SELECT")
             textColor: gb_gray
@@ -245,19 +245,17 @@ MainView {
             anchors.left: parent.left
             anchors.leftMargin: units.gu(1)
 
-            buttonWidth: units.gu(11) - 2 * thin_outline
-            buttonHeight: units.gu(3) * 1.2 - 2 * thin_outline
+            buttonWidth: units.gu(10.5)
+            buttonHeight: units.gu(3)
             touchPadding: units.gu(1)
 
             radius: select.radius
             border.width: select.border.width
 
-            color: gb_gray_accent
-            border.color: Qt.darker(gb_white, 1.07)
+            color: gb_white_accent
+            border.color: gb_gray_accent
 
-            onPushed: {
-                click();
-            }
+            onPushed: click()
         }
 
         ButtonPad {
@@ -387,10 +385,10 @@ MainView {
         id: shaded_corner
         width: units.gu(16)
         height: units.gu(28)
-        color: Qt.darker(gb_white, 1.05)
+        color: gb_light_gray
         rotation: 50
-        border.width: units.gu(0.25)
-        border.color: Qt.darker(gb_white, 1.07)
+        border.width: thin_outline
+        border.color: gb_gray_accent
 
         anchors {
             verticalCenter: parent.bottom
@@ -417,7 +415,7 @@ MainView {
 
     Icon {
         name: "properties"
-        color: Qt.darker(gb_white, 1.3)
+        color: gb_gray
         width: units.gu(5)
         height: units.gu(5)
         anchors {
