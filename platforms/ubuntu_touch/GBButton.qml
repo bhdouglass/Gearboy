@@ -1,36 +1,46 @@
 import QtQuick 2.3
 import Ubuntu.Components 1.3
 
-Rectangle {
-    id: root
-
+MouseArea {
+    id: button
     property alias text: label.text
     property alias textColor: label.color
     property alias fontSize: label.fontSize
-    property alias bold: label.font.bold
+    property alias font: label.font
 
     property real colorChange: 1.05
 
-    signal pressed
-    signal released
+    property alias buttonWidth: rect.width
+    property alias buttonHeight: rect.height
+    property alias border: rect.border
+    property alias radius: rect.radius
+    property alias color: rect.color
+    property int touchPadding: 0
 
-    Label {
-        id: label
+    width: buttonWidth + 2 * touchPadding
+    height: buttonHeight + 2 * touchPadding
+    hoverEnabled: true
+
+    signal pushed
+    signal unpushed
+
+    Rectangle {
+        id: rect
         anchors.centerIn: parent
     }
 
+    Label {
+        id: label
+        anchors.centerIn: button
+    }
+
     onPressed: {
-        root.color = Qt.darker(root.color, colorChange);
-        root.border.color = Qt.lighter(root.border.color, colorChange);
+        color = Qt.darker(color, colorChange)
+        pushed();
     }
 
     onReleased: {
-        root.color = Qt.lighter(root.color, colorChange);
-        root.border.color = Qt.darker(root.border.color, colorChange);
-    }
-
-    TouchSensor {
-        onPushed: root.pressed()
-        onUnpushed: root.released()
+        color = Qt.lighter(color, colorChange)
+        unpushed();
     }
 }

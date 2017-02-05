@@ -11,12 +11,14 @@ MultiPointTouchArea {
 	property color gb_purple_pressed: gb_purple //Qt.lighter(gb_purple_accent, 1.5)
 	property real outline: units.gu(0.375)
 
+    property alias font: alabel.font
+
 	
 	Rectangle {
 		id: a
 
 		x: bsize - units.gu(1)
-		y: 0
+        y: units.gu(0.5)
 		width: bsize
 		height: bsize 
 		radius: bsize / 2
@@ -31,14 +33,13 @@ MultiPointTouchArea {
 			color: gb_white_accent
 			text: "A"
 			fontSize: "x-large"
-			font.bold: true
 		}
 	}
 
 	Rectangle {
 		id: b
 		x: 0
-        y: bsize / 2 + units.gu(2)
+        y: bsize / 2 + units.gu(3.5)
 		width: bsize
 		height: bsize
 		radius: bsize / 2
@@ -52,7 +53,7 @@ MultiPointTouchArea {
 			text: "B"
 			color: gb_white_accent
 			fontSize: "x-large"
-			font.bold: true
+            font: alabel.font
 		}
 	}
 

@@ -4,7 +4,6 @@
         <file>DirectionalPad.qml</file>
         <file>GBButton.qml</file>
         <file>ButtonPad.qml</file>
-        <file>TouchSensor.qml</file>
         <file>SettingsView.qml</file>
     </qresource>
 </RCC>

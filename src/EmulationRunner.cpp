@@ -8,7 +8,7 @@
 
 #include "EmulationRunner.h"
 
-QList<QThread *> EmulationRunner::threads;
+QList<EmulationRunner *> EmulationRunner::threads;
 
 EmulationRunner::EmulationRunner(QObject *parent) : QThread(parent)
 {
@@ -34,8 +34,6 @@ EmulationRunner::EmulationRunner(QObject *parent) : QThread(parent)
 void EmulationRunner::run()
 {
 	while (m_isRunning) {
-       // m_fps_time.start();
-        //for (int j = 0; j < 20; ++j) {
 		m_time.start();
 		for (int i = 0; i < 3; ++i) { // run 3 frames, at 60 fps, 50ms for 3.
 			if (!m_isPaused) {
@@ -53,9 +51,6 @@ void EmulationRunner::run()
 		int elapsed = m_time.elapsed();
 		int rest = 50 - elapsed;
 		if (rest > 0) msleep(rest);
-        //}
-       // int elapsed = m_fps_time.elapsed();
-        //qDebug() << "FPS:" << 60.0 * 1000.0 / elapsed;
 	}
 }
 
@@ -116,17 +111,13 @@ bool EmulationRunner::loadRom(QString path)
 
 void EmulationRunner::keyPressed(Gameboy_Keys key)
 {
-	m_lock.lock();
 	m_core.KeyPressed(key);
-	m_lock.unlock();
 }
 
 
 void EmulationRunner::keyReleased(Gameboy_Keys key)
 {
-	m_lock.lock();
-	m_core.KeyReleased(key);
-	m_lock.unlock();
+    m_core.KeyReleased(key);
 }
 
 

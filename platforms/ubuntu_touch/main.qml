@@ -16,11 +16,11 @@ MainView {
 
     property color gb_white: Qt.lighter("#CDCDCD", 1.1)
     property color gb_white_accent: "#EDEDED"
-    property color gb_gray: Qt.lighter("#A3A3A3", 1.1)
+    property color gb_gray: Qt.lighter("#A3A3A3", 1.05)
     property color gb_gray_dark: Qt.lighter("#999999", 1.3)
-    property color gb_gray_accent: Qt.lighter("#999999", 1.7)
+    property color gb_gray_accent: "#ffffff"
     property color gb_black: "#2A2A2A"
-    property color gb_black_accent: "#343434"
+    property color gb_black_accent: Qt.lighter("#343434", 1.15)
     property color gb_purple: "#B01561"
     property color gb_purple_accent: Qt.darker("#CF2463", 1.4)
 
@@ -33,6 +33,8 @@ MainView {
 
     property bool muted: false
     property bool haptics: true
+
+    property bool bold: true
 
     onMutedChanged: {
         emu.mute(muted)
@@ -60,6 +62,17 @@ MainView {
     GearBoyEmulator {
         id: emu
         color: gb_white
+    }
+
+    Rectangle {
+        width: emu.rect.width + 2 * border.width
+        height: emu.rect.height + 2 * border.width
+        x: emu.rect.x - border.width
+        y: parent.height - (emu.rect.y - border.width) - height // OpenGL coordinates to screen
+        color: "transparent"
+        border.color: Qt.darker(gb_white, 1.07)
+        border.width: thin_outline
+        radius: units.gu(0.5)
     }
 
     function importItems(items) {
@@ -93,8 +106,8 @@ MainView {
         if (peer != null) {
             root.activeTransfer = peer.request()
         } else if (model.peers.length > 0) {
-            picker.visible
-                    = true /* didn't find ubuntu's file manager, maybe they have another app */
+            picker.visible = true
+            /* didn't find ubuntu's file manager, maybe they have another app */
         } else {
             if (emu.requestRom()) {
                 help.visible = false
@@ -113,11 +126,11 @@ MainView {
         btns.bPressed.connect(emu.bPressed)
         btns.bReleased.connect(emu.bReleased)
 
-        select.pressed.connect(emu.selectPressed)
-        select.released.connect(emu.selectReleased)
+        select.pushed.connect(emu.selectPressed)
+        select.unpushed.connect(emu.selectReleased)
 
-        start.pressed.connect(emu.startPressed)
-        start.released.connect(emu.startReleased)
+        start.pushed.connect(emu.startPressed)
+        start.unpushed.connect(emu.startReleased)
 
         dpad.upPressed.connect(emu.upPressed)
         dpad.upReleased.connect(emu.upReleased)
@@ -139,13 +152,15 @@ MainView {
 
     Label {
         id: help
+        y: emu.rect.height / 2 - height / 2
+        anchors.horizontalCenter: parent.horizontalCenter
         text: i18n.tr("OPEN ROM…")
         fontSize: "x-large"
         color: gb_blue
-        font.bold: true
-        font.italic: true
-        y: emu.rect.height / 2 - height / 2
-        anchors.horizontalCenter: parent.horizontalCenter
+        font {
+            bold: true
+            italic: true
+        }
     }
 
     MouseArea {
@@ -153,7 +168,7 @@ MainView {
         width: emu.rect.width * 0.8
         height: emu.rect.height * 0.9 // keep some padding away from buttons
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: parent.top 
+        anchors.top: parent.top
         onClicked: requestROM()
     }
 
@@ -184,25 +199,29 @@ MainView {
 
         GBButton {
             id: select
-            y: units.gu(25)
+            y: units.gu(22)
 
             anchors.right: parent.right
-            anchors.rightMargin: units.gu(1)
 
-            width: units.gu(11)
-            height: units.gu(3)
-            radius: height / 3
-            border.width: thin_outline
+            buttonWidth: units.gu(11) - 2 * thin_outline
+            buttonHeight: units.gu(3) * 1.2 - 2 * thin_outline
+            touchPadding: units.gu(1)
+
+            radius: height / 2
+            border.width: thin_outline * 2
 
             color: gb_gray_accent
-            border.color: gb_gray_dark
+            border.color: Qt.darker(gb_white, 1.07)
 
             text: i18n.tr("SELECT")
             textColor: gb_gray
-            fontSize: "medium"
-            bold: true
+            fontSize: "x-small"
 
-            onPressed: click()
+            font {
+                bold: true
+            }
+
+            onPushed: click()
         }
     }
 
@@ -219,21 +238,26 @@ MainView {
 
             text: i18n.tr("START")
             textColor: select.textColor
+
+            font: select.font
             fontSize: select.fontSize
-            bold: select.bold
 
             anchors.left: parent.left
             anchors.leftMargin: units.gu(1)
 
-            width: select.width
-            height: select.height
+            buttonWidth: units.gu(11) - 2 * thin_outline
+            buttonHeight: units.gu(3) * 1.2 - 2 * thin_outline
+            touchPadding: units.gu(1)
+
             radius: select.radius
             border.width: select.border.width
 
             color: gb_gray_accent
-            border.color: gb_gray_dark
+            border.color: Qt.darker(gb_white, 1.07)
 
-            onPressed: click()
+            onPushed: {
+                click();
+            }
         }
 
         ButtonPad {
@@ -244,6 +268,10 @@ MainView {
 
             onAPressed: click()
             onBPressed: click()
+
+            font {
+                bold: root.bold
+            }
         }
     }
 
@@ -363,6 +391,7 @@ MainView {
         rotation: 50
         border.width: units.gu(0.25)
         border.color: Qt.darker(gb_white, 1.07)
+
         anchors {
             verticalCenter: parent.bottom
             horizontalCenter: parent.right

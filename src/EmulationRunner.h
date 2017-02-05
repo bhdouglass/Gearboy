@@ -20,7 +20,8 @@ public:
 	~EmulationRunner();
 
 	static void waitAll() {
-		foreach (QThread *t, threads) {
+        foreach (EmulationRunner *t, threads) {
+            t->stop();
 			t->wait();
 		}
 	}
@@ -56,7 +57,7 @@ private:
 	QTime m_time;
     QTime m_fps_time;
 
-	static QList<QThread *> threads;
+    static QList<EmulationRunner *> threads;
 };
 
 #endif 
