@@ -18,8 +18,10 @@ MainView {
     property color gb_black_accent: "#3B3B3B"
 
     property color gb_gray: "#ABABAB"
-    property color gb_gray_accent: "#D2D2D2"
+    property color gb_gray_accent: "#D0D0D7"
+
     property color gb_light_gray: "#D6D6D6"
+
     property color gb_white: "#E1E1E1"
     property color gb_white_accent: "#F7F7F7"
 
@@ -208,14 +210,14 @@ MainView {
             touchPadding: units.gu(1)
 
             radius: height / 2
-            border.width: thin_outline * 2
+            border.width: thin_outline
 
             color: gb_white_accent
             border.color: gb_gray_accent
 
             text: i18n.tr("SELECT")
             textColor: gb_gray
-            fontSize: "x-small"
+            fontSize: "small"
 
             font {
                 bold: true
@@ -414,7 +416,7 @@ MainView {
     }
 
     Icon {
-        name: "properties"
+        name: gameSettings.sound ? "speaker" : "speaker-mute"
         color: gb_gray
         width: units.gu(5)
         height: units.gu(5)
@@ -427,12 +429,7 @@ MainView {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                settingsView.visible = !settingsView.visible
-                if (settingsView.visible) {
-                    emu.pause()
-                } else {
-                    emu.play()
-                }
+                gameSettings.sound = !gameSettings.sound;
             }
         }
     }

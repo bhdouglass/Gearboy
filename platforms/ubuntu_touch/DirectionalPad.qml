@@ -146,6 +146,8 @@ Item {
         onReleased: release()
         onCanceled: release()
 
+        maximumTouchPoints: 1
+
         onTouchUpdated: {
             for (var i = 0; i < touchPoints.length; ++i) {
                 var p = touchPoints[i]
