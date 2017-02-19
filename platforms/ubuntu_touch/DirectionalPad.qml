@@ -6,6 +6,7 @@ Item {
     property color innerColor: "white"
     property color color: "black"
     property color centerColor: "black"
+    property color backColor: "black"
 
     property int realWidth: width - units.gu(2)
     property int wingSize: realWidth / 3
@@ -28,9 +29,27 @@ Item {
     signal downReleased
 
     Rectangle {
+        anchors.centerIn: parent
+        width: xAxis.width + 2 * displacement
+        height: centreSize + 2 * displacement
+        color: backColor
+        radius: xAxis.radius
+    }
+
+    Rectangle {
+        anchors.centerIn: parent
+        width: centreSize + 2 * displacement
+        height: yAxis.height + 2 * displacement
+        color: backColor
+        radius: yAxis.radius
+    }
+
+    Rectangle {
         id: xAxis
+
         x: units.gu(1)
         y: wingSize + units.gu(1)
+
         width: wingSize * 2 + centreSize
         height: centreSize
         radius: dpad_line * 2
@@ -44,6 +63,7 @@ Item {
 
         x: wingSize + units.gu(1)
         y: units.gu(1)
+
         width: centreSize
         height: wingSize * 2 + centreSize
         radius: dpad_line * 2
@@ -55,8 +75,10 @@ Item {
 
     Rectangle {
         id: mid
+
         x: wingSize - (Math.sqrt(2) - 1) * centreSize / 2 + units.gu(1)
-        y: x
+        y: wingSize - (Math.sqrt(2) - 1) * centreSize / 2 + units.gu(1)
+
         width: centreSize * Math.sqrt(2)
         height: width
         radius: centreSize / 2 * Math.sqrt(2)
@@ -66,47 +88,47 @@ Item {
     }
 
     function vshift(v) {
-        xAxis.y += v;
-        yAxis.y += v;
-        mid.y += v;
+        xAxis.y += v
+        yAxis.y += v
+        mid.y += v
     }
 
     function hshift(h) {
-        xAxis.x += h;
-        yAxis.x += h;
-        mid.x += h;
+        xAxis.x += h
+        yAxis.x += h
+        mid.x += h
     }
 
     onLeftPressed: {
-        hshift(-displacement);
+        hshift(-displacement)
     }
 
     onLeftReleased: {
-        hshift(displacement);
+        hshift(displacement)
     }
 
     onRightPressed: {
-        hshift(displacement);
+        hshift(displacement)
     }
 
     onRightReleased: {
-        hshift(-displacement);
+        hshift(-displacement)
     }
 
     onDownPressed: {
-        vshift(displacement);
+        vshift(displacement)
     }
 
     onDownReleased: {
-        vshift(-displacement);
+        vshift(-displacement)
     }
 
     onUpPressed: {
-        vshift(-displacement);
+        vshift(-displacement)
     }
 
     onUpReleased: {
-        vshift(displacement);
+        vshift(displacement)
     }
 
     function release() {

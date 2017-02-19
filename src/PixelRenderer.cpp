@@ -237,8 +237,10 @@ void PixelRenderer::resizeGL(int width, int height)
 	// centred horizontally
 	int x = x_remaining / 2;
 	// anchored to the top with a "small" margin
-	int y = y_remaining - qMin(x_remaining, y_remaining) / 8; 
-	m_viewRect = QRect(x, y, w, h); 
+    int small_margin = qMin(x_remaining, y_remaining) / 2;
+    if (small_margin > 4) small_margin /= 4;
+    int y = y_remaining - small_margin;
+    m_viewRect = QRect(x, y, w, h);
 }
 
 

@@ -8,14 +8,17 @@ MouseArea {
     property alias fontSize: label.fontSize
     property alias font: label.font
 
-    property real colorChange: 1.05
-
     property alias buttonWidth: rect.width
     property alias buttonHeight: rect.height
-    property alias border: rect.border
     property alias radius: rect.radius
-    property alias color: rect.color
     property int touchPadding: 0
+    property real outline: 2 * units.gu(0.33)
+
+    property color fillColor: Qt.darker("#ABABAB", 1.0)
+    property color pressedColor: Qt.darker(fillColor, 1.15)
+
+    property color borderColor: Qt.darker("#E1E1E1", 1.075)
+    property color pressedBorderColor: Qt.darker(borderColor, 1)
 
     width: buttonWidth + 2 * touchPadding
     height: buttonHeight + 2 * touchPadding
@@ -25,8 +28,22 @@ MouseArea {
     signal unpushed
 
     Rectangle {
-        id: rect
+        id: inset
+        width: buttonWidth + 2.5 * outline
+        height: buttonHeight + 2.5 * outline
+        radius: rect.radius
         anchors.centerIn: parent
+        border.color: borderColor
+        color: "#3B3B3B"
+        border.width: outline
+
+        Rectangle {
+            id: rect
+            anchors.centerIn: parent
+            border.width: units.gu(0.2)
+            border.color: Qt.darker(fillColor, 1.15)
+            color: fillColor
+        }
     }
 
     Label {
@@ -35,12 +52,12 @@ MouseArea {
     }
 
     onPressed: {
-        color = Qt.darker(color, colorChange)
-        pushed();
+        rect.color = pressedColor
+        pushed()
     }
 
     onReleased: {
-        color = Qt.lighter(color, colorChange)
-        unpushed();
+        rect.color = fillColor
+        unpushed()
     }
 }

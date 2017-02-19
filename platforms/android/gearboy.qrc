@@ -3,7 +3,7 @@
         <file>main.qml</file>
         <file>DirectionalPad.qml</file>
         <file>GBButton.qml</file>
-        <file>TouchSensor.qml</file>
+        <file>ButtonPad.qml</file>
 	<file>gearboy.png</file>
     </qresource>
 </RCC>

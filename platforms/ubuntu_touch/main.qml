@@ -17,8 +17,8 @@ MainView {
     property color gb_black: "#2A2A2A"
     property color gb_black_accent: "#3B3B3B"
 
-    property color gb_gray: "#ABABAB"
-    property color gb_gray_accent: "#D0D0D7"
+    property color gb_gray: Qt.darker("#ABABAB", 1.1)
+    property color gb_gray_accent: "#D0D0D0"
 
     property color gb_light_gray: "#D6D6D6"
 
@@ -64,17 +64,6 @@ MainView {
     GearBoyEmulator {
         id: emu
         color: gb_white
-    }
-
-    Rectangle {
-        width: emu.rect.width + 2 * border.width
-        height: emu.rect.height + 2 * border.width
-        x: emu.rect.x - border.width
-        y: parent.height - (emu.rect.y - border.width) - height // OpenGL coordinates to screen
-        color: "transparent"
-        border.color: gb_gray_accent
-        border.width: thin_outline
-        radius: units.gu(0.5)
     }
 
     function importItems(items) {
@@ -204,19 +193,16 @@ MainView {
             y: units.gu(22)
 
             anchors.right: parent.right
+            anchors.rightMargin: units.gu(2)
 
-            buttonWidth: units.gu(10.5)
-            buttonHeight: units.gu(3)
+            buttonWidth: units.gu(9.5)
+            buttonHeight: units.gu(2.5)
             touchPadding: units.gu(1)
 
             radius: height / 2
-            border.width: thin_outline
-
-            color: gb_white_accent
-            border.color: gb_gray_accent
 
             text: i18n.tr("SELECT")
-            textColor: gb_gray
+            textColor: gb_white_accent
             fontSize: "small"
 
             font {
@@ -245,23 +231,20 @@ MainView {
             fontSize: select.fontSize
 
             anchors.left: parent.left
-            anchors.leftMargin: units.gu(1)
+            anchors.leftMargin: units.gu(2)
 
-            buttonWidth: units.gu(10.5)
-            buttonHeight: units.gu(3)
+            buttonWidth: units.gu(9.5)
+            buttonHeight: units.gu(2.5)
             touchPadding: units.gu(1)
 
             radius: select.radius
-            border.width: select.border.width
-
-            color: gb_white_accent
-            border.color: gb_gray_accent
 
             onPushed: click()
         }
 
         ButtonPad {
             y: 0
+            x: units.gu(0.5)
             width: parent.width
             height: units.gu(18)
             id: btns
@@ -294,7 +277,6 @@ MainView {
             }
 
             onCancelPressed: {
-                console.log("load cancelled")
                 picker.visible = false
                 emu.play()
             }
@@ -309,7 +291,6 @@ MainView {
             } else if (root.activeTransfer.state == ContentTransfer.Aborted) {
                 emu.play()
                 picker.visible = false
-                console.log("aborted transfer")
             }
         }
     }
@@ -387,10 +368,8 @@ MainView {
         id: shaded_corner
         width: units.gu(16)
         height: units.gu(28)
-        color: gb_light_gray
+        color: Qt.darker(gb_white, 1.05)
         rotation: 50
-        border.width: thin_outline
-        border.color: gb_gray_accent
 
         anchors {
             verticalCenter: parent.bottom
@@ -410,26 +389,22 @@ MainView {
         }
     }
 
-    SettingsView {
-        id: settingsView
-        visible: false
-    }
-
     Icon {
         name: gameSettings.sound ? "speaker" : "speaker-mute"
         color: gb_gray
-        width: units.gu(5)
-        height: units.gu(5)
+        width: units.gu(4)
+        height: units.gu(4)
         anchors {
             bottom: parent.bottom
             right: parent.right
-            margins: units.gu(1)
+            margins: units.gu(1.5)
         }
 
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                gameSettings.sound = !gameSettings.sound;
+                click()
+                gameSettings.sound = !gameSettings.sound
             }
         }
     }
