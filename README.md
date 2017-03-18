@@ -15,11 +15,11 @@ Build Instructions
 
   1. Install the Ubuntu Touch SDK  
   2. Open Ubuntu-SDK
-  3. Go to `File > Open File or Project..` and open to `GearBoy/platforms/ubuntu_touch/gearboy.pro`
+  3. Go to `File > Open File or Project..` and open `GearBoy/platforms/ubuntu_touch/gearboy.pro`
   4. Add the armhf target
-  5. `Build > Ubuntu > Install Application on Device`
+  5. In the menu select `Build > Ubuntu > Install Application on Device`
   6. Install in release mode
 
 ### Android & Desktop
 
-Build these with Qt Creator. These versions exist only to test on a variety of hardware and are not (yet) supported.
+Build these with Qt Creator and the project files under platforms. These versions exist to test on a variety of hardware and are not (yet) supported.
