@@ -85,7 +85,6 @@ MainView {
     }
 
     function requestROM() {
-        emu.pause()
         var peer = null
         for (var i = 0; i < model.peers.length; ++i) {
             var p = model.peers[i]
@@ -137,7 +136,6 @@ MainView {
     }
 
     Component.onDestruction: {
-        console.log("shutdown")
         emu.shutdown()
     }
 
@@ -288,7 +286,7 @@ MainView {
         onStateChanged: {
             if (root.activeTransfer.state === ContentTransfer.Charged) {
                 root.importItems(root.activeTransfer.items)
-            } else if (root.activeTransfer.state == ContentTransfer.Aborted) {
+            } else if (root.activeTransfer.state === ContentTransfer.Aborted) {
                 emu.play()
                 picker.visible = false
             }

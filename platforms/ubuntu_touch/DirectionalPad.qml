@@ -6,7 +6,7 @@ Item {
     property color innerColor: "white"
     property color color: "black"
     property color centerColor: "black"
-    property color backColor: "black"
+    property color backColor: "#333333"
 
     property int realWidth: width - units.gu(2)
     property int wingSize: realWidth / 3
@@ -32,16 +32,16 @@ Item {
         anchors.centerIn: parent
         width: xAxis.width + 2 * displacement
         height: centreSize + 2 * displacement
-        color: backColor
         radius: xAxis.radius
+        color: backColor
     }
 
     Rectangle {
         anchors.centerIn: parent
         width: centreSize + 2 * displacement
         height: yAxis.height + 2 * displacement
-        color: backColor
         radius: yAxis.radius
+        color: backColor
     }
 
     Rectangle {

@@ -34,13 +34,13 @@ MouseArea {
         radius: rect.radius
         anchors.centerIn: parent
         border.color: borderColor
-        color: "#3B3B3B"
+        color: Qt.darker(borderColor, 1.4)
         border.width: outline
 
         Rectangle {
             id: rect
             anchors.centerIn: parent
-            border.width: units.gu(0.2)
+            border.width: units.gu(0)
             border.color: Qt.darker(fillColor, 1.15)
             color: fillColor
         }
