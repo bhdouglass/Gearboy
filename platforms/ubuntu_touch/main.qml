@@ -388,7 +388,7 @@ MainView {
     }
 
     Icon {
-        name: gameSettings.sound ? "speaker" : "speaker-mute"
+        name: 'properties'
         color: gb_gray
         width: units.gu(4)
         height: units.gu(4)
@@ -401,8 +401,23 @@ MainView {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                click()
-                gameSettings.sound = !gameSettings.sound
+                click();
+
+                settingsView.visible = !settingsView.visible;
+            }
+        }
+    }
+
+    SettingsView {
+        id: settingsView
+        visible: false
+
+        onVisibleChanged: {
+            if  (settingsView.visible) {
+                emu.pause();
+            }
+            else {
+                emu.play();
             }
         }
     }

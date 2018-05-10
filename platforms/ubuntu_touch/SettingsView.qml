@@ -14,6 +14,15 @@ Page {
 
     header: PageHeader {
         title: i18n.tr("Settings")
+
+        leadingActionBar.actions: [
+            Action {
+                iconName: 'back'
+                text: i18n.tr('Back')
+                onTriggered: settings.visible = false
+            }
+        ]
+
         flickable: settingsPlugin
     }
 
