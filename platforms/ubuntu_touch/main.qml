@@ -166,8 +166,11 @@ MainView {
         width: units.gu(18)
         height: units.gu(35)
 
-        anchors.left: parent.left
-        anchors.bottom: parent.bottom
+        anchors {
+            left: parent.left
+            leftMargin: units.gu(1)
+            bottom: parent.bottom
+        }
 
         DirectionalPad {
             id: dpad
@@ -213,8 +216,11 @@ MainView {
 
     Item {
         id: righthand
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
+        anchors {
+            right: parent.right
+            rightMargin: units.gu(1)
+            bottom: parent.bottom
+        }
         width: units.gu(18)
         height: units.gu(35)
 
