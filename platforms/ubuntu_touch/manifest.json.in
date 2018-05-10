@@ -7,11 +7,10 @@
         "gearboy": {
             "apparmor": "gearboy.apparmor",
             "desktop":  "gearboy.rpattison.desktop",
-	    "content-hub": "gearboy-content.json"
+            "content-hub": "gearboy-content.json"
         }
     },
     "version": "1.0",
     "maintainer": "Ryan Pattison <ryan@theinternetemail.com>",
     "framework": "ubuntu-sdk-15.04"
 }
-

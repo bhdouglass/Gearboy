@@ -1,0 +1,5 @@
+{
+  "template": "custom",
+  "build": "../build-ubuntu-touch.sh",
+  "kill": "gearboy"
+}
