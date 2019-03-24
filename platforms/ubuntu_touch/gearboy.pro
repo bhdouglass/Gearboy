@@ -1,6 +1,6 @@
 UBUNTU_MANIFEST_FILE=manifest.json.in
 
-UBUNTU_TRANSLATION_DOMAIN="gearboy.rpattison"
+UBUNTU_TRANSLATION_DOMAIN="gearboy.bhdouglass"
 
 UBUNTU_TRANSLATION_SOURCES+= \
     $$files(*.qml,true) \
@@ -27,11 +27,12 @@ QML_FILES += $$files(*.qml,true) \
 
 CONF_FILES +=  gearboy.apparmor \
 	       gearboy-content.json \
-               gearboy.png 
+               gearboy.png \
+               gearboy.svg
 
 OTHER_FILES += $${CONF_FILES} \
                $${QML_FILES} \
-               gearboy.rpattison.desktop 
+               gearboy.desktop
 
 #specify where the qml/js files are installed to
 qml_files.path = /gearboy
@@ -42,8 +43,8 @@ config_files.path = /
 config_files.files += $${CONF_FILES}
 
 desktop_file.path = /
-desktop_file.files = $$OUT_PWD/gearboy.rpattison.desktop 
-desktop_file.CONFIG += no_check_exist 
+desktop_file.files = $$OUT_PWD/gearboy.desktop
+desktop_file.CONFIG += no_check_exist
 
 
 SOURCES += \
@@ -76,7 +77,7 @@ SOURCES += \
     ../../src/RingBuffer.cpp \
     ../../src/GBEmulator.cpp \
     ../../src/EmulationRunner.cpp \
-    ../../src/main.cpp 
+    ../../src/main.cpp
 
 HEADERS  += \
     ../../src/audio/blargg_common.h \
@@ -116,8 +117,8 @@ HEADERS  += \
     ../../src/RingBuffer.h \
     ../../src/GBEmulator.h \
     ../../src/EmulationRunner.h \
-    ../../src/PixelRenderer.h 
+    ../../src/PixelRenderer.h
 
 target.path = $${UBUNTU_CLICK_BINARY_PATH}
 
-INSTALLS += target config_files qml_files desktop_file 
+INSTALLS += target config_files qml_files desktop_file

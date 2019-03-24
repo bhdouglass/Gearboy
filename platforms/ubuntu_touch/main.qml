@@ -12,7 +12,7 @@ MainView {
     height: units.gu(80)
     width: units.gu(45)
 
-    applicationName: "gearboy.rpattison"
+    applicationName: "gearboy.bhdouglass"
 
     property color gb_black: "#2A2A2A"
     property color gb_black_accent: "#3B3B3B"
