@@ -1,6 +1,7 @@
 Gearboy-Qt
 ==========
-This is a fork of Ignacio Sanchez's Gearboy, focusing on Qt/QML and OpenGL ES for mobile phones.
+
+This is a fork of Ryan Pattison's Gearboy port for Ubuntu Touch which is a fork of Ignacio Sanchez's Gearboy, focusing on Qt/QML and OpenGL ES for mobile phones.
 
 <img src="https://github.com/RyanPattison/Gearboy/blob/master/platforms/ubuntu_touch/gearboy.png" width="64">
 <img src="https://github.com/RyanPattison/Gearboy/blob/master/platforms/ubuntu_touch/screenshots/landscape.png" width="256">

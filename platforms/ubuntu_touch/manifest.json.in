@@ -2,7 +2,7 @@
     "name": "gearboy.bhdouglass",
     "description": "A Game Boy / Game Boy Color Emulator for Ubuntu Touch",
     "architecture": "@CLICK_ARCH@",
-    "title": "GearBoy",
+    "title": "GearBoy Color",
     "hooks": {
         "gearboy": {
             "apparmor": "gearboy.apparmor",
