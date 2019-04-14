@@ -8,7 +8,7 @@ publish:
     - clickable publish "$CI_COMMIT_MESSAGE"
   artifacts:
     paths:
-      - build/*.click
+      - platforms/ubuntu_touch/build/*.click
     expire_in: 1 week
 
 build:
@@ -20,5 +20,5 @@ build:
     - clickable clean build click-build review
   artifacts:
     paths:
-      - build/*.click
+      - platforms/ubuntu_touch/build/*.click
     expire_in: 1 week
