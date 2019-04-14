@@ -7,7 +7,7 @@
 #include "PixelRenderer.h"
 
 
-PixelRenderer::PixelRenderer(int width, int height, EmulationRunner *e) 
+PixelRenderer::PixelRenderer(int width, int height, EmulationRunner *e)
 	: emu(e)
 	, m_program(0)
 	, m_texture(0)
@@ -36,7 +36,7 @@ static int ceilpow2(int v)
 
 
 void PixelRenderer::setBufferSize(int width, int height)
-{ 
+{
     // opengl es 2 needs powers of 2 dimensions
 	m_tex_width = ceilpow2(width);
 	m_tex_height = ceilpow2(height);
@@ -130,9 +130,15 @@ void PixelRenderer::initializeGL()
 	initializeOpenGLFunctions();
 
     if (not initializeTexture(QOpenGLTexture::RGBAFormat, true)) {
-        qDebug() << "Initializing Texture Unit Failed.";
-	// ignore errors now
-        initializeTexture(QOpenGLTexture::RGB5A1, false);
+        qDebug() << "Initializing Texture Unit Failed for RGBAFormat";
+
+		if (not initializeTexture(QOpenGLTexture::RGB5A1, true)) {
+			qDebug() << "Initializing Texture Unit Failed for RGB5A1";
+
+			if (not initializeTexture(QOpenGLTexture::RGBA4, false)) {
+				qDebug() << "Initializing Texture Unit Failed for RGBA4";
+			}
+		}
     }
 
 	GLfloat w = m_image_width / (double)m_tex_width;
@@ -254,7 +260,7 @@ void PixelRenderer::paint()
 {
 	if (!m_program) {
 		initializeGL();
-	} 
+	}
 	paintGL();
     	//m_window->resetOpenGLState();
 }
