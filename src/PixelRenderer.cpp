@@ -56,13 +56,21 @@ bool PixelRenderer::initializeTexture(QOpenGLTexture::TextureFormat format, bool
 {
         GLenum err = 0;
     m_texture = new QOpenGLTexture(QOpenGLTexture::Target2D);
-    if ((err = glGetError())) {
-        qDebug() << "Error texture::new: " << err;
-	if (cleanup) {
-		delete m_texture;
-        	return false;
+
+	if ((err = glGetError())) {
+		if (err == GL_INVALID_ENUM) {
+			qDebug() << "Ignoring GL_INVALID_ENUM error for texture::new";
+		}
+		else {
+			qDebug() << "Error texture::new: " << err;
+
+			if (cleanup) {
+				delete m_texture;
+				return false;
+			}
+		}
 	}
-    }
+
     m_texture->setFormat(format);
     if ((err = glGetError())) {
         qDebug() << "Error texture::setFormat: " << err;
@@ -129,17 +137,13 @@ void PixelRenderer::initializeGL()
 {
 	initializeOpenGLFunctions();
 
-    if (not initializeTexture(QOpenGLTexture::RGBAFormat, true)) {
-        qDebug() << "Initializing Texture Unit Failed for RGBAFormat";
+	if (not initializeTexture(QOpenGLTexture::RGBAFormat, true)) {
+		qDebug() << "Initializing Texture Unit Failed for RGBAFormat";
 
-		if (not initializeTexture(QOpenGLTexture::RGB5A1, true)) {
+		if (not initializeTexture(QOpenGLTexture::RGB5A1, false)) {
 			qDebug() << "Initializing Texture Unit Failed for RGB5A1";
-
-			if (not initializeTexture(QOpenGLTexture::RGBA4, false)) {
-				qDebug() << "Initializing Texture Unit Failed for RGBA4";
-			}
 		}
-    }
+	}
 
 	GLfloat w = m_image_width / (double)m_tex_width;
 	GLfloat h = m_image_height / (double)m_tex_height;
