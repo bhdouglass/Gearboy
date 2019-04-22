@@ -8,7 +8,7 @@ MouseArea {
     property color gb_purple_pressed: Qt.darker(gb_purple, 1)
     property color gb_accent_pressed: Qt.darker(gb_purple_accent, 1)
 
-    property real outline: width / 10 // units.gu(0.375)  // TODO calculate this based on width
+    property real outline: width / 10
     property alias text: label.text
     property alias iconName: icon.name
 

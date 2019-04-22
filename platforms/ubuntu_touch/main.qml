@@ -151,8 +151,11 @@ MainView {
         anchors {
             top: parent.top
             right: parent.right
+            topMargin: units.gu(0.1)
+            rightMargin: units.gu(0.1)
         }
 
+        visible: gameSettings.showPower
         iconName: 'system-shutdown'
         width: units.gu(3)
         height: width
@@ -168,8 +171,10 @@ MainView {
             top: shutdownButton.bottom
             right: parent.right
             topMargin: units.gu(1)
+            rightMargin: units.gu(0.1)
         }
 
+        visible: gameSettings.showPower
         iconName: 'system-restart'
         width: units.gu(3)
         height: width
@@ -425,9 +430,12 @@ MainView {
         id: gameSettings
         property bool vibrate: root.haptics
         property bool sound: !root.muted
+        property bool showPower: true
+
         onSoundChanged: {
             root.muted = !sound
         }
+
         onVibrateChanged: {
             root.haptics = vibrate
         }
