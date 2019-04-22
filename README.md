@@ -2,9 +2,9 @@
 
 This is a fork of Ryan Pattison's Gearboy port for Ubuntu Touch which is a fork of Ignacio Sanchez's Gearboy, focusing on Qt/QML and OpenGL ES for mobile phones.
 
-<img src="https://github.com/RyanPattison/Gearboy/blob/master/platforms/ubuntu_touch/gearboy.png" width="64">
-<img src="https://github.com/RyanPattison/Gearboy/blob/master/platforms/ubuntu_touch/screenshots/landscape.png" width="256">
-<img src="https://github.com/RyanPattison/Gearboy/blob/master/platforms/ubuntu_touch/screenshots/portrait.png" height="256">
+<img src="platforms/ubuntu_touch/gearboy.png" width="64">
+<img src="platforms/ubuntu_touch/screenshots/landscape.png" width="256">
+<img src="platforms/ubuntu_touch/screenshots/portrait.png" height="256">
 
 An Ubuntu Touch version is available in [OpenStore](https://open-store.com/app/gearboy.bhdouglass)
 
