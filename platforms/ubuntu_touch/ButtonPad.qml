@@ -23,6 +23,7 @@ MultiPointTouchArea {
         height: bsize
         radius: bsize / 2
         color: Qt.darker(gb_purple_accent, 1.4)
+
         Rectangle {
             id: abutton
             anchors.fill: parent
@@ -50,6 +51,7 @@ MultiPointTouchArea {
         height: bsize
         radius: bsize / 2
         color: Qt.darker(gb_purple_accent, 1.4)
+
         Rectangle {
             id: bbutton
             anchors.fill: parent

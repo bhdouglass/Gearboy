@@ -90,6 +90,25 @@ Page {
                     vibrateSwitch.checked = !vibrateSwitch.checked
                 }
             }
+
+            ListItem {
+                height: powerLayout.height + divider.height
+                ListItemLayout {
+                    id: powerLayout
+                    title.text: i18n.tr('Show power and restart buttons')
+
+                    Switch {
+                        id: powerSwitch
+                        SlotsLayout.position: SlotsLayout.Trailing
+                        checked: gameSettings.showPower
+                        onCheckedChanged: gameSettings.showPower = checked
+                    }
+                }
+
+                onClicked: {
+                    powerSwitch.checked = !powerSwitch.checked
+                }
+            }
         }
     }
 }

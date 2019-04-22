@@ -18,10 +18,12 @@ GBEmulator::GBEmulator() : m_renderer(0)
 {
 	connect(this, &QQuickItem::windowChanged, this, &GBEmulator::handleWindowChanged);
 	windowChanged(window());
+
 	m_emu = new EmulationRunner(this);
 	m_emu->start(QThread::TimeCriticalPriority);
-	//startTimer(16);
-	//connect(qApp, SIGNAL(lastWindowClosed()), this, SLOT(shutdown()));
+
+	connect(m_emu, &EmulationRunner::isPausedChanged, this, &GBEmulator::isPausedChanged);
+	connect(m_emu, &EmulationRunner::isRunningChanged, this, &GBEmulator::isRunningChanged);
 }
 
 void GBEmulator::timerEvent(QTimerEvent *)
@@ -34,12 +36,12 @@ void GBEmulator::redraw()
     window()->update();
 }
 
-void GBEmulator::setColor(QColor c) 
+void GBEmulator::setColor(QColor c)
 {
 	m_color = c;
 	if (m_renderer) {
 		m_renderer->setColor(c);
-	} 
+	}
 }
 
 
@@ -110,6 +112,7 @@ void GBEmulator::bReleased()      { m_emu->keyReleased(B_Key); }
 bool GBEmulator::loadRom(QString path)
 {
 	save();
+	m_romPath = path;
 	return m_emu->loadRom(path);
 }
 
@@ -118,10 +121,15 @@ void GBEmulator::play() { m_emu->play(); }
 
 void GBEmulator::shutdown()
 {
-    qDebug() << "GOING DOWN";
     m_emu->pause();
     m_emu->save();
     m_emu->stop();
+}
+
+void GBEmulator::restart()
+{
+	shutdown();
+	loadRom(m_romPath);
 }
 
 void GBEmulator::save()
@@ -142,4 +150,12 @@ bool GBEmulator::requestRom()
 void GBEmulator::mute(bool m)
 {
     m_emu->mute(m);
+}
+
+bool GBEmulator::isPaused() const {
+	return m_emu->isPaused();
+}
+
+bool GBEmulator::isRunning() const {
+	return m_emu->isRunning();
 }

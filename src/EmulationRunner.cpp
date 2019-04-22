@@ -18,16 +18,19 @@ EmulationRunner::EmulationRunner(QObject *parent) : QThread(parent)
 	GB_Color very_dark_green(0x0F, 0x38, 0x0F);
 	GB_Color white(0xFF, 0xFF, 0xFF);
 
-	for (int i = 0; i < GAMEBOY_WIDTH * GAMEBOY_HEIGHT; ++i) { 
+	for (int i = 0; i < GAMEBOY_WIDTH * GAMEBOY_HEIGHT; ++i) {
 		m_buffer[i] = white;
 	}
 
 	readFrame(m_pixels, 256);
 	threads.append(this);
 	m_core.Init();
+
+	// TODO see about making this configurable
 	m_core.SetDMGPalette(very_light_green, light_green, dark_green, very_dark_green);
-	m_isPaused = true;
-	m_isRunning = true;
+
+	Q_EMIT isPausedChanged();
+	Q_EMIT isRunningChanged();
 }
 
 
@@ -81,7 +84,7 @@ EmulationRunner::~EmulationRunner() { }
 bool EmulationRunner::loadRom(QString path)
 {
 	std::string cppstr = path.toStdString();
-   	const char *local_path = cppstr.c_str(); 
+   	const char *local_path = cppstr.c_str();
 	m_lock.lock();
 	bool result = m_core.LoadROM(local_path, false);
 	m_lock.unlock();
@@ -96,13 +99,22 @@ bool EmulationRunner::loadRom(QString path)
 		} else {
 		    qDebug() << "No Save File Found: " << save_path;
 		}
+
         if (m_core.GetCartridge()->HasBattery()) {
             if (!save_path.isNull()) {
                 qDebug() << "Setting RAM Save File: " << save_path;
                 m_core.GetMemory()->GetCurrentRule()->SetFileStore(save_path.toStdString());
 			}
 		}
-	} else {
+
+		m_isPaused = false;
+		m_isRunning = true;
+		start();
+
+		Q_EMIT isPausedChanged();
+		Q_EMIT isRunningChanged();
+	}
+	else {
         qDebug() << "Failed to Load ROM:" << QString(local_path);
 	}
 	return result;
@@ -124,23 +136,26 @@ void EmulationRunner::keyReleased(Gameboy_Keys key)
 void EmulationRunner::pause()
 {
 	m_isPaused = true;
+	Q_EMIT isPausedChanged();
 }
 
 
 void EmulationRunner::play()
 {
 	m_isPaused = false;
+	Q_EMIT isPausedChanged();
 }
 
 void EmulationRunner::stop()
 {
 	m_isRunning = false;
+	Q_EMIT isRunningChanged();
 }
 
 
 void EmulationRunner::save()
 {
-	m_lock.lock();	
+	m_lock.lock();
 	QString path = defaultSavePath();
    	if (!path.isNull()) {
 		qDebug() << "Saving Game to: " << path;
@@ -198,3 +213,10 @@ QString EmulationRunner::defaultSavePath()
 	}
 }
 
+bool EmulationRunner::isPaused() const {
+	return m_isPaused;
+}
+
+bool EmulationRunner::isRunning() const {
+	return m_isRunning;
+}

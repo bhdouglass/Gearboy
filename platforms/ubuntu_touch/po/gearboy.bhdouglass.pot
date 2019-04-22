@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-03-24 04:48+0000\n"
+"POT-Creation-Date: 2019-04-22 14:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,23 +17,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:81
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:91
 msgid "ROM failed to load"
 msgstr ""
 
-#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:106
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:114
 msgid "ROM Failed to Load"
 msgstr ""
 
-#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:146
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:193
 msgid "OPEN ROM…"
 msgstr ""
 
-#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:205
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:252
 msgid "SELECT"
 msgstr ""
 
-#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:231
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:278
 msgid "START"
 msgstr ""
 
