@@ -1,5 +1,4 @@
-Gearboy-Qt
-==========
+# Gearboy Color
 
 This is a fork of Ryan Pattison's Gearboy port for Ubuntu Touch which is a fork of Ignacio Sanchez's Gearboy, focusing on Qt/QML and OpenGL ES for mobile phones.
 
@@ -9,13 +8,12 @@ This is a fork of Ryan Pattison's Gearboy port for Ubuntu Touch which is a fork 
 
 An Ubuntu Touch version is available in [OpenStore](https://open-store.com/app/gearboy.bhdouglass)
 
-Build Instructions
-===================
+## Build Instructions
 
 ### Ubuntu Touch
 
 - [Install Clickable](http://clickable.bhdouglass.com/en/latest/)
-- From the directory `platforms/ubuntu_touch` run `clickable`
+- `clickable -c platforms/ubuntu_touch/clickable.json`
 - Clickable will compile the project and install it on your connected device
 
 ### Android & Desktop

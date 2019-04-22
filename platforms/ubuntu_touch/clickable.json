@@ -1,5 +1,5 @@
 {
   "template": "qmake",
   "kill": "gearboy",
-  "root_dir": "../.."
+  "src_dir": "$ROOT/platforms/ubuntu_touch"
 }

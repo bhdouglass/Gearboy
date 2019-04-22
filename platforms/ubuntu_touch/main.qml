@@ -66,6 +66,17 @@ MainView {
         color: gb_white
     }
 
+    Rectangle {
+        // TODO this covers the emulator when it's not running, figure out how to hide the emulator without covering it
+        x: emu.rect.x
+        y: parent.height - emu.rect.y - emu.rect.height
+        width: emu.rect.width
+        height: emu.rect.height
+        visible: !emu.isRunning
+
+        color: 'white'
+    }
+
     function importItems(items) {
         load(items[0].url)
     }
@@ -75,11 +86,9 @@ MainView {
         console.log(path)
         if (path) {
             if (emu.loadRom(path)) {
-                help.visible = false
                 emu.play()
             } else {
                 help.text = i18n.tr("ROM failed to load")
-                help.visible = true
             }
         }
     }
@@ -100,11 +109,9 @@ MainView {
             /* didn't find ubuntu's file manager, maybe they have another app */
         } else {
             if (emu.requestRom()) {
-                help.visible = false
                 emu.play()
             } else {
                 help.text = i18n.tr("ROM Failed to Load")
-                help.visible = true
             }
         }
     }
@@ -139,8 +146,43 @@ MainView {
         emu.shutdown()
     }
 
+    RoundButton {
+        id: shutdownButton
+        anchors {
+            top: parent.top
+            right: parent.right
+        }
+
+        iconName: 'system-shutdown'
+        width: units.gu(3)
+        height: width
+
+        onClicked: {
+            emu.shutdown();
+        }
+    }
+
+    RoundButton {
+        id: restartButton
+        anchors {
+            top: shutdownButton.bottom
+            right: parent.right
+            topMargin: units.gu(1)
+        }
+
+        iconName: 'system-restart'
+        width: units.gu(3)
+        height: width
+
+        onClicked: {
+            emu.restart();
+        }
+    }
+
     Label {
         id: help
+        visible: !emu.isRunning
+
         y: emu.rect.height / 2 - height / 2
         anchors.horizontalCenter: parent.horizontalCenter
         text: i18n.tr("OPEN ROM…")
@@ -334,8 +376,6 @@ MainView {
         } else if (key == selectKey) {
             emu.selectPressed()
             event.accepted = true
-        } else {
-
         }
     }
 

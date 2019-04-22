@@ -15,6 +15,8 @@ class GBEmulator : public QQuickItem
 
 	Q_PROPERTY(QRect rect READ rect WRITE setRect NOTIFY rectChanged)
 	Q_PROPERTY(QColor color READ color WRITE setColor)
+	Q_PROPERTY(bool isPaused READ isPaused NOTIFY isPausedChanged)
+	Q_PROPERTY(bool isRunning READ isRunning NOTIFY isRunningChanged)
 
 public:
 	GBEmulator();
@@ -25,8 +27,13 @@ public:
 	void setColor(QColor);
 	QColor color() { return m_color; }
 
+	bool isPaused() const;
+	bool isRunning() const;
+
 signals:
 	void rectChanged();
+	void isPausedChanged();
+	void isRunningChanged();
 
 public slots:
     void timerEvent(QTimerEvent *);
@@ -39,7 +46,8 @@ public slots:
 	void save();
 	void play();
 	void pause();
-    void shutdown();
+	void shutdown();
+    void restart();
 
 	void upPressed();
 	void leftPressed();
@@ -69,6 +77,7 @@ private slots:
 	void handleWindowChanged(QQuickWindow *win);
 
 private:
+	QString m_romPath;
 	EmulationRunner *m_emu;
 	PixelRenderer *m_renderer;
 	QRect m_rect;
@@ -76,4 +85,3 @@ private:
 };
 
 #endif	/* GBEMULATOR_H */
-

@@ -80,7 +80,7 @@ Item {
 		help.visible = false
 		emu.play()
 	} else {
-		help.text = i18ntr("ROM Failed to Load")
+		help.text = i18ntr("ROM failed to Load")
 		help.visible = true
 	}
     }

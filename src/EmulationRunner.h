@@ -1,4 +1,4 @@
-#ifndef Emulation_Runner_H 
+#ifndef Emulation_Runner_H
 #define Emulation_Runner_H
 
 #include <QMutex>
@@ -40,6 +40,13 @@ public:
 	void keyPressed(Gameboy_Keys key);
 	void keyReleased(Gameboy_Keys key);
 
+	bool isPaused() const;
+	bool isRunning() const;
+
+Q_SIGNALS:
+	void isRunningChanged();
+	void isPausedChanged();
+
 protected:
 	virtual void run();
 	QString defaultPath();
@@ -60,4 +67,4 @@ private:
     static QList<EmulationRunner *> threads;
 };
 
-#endif 
+#endif
