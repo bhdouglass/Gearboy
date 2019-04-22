@@ -109,6 +109,61 @@ Page {
                     powerSwitch.checked = !powerSwitch.checked
                 }
             }
+
+            ExpandableListItem {
+                id: paletteSetting
+
+                listViewHeight: model.length * units.gu(6)
+                model: [
+                    { text: i18n.tr('Original'), value: 'original' },
+                    { text: i18n.tr('Grayscale'), value: 'grayscale' },
+                    { text: i18n.tr('Brown'), value: 'brown' },
+                    { text: i18n.tr('Pastel Mix'), value: 'pastel_mix' },
+                    { text: i18n.tr('Blue'), value: 'blue' },
+                    { text: i18n.tr('Green'), value: 'green' },
+                    { text: i18n.tr('Red'), value: 'red' },
+                    { text: i18n.tr('Orange'), value: 'orange' },
+                    { text: i18n.tr('Dark Blue'), value: 'dark_blue' },
+                    { text: i18n.tr('Dark Green'), value: 'dark_green' },
+                    { text: i18n.tr('Dark Brown'), value: 'dark_brown' },
+                    { text: i18n.tr('Yellow'), value: 'yellow' },
+                    { text: i18n.tr('Inverted'), value: 'inverted' },
+                ]
+                title.text: i18n.tr('GB Palette')
+                subText.text: {
+                    for (var i = 0; i < model.length; i++) {
+                        if (model[i].value == gameSettings.dmgPalette) {
+                            return model[i].text;
+                            break;
+                        }
+                    }
+
+                    return 'Original';
+                }
+
+                delegate: ListItem {
+                    height: units.gu(6)
+
+                    ListItemLayout {
+                        id: listitemlayout
+
+                        title.text: modelData.text
+
+                        Icon {
+                            height: units.gu(2)
+                            width: height
+                            visible: paletteSetting.subText.text === modelData.text
+                            name: 'ok'
+                            SlotsLayout.position: SlotsLayout.Last
+                        }
+                    }
+
+                    onClicked: {
+                        gameSettings.dmgPalette = modelData.value;
+                        paletteSetting.toggleExpansion();
+                    }
+                }
+            }
         }
     }
 }

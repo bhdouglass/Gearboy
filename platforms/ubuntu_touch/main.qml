@@ -431,14 +431,11 @@ MainView {
         property bool vibrate: root.haptics
         property bool sound: !root.muted
         property bool showPower: true
+        property string dmgPalette: 'original'
 
-        onSoundChanged: {
-            root.muted = !sound
-        }
-
-        onVibrateChanged: {
-            root.haptics = vibrate
-        }
+        onSoundChanged: root.muted = !sound
+        onVibrateChanged: root.haptics = vibrate
+        onDmgPaletteChanged: emu.dmgPalette = dmgPalette
     }
 
     Icon {

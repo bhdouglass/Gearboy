@@ -159,3 +159,11 @@ bool GBEmulator::isPaused() const {
 bool GBEmulator::isRunning() const {
 	return m_emu->isRunning();
 }
+
+QString GBEmulator::dmgPalette() const {
+	return m_emu->dmgPalette();
+}
+
+void GBEmulator::setDmgPalette(const QString palette) {
+	m_emu->setDmgPalette(palette);
+}

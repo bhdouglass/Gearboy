@@ -10,14 +10,60 @@
 
 QList<EmulationRunner *> EmulationRunner::threads;
 
+// Original
+GB_Color very_light_green(0x9F, 0xBF, 0x1B);
+GB_Color light_green(0x82, 0x9B, 0x0D);
+GB_Color dark_green(0x30, 0x62, 0x30);
+GB_Color very_dark_green(0x0F, 0x38, 0x0F);
+
+// Colors from https://en.wikipedia.org/wiki/List_of_video_game_console_palettes
+
+// Grayscale
+GB_Color white(0xFF, 0xFF, 0xFF);
+GB_Color light_gray(0xAA, 0xAA, 0xAA);
+GB_Color dark_gray(0x55, 0x55, 0x55);
+GB_Color black(0x00, 0x00, 0x00);
+
+// Brown
+GB_Color dark_brown(0x84, 0x42, 0x04);
+GB_Color light_brown(0xEC, 0x9A, 0x54);
+
+// Pastel Mix
+GB_Color pastel_purple(0x9C, 0x92, 0xF4);
+GB_Color pink(0xEC, 0x8A, 0x8C);
+GB_Color pastel_yellow(0xFC, 0xFA, 0xAC);
+
+// Blue
+GB_Color dark_blue(0x04, 0x32, 0xFC);
+GB_Color light_blue(0x7C, 0xAA, 0xFC);
+
+// Green
+GB_Color orange(0xFC, 0x32, 0x04);
+GB_Color green(0x04, 0xFA, 0x04);
+
+// Red
+GB_Color red(0xAC, 0x26, 0x24);
+
+// Orange
+GB_Color yellow(0xF4, 0xFE, 0x04);
+
+// Dark Blue
+GB_Color dark_purple(0x44, 0x32, 0xA4);
+GB_Color light_purple(0x9C, 0x92, 0xF4);
+
+// Dark Brown
+GB_Color dark_dark_brown(0x94, 0x7A, 0x4C);
+GB_Color dark_light_brown(0xC4, 0xAE, 0x94);
+GB_Color dark_very_light_brown(0xFC, 0xEA, 0xE4);
+
+// Yellow
+GB_Color brown(0x84, 0x42, 0x04);
+
+// Inverted
+GB_Color inverted_blue(0x04, 0xA2, 0xA4);
+
 EmulationRunner::EmulationRunner(QObject *parent) : QThread(parent)
 {
-	GB_Color very_light_green(0x9F, 0xBF, 0x1B);
-	GB_Color light_green(0x82, 0x9B, 0x0D);
-	GB_Color dark_green(0x30, 0x62, 0x30);
-	GB_Color very_dark_green(0x0F, 0x38, 0x0F);
-	GB_Color white(0xFF, 0xFF, 0xFF);
-
 	for (int i = 0; i < GAMEBOY_WIDTH * GAMEBOY_HEIGHT; ++i) {
 		m_buffer[i] = white;
 	}
@@ -26,7 +72,6 @@ EmulationRunner::EmulationRunner(QObject *parent) : QThread(parent)
 	threads.append(this);
 	m_core.Init();
 
-	// TODO see about making this configurable
 	m_core.SetDMGPalette(very_light_green, light_green, dark_green, very_dark_green);
 
 	Q_EMIT isPausedChanged();
@@ -219,4 +264,51 @@ bool EmulationRunner::isPaused() const {
 
 bool EmulationRunner::isRunning() const {
 	return m_isRunning;
+}
+
+void EmulationRunner::setDmgPalette(const QString palette) {
+	m_dmgPalette = palette;
+	if (palette == QStringLiteral("original")) {
+		m_core.SetDMGPalette(very_light_green, light_green, dark_green, very_dark_green);
+	}
+	else if (palette == QStringLiteral("grayscale")) {
+		m_core.SetDMGPalette(white, light_gray, dark_gray, black);
+	}
+	else if (palette == QStringLiteral("brown")) {
+		m_core.SetDMGPalette(white, light_brown, dark_brown, black);
+	}
+	else if (palette == QStringLiteral("pastel_mix")) {
+		m_core.SetDMGPalette(pastel_yellow, pink, pastel_purple, black);
+	}
+	else if (palette == QStringLiteral("blue")) {
+		m_core.SetDMGPalette(white, light_blue, dark_blue, black);
+	}
+	else if (palette == QStringLiteral("green")) {
+		m_core.SetDMGPalette(white, green, orange, black);
+	}
+	else if (palette == QStringLiteral("red")) {
+		m_core.SetDMGPalette(white, pink, red, black);
+	}
+	else if (palette == QStringLiteral("orange")) {
+		m_core.SetDMGPalette(white, yellow, orange, black);
+	}
+	else if (palette == QStringLiteral("dark_blue")) {
+		m_core.SetDMGPalette(white, light_purple, dark_purple, black);
+	}
+	else if (palette == QStringLiteral("dark_green")) {
+		m_core.SetDMGPalette(white, green, dark_blue, black);
+	}
+	else if (palette == QStringLiteral("dark_brown")) {
+		m_core.SetDMGPalette(dark_very_light_brown, dark_light_brown, dark_dark_brown, black);
+	}
+	else if (palette == QStringLiteral("yellow")) {
+		m_core.SetDMGPalette(white, yellow, brown, black);
+	}
+	else if (palette == QStringLiteral("inverted")) {
+		m_core.SetDMGPalette(black, inverted_blue, yellow, white);
+	}
+}
+
+QString EmulationRunner::dmgPalette() const {
+	return m_dmgPalette;
 }

@@ -17,6 +17,7 @@ class GBEmulator : public QQuickItem
 	Q_PROPERTY(QColor color READ color WRITE setColor)
 	Q_PROPERTY(bool isPaused READ isPaused NOTIFY isPausedChanged)
 	Q_PROPERTY(bool isRunning READ isRunning NOTIFY isRunningChanged)
+	Q_PROPERTY(QString dmgPalette READ dmgPalette WRITE setDmgPalette)
 
 public:
 	GBEmulator();
@@ -26,6 +27,8 @@ public:
 	void setRect(QRect);
 	void setColor(QColor);
 	QColor color() { return m_color; }
+	void setDmgPalette(const QString theme);
+	QString dmgPalette() const;
 
 	bool isPaused() const;
 	bool isRunning() const;
