@@ -18,7 +18,7 @@ Page {
         leadingActionBar.actions: [
             Action {
                 iconName: 'back'
-                text: i18n.tr('Back')
+                text: i18n.tr("Back")
                 onTriggered: settings.visible = false
             }
         ]
@@ -95,7 +95,7 @@ Page {
                 height: powerLayout.height + divider.height
                 ListItemLayout {
                     id: powerLayout
-                    title.text: i18n.tr('Show power and restart buttons')
+                    title.text: i18n.tr("Show power and restart buttons")
 
                     Switch {
                         id: powerSwitch
@@ -115,21 +115,34 @@ Page {
 
                 listViewHeight: model.length * units.gu(6)
                 model: [
-                    { text: i18n.tr('Original'), value: 'original' },
-                    { text: i18n.tr('Grayscale'), value: 'grayscale' },
-                    { text: i18n.tr('Brown'), value: 'brown' },
-                    { text: i18n.tr('Pastel Mix'), value: 'pastel_mix' },
-                    { text: i18n.tr('Blue'), value: 'blue' },
-                    { text: i18n.tr('Green'), value: 'green' },
-                    { text: i18n.tr('Red'), value: 'red' },
-                    { text: i18n.tr('Orange'), value: 'orange' },
-                    { text: i18n.tr('Dark Blue'), value: 'dark_blue' },
-                    { text: i18n.tr('Dark Green'), value: 'dark_green' },
-                    { text: i18n.tr('Dark Brown'), value: 'dark_brown' },
-                    { text: i18n.tr('Yellow'), value: 'yellow' },
-                    { text: i18n.tr('Inverted'), value: 'inverted' },
+                    // TRANSLATORS: This is a color palette option
+                    { text: i18n.tr("Original"), value: 'original' },
+                    // TRANSLATORS: This is a color palette option
+                    { text: i18n.tr("Grayscale"), value: 'grayscale' },
+                    // TRANSLATORS: This is a color palette option
+                    { text: i18n.tr("Brown"), value: 'brown' },
+                    // TRANSLATORS: This is a color palette option
+                    { text: i18n.tr("Pastel Mix"), value: 'pastel_mix' },
+                    // TRANSLATORS: This is a color palette option
+                    { text: i18n.tr("Blue"), value: 'blue' },
+                    // TRANSLATORS: This is a color palette option
+                    { text: i18n.tr("Green"), value: 'green' },
+                    // TRANSLATORS: This is a color palette option
+                    { text: i18n.tr("Red"), value: 'red' },
+                    // TRANSLATORS: This is a color palette option
+                    { text: i18n.tr("Orange"), value: 'orange' },
+                    // TRANSLATORS: This is a color palette option
+                    { text: i18n.tr("Dark Blue"), value: 'dark_blue' },
+                    // TRANSLATORS: This is a color palette option
+                    { text: i18n.tr("Dark Green"), value: 'dark_green' },
+                    // TRANSLATORS: This is a color palette option
+                    { text: i18n.tr("Dark Brown"), value: 'dark_brown' },
+                    // TRANSLATORS: This is a color palette option
+                    { text: i18n.tr("Yellow"), value: 'yellow' },
+                    // TRANSLATORS: This is a color palette option
+                    { text: i18n.tr("Inverted"), value: 'inverted' },
                 ]
-                title.text: i18n.tr('GB Palette')
+                title.text: i18n.tr("GB Palette")
                 subText.text: {
                     for (var i = 0; i < model.length; i++) {
                         if (model[i].value == gameSettings.dmgPalette) {
@@ -138,7 +151,7 @@ Page {
                         }
                     }
 
-                    return 'Original';
+                    return i18n.tr("Original");
                 }
 
                 delegate: ListItem {
