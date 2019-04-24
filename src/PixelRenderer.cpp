@@ -236,6 +236,7 @@ void PixelRenderer::resizeGL(int width, int height)
 {
 	m_width = width;
 	m_height = height;
+
 	// image is scaled by integer multiples
 	int xscale = width / m_image_width;
 	int yscale = height / m_image_height;
@@ -244,13 +245,17 @@ void PixelRenderer::resizeGL(int width, int height)
 	int h = m_image_height * scale;
 	int x_remaining = width - w;
 	int y_remaining = height - h;
+
 	// centred horizontally
 	int x = x_remaining / 2;
-	// anchored to the top with a "small" margin
-    int small_margin = qMin(x_remaining, y_remaining) / 2;
-    if (small_margin > 4) small_margin /= 4;
-    int y = y_remaining - small_margin;
-    m_viewRect = QRect(x, y, w, h);
+
+	// Center vertically when there isn't enough room for the margin
+	int y = y_remaining / 2;
+	if (y > 80) {
+		y = y_remaining - 80;
+	}
+
+	m_viewRect = QRect(x, y, w, h);
 }
 
 

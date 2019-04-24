@@ -2,11 +2,9 @@ import QtQuick 2.3
 import Ubuntu.Components 1.3
 
 MouseArea {
-    property color gb_white_accent: "#EDEDED"
-    property color gb_purple: "#B01561"
-    property color gb_purple_accent: Qt.darker("#CF2463", 1.4)
-    property color gb_purple_pressed: Qt.darker(gb_purple, 1)
-    property color gb_accent_pressed: Qt.darker(gb_purple_accent, 1)
+    property color labelColor: "#EDEDED"
+    property color fillColor: Qt.darker("#ABABAB", 1.0)
+    property color borderColor: Qt.darker("#E1E1E1", 1.075)
 
     property real outline: width / 10
     property alias text: label.text
@@ -15,7 +13,7 @@ MouseArea {
     Rectangle {
         anchors.fill: parent
         radius: width / 2
-        color: gb_purple_accent
+        color: borderColor
 
         Rectangle {
             anchors {
@@ -23,9 +21,9 @@ MouseArea {
                 margins: units.gu(0.2)
             }
 
-            color: gb_purple
+            color: fillColor
             border {
-                color: gb_purple_accent
+                color: borderColor
                 width: outline
             }
             radius: width / 2
@@ -36,7 +34,7 @@ MouseArea {
                 visible: text
                 anchors.centerIn: parent
 
-                color: gb_white_accent
+                color: labelColor
                 fontSize: "x-large"
             }
 
@@ -46,7 +44,7 @@ MouseArea {
                 visible: iconName
                 anchors.centerIn: parent
 
-                color: gb_white_accent
+                color: labelColor
                 width: parent.width / 2
                 height: width
             }
