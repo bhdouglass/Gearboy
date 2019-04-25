@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-24 14:21+0000\n"
+"POT-Creation-Date: 2019-04-24 19:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Anne017 <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,10 +38,88 @@ msgstr "START"
 msgid "Settings"
 msgstr "Paramètres"
 
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:21
+msgid "Back"
+msgstr "Retour"
+
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:48
 msgid "Sound"
-msgstr "Son"
+msgstr "Sons"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:73
 msgid "Vibration"
 msgstr "Vibrations"
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:98
+msgid "Show power and restart buttons"
+msgstr "Afficher les boutons marche et redémarrage"
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:119
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:154
+msgid "Original"
+msgstr "Originale"
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:121
+msgid "Grayscale"
+msgstr "Niveaux de gris"
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:123
+msgid "Brown"
+msgstr "Brune"
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:125
+msgid "Pastel Mix"
+msgstr "Mélange de pastels"
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:127
+msgid "Blue"
+msgstr "Bleue"
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:129
+msgid "Green"
+msgstr "Verte"
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:131
+msgid "Red"
+msgstr "Rouge"
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:133
+msgid "Orange"
+msgstr "Orange"
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:135
+msgid "Dark Blue"
+msgstr "Bleue foncée"
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:137
+msgid "Dark Green"
+msgstr "Verte foncée"
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:139
+msgid "Dark Brown"
+msgstr "Brune foncée"
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:141
+msgid "Yellow"
+msgstr "Jaune"
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:143
+msgid "Inverted"
+msgstr "Inversée"
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsView.qml:145
+msgid "GB Palette"
+msgstr "Palette de couleurs"
