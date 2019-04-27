@@ -67,6 +67,8 @@ MainView {
     }
 
     Rectangle {
+        id: emuCover
+
         // TODO this covers the emulator when it's not running, figure out how to hide the emulator without covering it
         x: emu.rect.x
         y: parent.height - emu.rect.y - emu.rect.height
@@ -111,7 +113,7 @@ MainView {
             if (emu.requestRom()) {
                 emu.play()
             } else {
-                help.text = i18n.tr("ROM Failed to Load")
+                help.text = i18n.tr("ROM failed to load")
             }
         }
     }
@@ -148,11 +150,12 @@ MainView {
 
     RoundButton {
         id: shutdownButton
+
         anchors {
             top: parent.top
+            topMargin: units.gu(0.2)
             right: parent.right
-            topMargin: units.gu(0.1)
-            rightMargin: units.gu(0.1)
+            rightMargin: units.gu(0.2)
         }
 
         visible: gameSettings.showPower
@@ -168,10 +171,9 @@ MainView {
     RoundButton {
         id: restartButton
         anchors {
-            top: shutdownButton.bottom
-            right: parent.right
-            topMargin: units.gu(1)
-            rightMargin: units.gu(0.1)
+            top: shutdownButton.top
+            right: shutdownButton.left
+            rightMargin: units.gu(1)
         }
 
         visible: gameSettings.showPower
@@ -211,7 +213,7 @@ MainView {
     Item {
         id: lefthand
         width: units.gu(18)
-        height: units.gu(35)
+        height: units.gu(32)
 
         anchors {
             left: parent.left
@@ -269,7 +271,7 @@ MainView {
             bottom: parent.bottom
         }
         width: units.gu(18)
-        height: units.gu(35)
+        height: units.gu(32)
 
         GBButton {
             id: start
@@ -357,6 +359,7 @@ MainView {
 
     Keys.onPressed: {
         var key = event.key
+
         if (key == leftKey) {
             emu.leftPressed()
             event.accepted = true
@@ -431,14 +434,11 @@ MainView {
         property bool vibrate: root.haptics
         property bool sound: !root.muted
         property bool showPower: true
+        property string dmgPalette: 'original'
 
-        onSoundChanged: {
-            root.muted = !sound
-        }
-
-        onVibrateChanged: {
-            root.haptics = vibrate
-        }
+        onSoundChanged: root.muted = !sound
+        onVibrateChanged: root.haptics = vibrate
+        onDmgPaletteChanged: emu.dmgPalette = dmgPalette
     }
 
     Icon {

@@ -42,6 +42,8 @@ public:
 
 	bool isPaused() const;
 	bool isRunning() const;
+	void setDmgPalette(const QString theme);
+	QString dmgPalette() const;
 
 Q_SIGNALS:
 	void isRunningChanged();
@@ -63,6 +65,7 @@ private:
 	bool m_isRunning;
 	QTime m_time;
     QTime m_fps_time;
+	QString m_dmgPalette = "original";
 
     static QList<EmulationRunner *> threads;
 };
