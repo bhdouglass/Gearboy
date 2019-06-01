@@ -1,11 +1,12 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>SettingsPage.qml</file>
+        <file>GameListPage.qml</file>
         <file>ButtonPad.qml</file>
         <file>DirectionalPad.qml</file>
         <file>ExpandableListItem.qml</file>
         <file>GBButton.qml</file>
         <file>RoundButton.qml</file>
-        <file>SettingsView.qml</file>
     </qresource>
 </RCC>

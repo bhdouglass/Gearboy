@@ -31,8 +31,6 @@ MainView {
 
     property real thin_outline: units.gu(0.25)
 
-    property var activeTransfer: null
-
     property bool muted: false
     property bool haptics: true
 
@@ -48,22 +46,25 @@ MainView {
         }
     }
 
-    ContentPeerModel {
-        id: model
-        contentType: ContentType.Documents
-        handler: ContentHandler.Source
-    }
-
     Connections {
         target: ContentHub
         onImportRequested: {
-            root.importItems(transfer.items)
+            var path = transfer.items[0].url.toString().replace("file://", "")
+            path = Files.moveRom(path);
+            root.load(path);
         }
     }
 
     GearBoyEmulator {
         id: emu
         color: gb_white
+
+        onIsRunningChanged: {
+            if (isRunning) {
+                gameListPage.visible = false;
+                settingsPage.visible = false;
+            }
+        }
     }
 
     Rectangle {
@@ -79,38 +80,13 @@ MainView {
         color: 'white'
     }
 
-    function importItems(items) {
-        load(items[0].url)
-    }
-
     function load(url) {
+        gameListPage.visible = false;
+        settingsPage.visible = false;
+
         var path = url.toString().replace("file://", "")
-        console.log(path)
         if (path) {
             if (emu.loadRom(path)) {
-                emu.play()
-            } else {
-                help.text = i18n.tr("ROM failed to load")
-            }
-        }
-    }
-
-    function requestROM() {
-        var peer = null
-        for (var i = 0; i < model.peers.length; ++i) {
-            var p = model.peers[i]
-            var s = p.appId
-            if (s.indexOf("filemanager") != -1) {
-                peer = p
-            }
-        }
-        if (peer != null) {
-            root.activeTransfer = peer.request()
-        } else if (model.peers.length > 0) {
-            picker.visible = true
-            /* didn't find ubuntu's file manager, maybe they have another app */
-        } else {
-            if (emu.requestRom()) {
                 emu.play()
             } else {
                 help.text = i18n.tr("ROM failed to load")
@@ -207,7 +183,8 @@ MainView {
         height: emu.rect.height * 0.9 // keep some padding away from buttons
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
-        onClicked: requestROM()
+
+        onClicked: gameListPage.visible = true
     }
 
     Item {
@@ -307,43 +284,6 @@ MainView {
 
             font {
                 bold: root.bold
-            }
-        }
-    }
-
-    Rectangle {
-        id: picker
-        anchors.fill: parent
-        visible: false
-
-        ContentPeerPicker {
-            id: peerPicker
-            visible: parent.visible
-            handler: ContentHandler.Source
-            contentType: ContentType.Documents
-
-            onPeerSelected: {
-                peer.contentType = ContentType.Documents
-                peer.selectionType = ContentTransfer.Single
-                root.activeTransfer = peer.request()
-                picker.visible = false
-            }
-
-            onCancelPressed: {
-                picker.visible = false
-                emu.play()
-            }
-        }
-    }
-
-    Connections {
-        target: root.activeTransfer
-        onStateChanged: {
-            if (root.activeTransfer.state === ContentTransfer.Charged) {
-                root.importItems(root.activeTransfer.items)
-            } else if (root.activeTransfer.state === ContentTransfer.Aborted) {
-                emu.play()
-                picker.visible = false
             }
         }
     }
@@ -457,17 +397,31 @@ MainView {
             onClicked: {
                 click();
 
-                settingsView.visible = !settingsView.visible;
+                settingsPage.visible = !settingsPage.visible;
             }
         }
     }
 
-    SettingsView {
-        id: settingsView
+    SettingsPage {
+        id: settingsPage
         visible: false
 
         onVisibleChanged: {
-            if  (settingsView.visible) {
+            if  (settingsPage.visible) {
+                emu.pause();
+            }
+            else {
+                emu.play();
+            }
+        }
+    }
+
+    GameListPage {
+        id: gameListPage
+        visible: false
+
+        onVisibleChanged: {
+            if  (gameListPage.visible) {
                 emu.pause();
             }
             else {

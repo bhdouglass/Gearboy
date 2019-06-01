@@ -77,6 +77,7 @@ SOURCES += \
     ../../src/RingBuffer.cpp \
     ../../src/GBEmulator.cpp \
     ../../src/EmulationRunner.cpp \
+    ../../src/Files.cpp \
     ../../src/main.cpp
 
 HEADERS  += \
@@ -117,7 +118,8 @@ HEADERS  += \
     ../../src/RingBuffer.h \
     ../../src/GBEmulator.h \
     ../../src/EmulationRunner.h \
-    ../../src/PixelRenderer.h
+    ../../src/PixelRenderer.h \
+    ../../src/Files.h
 
 target.path = $${UBUNTU_CLICK_BINARY_PATH}
 

@@ -2,6 +2,7 @@
 #include <QQuickView>
 
 #include "GBEmulator.h"
+#include "Files.h"
 
 int main(int argc, char *argv[])
 {
@@ -10,6 +11,7 @@ int main(int argc, char *argv[])
     app.setApplicationName("gearboy.bhdouglass");
 
 	qmlRegisterType<GBEmulator>("GearBoy", 1, 0, "GearBoyEmulator");
+	qmlRegisterSingletonType<Files>("GearBoy", 1, 0, "Files", [](QQmlEngine*, QJSEngine*) -> QObject* { return Files::instance(); });
 
 	QQuickView view;
 	view.setResizeMode(QQuickView::SizeRootObjectToView);
