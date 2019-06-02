@@ -9,7 +9,7 @@
 Files *Files::m_files = nullptr;
 
 Files::Files(QObject* parent) : QObject(parent) {
-    QDir().mkdir(romDir());
+    QDir().mkpath(romDir());
 }
 
 Files::~Files() {
