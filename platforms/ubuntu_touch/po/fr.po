@@ -19,7 +19,7 @@ msgstr ""
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:97
 msgid "ROMs"
-msgstr ""
+msgstr "ROM"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:102
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:21
@@ -28,17 +28,19 @@ msgstr "Retour"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:110
 msgid "Import ROM"
-msgstr ""
+msgstr "Importer une ROM"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:144
 msgid ""
 "No ROMs available.\n"
 "Tap the plus to add your own!"
 msgstr ""
+"Aucune ROM disponible.\n"
+"Appuyez sur l'icône « + » pour ajouter la vôtre !"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:161
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:92
 msgid "ROM failed to load"
