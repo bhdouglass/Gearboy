@@ -6,7 +6,7 @@ This is a fork of Ryan Pattison's Gearboy port for Ubuntu Touch which is a fork 
 <img src="platforms/ubuntu_touch/screenshots/landscape.png" width="256">
 <img src="platforms/ubuntu_touch/screenshots/portrait.png" height="256">
 
-An Ubuntu Touch version is available in [OpenStore](https://open-store.com/app/gearboy.bhdouglass)
+[![OpenStore](https://open-store.io/badges/en_US.png)](https://open-store.io/app/gearboy.bhdouglass)
 
 ## Build Instructions
 
