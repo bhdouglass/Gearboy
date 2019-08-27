@@ -1,7 +1,7 @@
 import QtQuick 2.3
 import Ubuntu.Components 1.3
 
-MouseArea {
+MultiPointTouchArea {
     id: button
     property alias text: label.text
     property alias textColor: label.color
@@ -22,7 +22,6 @@ MouseArea {
 
     width: buttonWidth + 2 * touchPadding
     height: buttonHeight + 2 * touchPadding
-    hoverEnabled: true
 
     signal pushed
     signal unpushed
