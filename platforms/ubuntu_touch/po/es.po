@@ -8,19 +8,19 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-06-01 04:32+0000\n"
-"PO-Revision-Date: 2019-04-27 18:22+0200\n"
+"PO-Revision-Date: 2019-08-31 11:50+0200\n"
 "Last-Translator: Krakakanok <Krakakanok@protonmail.com>\n"
 "Language-Team: UBports Spanish Team\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.2.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:97
 msgid "ROMs"
-msgstr ""
+msgstr "ROMs"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:102
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:21
@@ -29,17 +29,19 @@ msgstr "Atrás"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:110
 msgid "Import ROM"
-msgstr ""
+msgstr "Importar ROM"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:144
 msgid ""
 "No ROMs available.\n"
 "Tap the plus to add your own!"
 msgstr ""
+"No hay ninguna ROM disponible.\n"
+"¡Toque el más para añadir la que quiera!"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:161
 msgid "Delete"
-msgstr ""
+msgstr "Borrar"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:92
 msgid "ROM failed to load"
