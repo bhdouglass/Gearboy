@@ -1,0 +1,142 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-01 04:32+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:97
+msgid "ROMs"
+msgstr ""
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:102
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:21
+msgid "Back"
+msgstr ""
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:110
+msgid "Import ROM"
+msgstr ""
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:144
+msgid ""
+"No ROMs available.\n"
+"Tap the plus to add your own!"
+msgstr ""
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:161
+msgid "Delete"
+msgstr ""
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:92
+msgid "ROM failed to load"
+msgstr ""
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:171
+msgid "OPEN ROM…"
+msgstr ""
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:231
+msgid "SELECT"
+msgstr ""
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:257
+msgid "START"
+msgstr ""
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:16
+msgid "Settings"
+msgstr ""
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:48
+msgid "Sound"
+msgstr ""
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:73
+msgid "Vibration"
+msgstr ""
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:98
+msgid "Show power and restart buttons"
+msgstr ""
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:119
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:154
+msgid "Original"
+msgstr ""
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:121
+msgid "Grayscale"
+msgstr ""
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:123
+msgid "Brown"
+msgstr ""
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:125
+msgid "Pastel Mix"
+msgstr ""
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:127
+msgid "Blue"
+msgstr ""
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:129
+msgid "Green"
+msgstr ""
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:131
+msgid "Red"
+msgstr ""
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:133
+msgid "Orange"
+msgstr ""
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:135
+msgid "Dark Blue"
+msgstr ""
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:137
+msgid "Dark Green"
+msgstr ""
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:139
+msgid "Dark Brown"
+msgstr ""
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:141
+msgid "Yellow"
+msgstr ""
+
+#. TRANSLATORS: This is a color palette option
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:143
+msgid "Inverted"
+msgstr ""
+
+#: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:145
+msgid "GB Palette"
+msgstr ""
