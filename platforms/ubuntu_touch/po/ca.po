@@ -8,19 +8,20 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-06-01 04:32+0000\n"
-"PO-Revision-Date: 2019-04-25 21:08+0200\n"
+"PO-Revision-Date: 2019-09-09 20:50+0000\n"
 "Last-Translator: Joan CiberSheep <cibersheep@gmail.com>\n"
-"Language-Team: \n"
+"Language-Team: Catalan <https://translate-ut.org/projects/gearboy/"
+"gearboy-color/ca/>\n"
 "Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7.1\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.8\n"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:97
 msgid "ROMs"
-msgstr ""
+msgstr "ROMs"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:102
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/SettingsPage.qml:21
@@ -29,17 +30,19 @@ msgstr "Enrere"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:110
 msgid "Import ROM"
-msgstr ""
+msgstr "Importa una ROM"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:144
 msgid ""
 "No ROMs available.\n"
 "Tap the plus to add your own!"
 msgstr ""
+"Cap ROM disponible.\n"
+"Toqueu el «+» per afegir-ne la vostra."
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/GameListPage.qml:161
 msgid "Delete"
-msgstr ""
+msgstr "Elimina"
 
 #: /home/brian/dev/ubuntu/apps/gearboy/platforms/ubuntu_touch/main.qml:92
 msgid "ROM failed to load"
