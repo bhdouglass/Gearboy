@@ -10,7 +10,7 @@
             "content-hub": "gearboy-content.json"
         }
     },
-    "version": "3.0.4",
+    "version": "3.0.5",
     "maintainer": "Brian Douglass <bhdouglass@gmail.com>",
     "framework": "ubuntu-sdk-16.04"
 }
