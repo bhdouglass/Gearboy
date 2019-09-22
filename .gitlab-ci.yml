@@ -3,11 +3,11 @@ publish:
   only:
     - tags
   script:
-    - clickable -c platforms/ubuntu_touch/clickable.json clean build click-build review
+    - clickable -c platforms/ubuntu_touch/clickable.json clean build review
     - clickable -c platforms/ubuntu_touch/clickable.json publish "$CI_COMMIT_MESSAGE"
   artifacts:
     paths:
-      - build/*.click
+      - build/*/app/*.click
     expire_in: 1 week
 
 build:
@@ -15,8 +15,8 @@ build:
   except:
     - tags
   script:
-    - clickable -c platforms/ubuntu_touch/clickable.json clean build click-build review
+    - clickable -c platforms/ubuntu_touch/clickable.json clean build review
   artifacts:
     paths:
-      - build/*.click
+      - build/*/app/*.click
     expire_in: 1 week
