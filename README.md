@@ -8,6 +8,11 @@ This is a fork of Ryan Pattison's Gearboy port for Ubuntu Touch which is a fork 
 
 [![OpenStore](https://open-store.io/badges/en_US.png)](https://open-store.io/app/gearboy.bhdouglass)
 
+## Translations
+
+Translations are handled online via [Weblate](https://translate-ut.org/projects/gearboy/gearboy-color/).
+A huge thank you to all the translators!
+
 ## Build Instructions
 
 ### Ubuntu Touch
