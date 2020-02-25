@@ -13,8 +13,8 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/ 
- * 
+ * along with this program.  If not, see http://www.gnu.org/licenses/
+ *
  */
 
 #include "MBC2MemoryRule.h"
@@ -34,6 +34,14 @@ pMemory, pVideo, pInput, pCartridge, pAudio)
 
 MBC2MemoryRule::~MBC2MemoryRule()
 {
+}
+
+void MBC2MemoryRule::Reset(bool bCGB)
+{
+    m_bCGB = bCGB;
+    m_iCurrentROMBank = 1;
+    m_CurrentROMAddress = 0x4000;
+    m_bRamEnabled = false;
 }
 
 u8 MBC2MemoryRule::PerformRead(u16 address)
@@ -142,15 +150,7 @@ void MBC2MemoryRule::PerformWrite(u16 address, u8 value)
     }
 }
 
-void MBC2MemoryRule::Reset(bool bCGB)
-{
-    m_bCGB = bCGB;
-    m_iCurrentROMBank = 1;
-    m_CurrentROMAddress = 0x4000;
-    m_bRamEnabled = false;
-}
-
-void MBC2MemoryRule::SaveRam(std::ofstream & file)
+void MBC2MemoryRule::SaveRam(std::ostream & file)
 {
     Log("MBC2MemoryRule save RAM...");
 
@@ -163,10 +163,10 @@ void MBC2MemoryRule::SaveRam(std::ofstream & file)
     Log("MBC2MemoryRule save RAM done");
 }
 
-bool MBC2MemoryRule::LoadRam(std::ifstream & file, s32 fileSize)
+bool MBC2MemoryRule::LoadRam(std::istream & file, s32 fileSize)
 {
     Log("MBC2MemoryRule load RAM...");
-    
+
     if ((fileSize > 0) && (fileSize != 512))
     {
         Log("MBC2MemoryRule incorrect size. Expected: 512 Found: %d", fileSize);
@@ -181,6 +181,50 @@ bool MBC2MemoryRule::LoadRam(std::ifstream & file, s32 fileSize)
     }
 
     Log("MBC2MemoryRule load RAM done");
-    
+
     return true;
+}
+
+size_t MBC2MemoryRule::GetRamSize()
+{
+    return 0x200;
+}
+
+u8* MBC2MemoryRule::GetRamBanks()
+{
+    return m_pMemory->GetMemoryMap() + 0xA000;
+}
+
+u8* MBC2MemoryRule::GetCurrentRamBank()
+{
+    return m_pMemory->GetMemoryMap() + 0xA000;
+}
+
+u8* MBC2MemoryRule::GetCurrentRomBank1()
+{
+    u8* pROM = m_pCartridge->GetTheROM();
+    return &pROM[m_CurrentROMAddress];
+}
+
+u8* MBC2MemoryRule::GetRomBank0()
+{
+    return m_pMemory->GetMemoryMap() + 0x0000;
+}
+
+void MBC2MemoryRule::SaveState(std::ostream& stream)
+{
+    using namespace std;
+
+    stream.write(reinterpret_cast<const char*> (&m_iCurrentROMBank), sizeof(m_iCurrentROMBank));
+    stream.write(reinterpret_cast<const char*> (&m_bRamEnabled), sizeof(m_bRamEnabled));
+    stream.write(reinterpret_cast<const char*> (&m_CurrentROMAddress), sizeof(m_CurrentROMAddress));
+}
+
+void MBC2MemoryRule::LoadState(std::istream& stream)
+{
+    using namespace std;
+
+    stream.read(reinterpret_cast<char*> (&m_iCurrentROMBank), sizeof(m_iCurrentROMBank));
+    stream.read(reinterpret_cast<char*> (&m_bRamEnabled), sizeof(m_bRamEnabled));
+    stream.read(reinterpret_cast<char*> (&m_CurrentROMAddress), sizeof(m_CurrentROMAddress));
 }

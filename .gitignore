@@ -5,6 +5,7 @@ private/
 
 # Mac files
 *.DS_Store
+*.dylib
 
 # Visual Studio files
 ipch/
@@ -13,6 +14,7 @@ ipch/
 *.[Cc]ache
 *.obj
 *.o
+*.dll
 *.exe
 *.exp
 *.pdb
@@ -37,6 +39,7 @@ ipch/
 *.app
 Thumbs.db
 *[Rr]elease*/
+*[Pp]rofile*/
 [Tt]est[Rr]esults/
 _UpgradeReport_Files/
 _ReSharper.*/
@@ -50,6 +53,8 @@ desktop.ini
 *.bin
 *.zip
 *.gearboy
+*.so
+*.sav
 
 # Qt Ignores
 moc_*.cpp
@@ -58,6 +63,7 @@ qt-Release.mk
 ui_*.h
 .qmake.stash
 qrc_*.cpp
+Gearboy.pro.user.*
 
 #Xcode
 *.xcuserstate
@@ -66,3 +72,13 @@ xcuserdata/
 *.xcsettings
 
 *.xccheckout
+
+#rpi
+platforms/raspberry*/**/gearboy
+
+#Switch
+*.a
+*.d
+
+#Android
+platforms/libretro/libs/

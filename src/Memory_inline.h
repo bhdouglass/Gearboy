@@ -9,23 +9,6 @@ inline u8 Memory::Read(u16 address)
     switch (address & 0xE000)
     {
         case 0x0000:
-        {
-            if (m_bDuringBootROM)
-            {
-                if (m_bCGB)
-                {
-                    if(address < 0x0100)
-                        return kBootRomCGB[address];
-                    if (address < 0x0900 && address > 0x01FF)
-                        return kBootRomCGB[address - 0x100];
-                }
-                else
-                {
-                    if(address < 0x0100)
-                        return kBootRomDMG[address];
-                }
-            }
-        }
         case 0x2000:
         case 0x4000:
         case 0x6000:
@@ -96,12 +79,18 @@ inline void Memory::Write(u16 address, u8 value)
 
 inline u8 Memory::ReadCGBWRAM(u16 address)
 {
-    return m_pWRAMBanks[(address - 0xD000) + (0x1000 * m_iCurrentWRAMBank)];
+    if (address < 0xD000)
+        return m_pWRAMBanks[(address - 0xC000)];
+    else
+        return m_pWRAMBanks[(address - 0xD000) + (0x1000 * m_iCurrentWRAMBank)];
 }
 
 inline void Memory::WriteCGBWRAM(u16 address, u8 value)
 {
-    m_pWRAMBanks[(address - 0xD000) + (0x1000 * m_iCurrentWRAMBank)] = value;
+    if (address < 0xD000)
+        m_pWRAMBanks[(address - 0xC000)] = value;
+    else
+        m_pWRAMBanks[(address - 0xD000) + (0x1000 * m_iCurrentWRAMBank)] = value;
 }
 
 inline void Memory::SwitchCGBWRAM(u8 value)
@@ -149,4 +138,3 @@ inline bool Memory::IsDisassembled(u16 address)
 }
 
 #endif	/* MEMORY_INLINE_H */
-

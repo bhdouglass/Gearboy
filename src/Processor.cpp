@@ -17,6 +17,8 @@
  *
  */
 
+#include <algorithm>
+#include <ctype.h>
 #include "Processor.h"
 #include "opcode_timing.h"
 #include "opcode_names.h"
@@ -42,8 +44,6 @@ Processor::Processor(Memory* pMemory)
     m_iUnhaltCycles = 0;
     for (int i = 0; i < 5; i++)
         m_InterruptDelayCycles[i] = 0;
-    m_bEndOfBootROM = false;
-    m_bDuringBootROM = false;
     m_iAccurateOPCodeState = 0;
     m_iReadCache = 0;
 }
@@ -54,13 +54,12 @@ Processor::~Processor()
 
 void Processor::Init()
 {
-    Reset(false, false);
+    Reset(false);
 }
 
-void Processor::Reset(bool bCGB, bool bootROM)
+void Processor::Reset(bool bCGB)
 {
     m_bCGB = bCGB;
-    m_bDuringBootROM = bootROM;
     m_bIME = false;
     m_bHalt = false;
     m_bCGBSpeed = false;
@@ -74,10 +73,7 @@ void Processor::Reset(bool bCGB, bool bootROM)
     m_iSerialBit = 0;
     m_iSerialCycles = 0;
     m_iUnhaltCycles = 0;
-    if (m_bDuringBootROM)
-        PC.SetValue(0x0);
-    else
-        PC.SetValue(0x100);
+    PC.SetValue(0x100);
     SP.SetValue(0xFFFE);
     if (m_bCGB)
         AF.SetValue(0x11B0);
@@ -88,9 +84,9 @@ void Processor::Reset(bool bCGB, bool bootROM)
     HL.SetValue(0x014D);
     for (int i = 0; i < 5; i++)
         m_InterruptDelayCycles[i] = 0;
-	m_bEndOfBootROM = false;
     m_iAccurateOPCodeState = 0;
     m_iReadCache = 0;
+    m_GameSharkList.clear();
 }
 
 u8 Processor::Tick()
@@ -123,18 +119,7 @@ u8 Processor::Tick()
         if (m_iAccurateOPCodeState == 0)
             ServeInterrupt(InterruptPending());
 
-        if (m_bDuringBootROM)
-        {
-            u16 pc_before = PC.GetValue();
-            ExecuteOPCode(FetchOPCode());
-            u16 pc_after = PC.GetValue();
-            if ((pc_before == 0xFE) && (pc_after == 0x100))
-            {
-                m_bEndOfBootROM = true;
-            }
-        }
-        else
-            ExecuteOPCode(FetchOPCode());
+        ExecuteOPCode(FetchOPCode());
     }
 
     UpdateDelayedInterrupts();
@@ -242,6 +227,14 @@ void Processor::ExecuteOPCode(u8 opcode)
         opcodeTable = m_OPCodes;
     }
 
+    #ifdef DEBUG_GEARBOY
+        u16 opcode_address = PC.GetValue() - 1;
+        if (!m_pMemory->IsDisassembled(opcode_address))
+        {
+            m_pMemory->Disassemble(opcode_address, isCB ? kOPCodeCBNames[opcode] : kOPCodeNames[opcode]);
+        }
+    #endif
+
     if ((accurateOPcodes[opcode] != 0) && (m_iAccurateOPCodeState == 0))
     {
         int left_cycles = (accurateOPcodes[opcode] < 3 ? 2 : 3);
@@ -252,14 +245,6 @@ void Processor::ExecuteOPCode(u8 opcode)
             PC.Decrement();
         return;
     }
-
-#ifdef DEBUG_GEARBOY
-    u16 opcode_address = PC.GetValue() - 1;
-    if (!m_pMemory->IsDisassembled(opcode_address))
-    {
-        m_pMemory->Disassemble(opcode_address, kOPCodeNames[opcode]);
-    }
-#endif
 
     (this->*opcodeTable[opcode])();
 
@@ -306,11 +291,6 @@ bool Processor::InterruptIsAboutToRaise()
     return (if_reg & ie_reg & 0x1F) != 0;
 }
 
-bool Processor::BootROMfinished() const
-{
-    return m_bEndOfBootROM;
-}
-
 Processor::Interrupts Processor::InterruptPending()
 {
     u8 ie_reg = m_pMemory->Retrieve(0xFFFF);
@@ -355,6 +335,7 @@ void Processor::ServeInterrupt(Interrupts interrupt)
                 StackPush(&PC);
                 PC.SetValue(0x0040);
                 m_iCurrentClockCycles += AdjustedCycles(20);
+                UpdateGameShark();
                 break;
             case LCDSTAT_Interrupt:
                 m_InterruptDelayCycles[1] = 0;
@@ -499,6 +480,121 @@ void Processor::UpdateDelayedInterrupts()
             m_InterruptDelayCycles[i] -= m_iCurrentClockCycles;
         }
     }
+}
+
+void Processor::UpdateGameShark()
+{
+    std::list<GameSharkCode>::iterator it;
+
+    for (it = m_GameSharkList.begin(); it != m_GameSharkList.end(); it++)
+    {
+        if (it->type == 0x01)
+        {
+            m_pMemory->Write(it->address, it->value);
+        }
+    }
+}
+
+void Processor::SaveState(std::ostream& stream)
+{
+    using namespace std;
+
+    u16 af = AF.GetValue();
+    u16 bc = BC.GetValue();
+    u16 de = DE.GetValue();
+    u16 hl = HL.GetValue();
+    u16 sp = SP.GetValue();
+    u16 pc = PC.GetValue();
+
+    stream.write(reinterpret_cast<const char*> (&af), sizeof(af));
+    stream.write(reinterpret_cast<const char*> (&bc), sizeof(bc));
+    stream.write(reinterpret_cast<const char*> (&de), sizeof(de));
+    stream.write(reinterpret_cast<const char*> (&hl), sizeof(hl));
+    stream.write(reinterpret_cast<const char*> (&sp), sizeof(sp));
+    stream.write(reinterpret_cast<const char*> (&pc), sizeof(pc));
+
+    stream.write(reinterpret_cast<const char*> (&m_bIME), sizeof(m_bIME));
+    stream.write(reinterpret_cast<const char*> (&m_bHalt), sizeof(m_bHalt));
+    stream.write(reinterpret_cast<const char*> (&m_bBranchTaken), sizeof(m_bBranchTaken));
+    stream.write(reinterpret_cast<const char*> (&m_bSkipPCBug), sizeof(m_bSkipPCBug));
+    stream.write(reinterpret_cast<const char*> (&m_iCurrentClockCycles), sizeof(m_iCurrentClockCycles));
+    stream.write(reinterpret_cast<const char*> (&m_iDIVCycles), sizeof(m_iDIVCycles));
+    stream.write(reinterpret_cast<const char*> (&m_iTIMACycles), sizeof(m_iTIMACycles));
+    stream.write(reinterpret_cast<const char*> (&m_iSerialBit), sizeof(m_iSerialBit));
+    stream.write(reinterpret_cast<const char*> (&m_iSerialCycles), sizeof(m_iSerialCycles));
+    stream.write(reinterpret_cast<const char*> (&m_iIMECycles), sizeof(m_iIMECycles));
+    stream.write(reinterpret_cast<const char*> (&m_iUnhaltCycles), sizeof(m_iUnhaltCycles));
+    stream.write(reinterpret_cast<const char*> (m_InterruptDelayCycles), sizeof(m_InterruptDelayCycles));
+    stream.write(reinterpret_cast<const char*> (&m_bCGBSpeed), sizeof(m_bCGBSpeed));
+    stream.write(reinterpret_cast<const char*> (&m_iSpeedMultiplier), sizeof(m_iSpeedMultiplier));
+    stream.write(reinterpret_cast<const char*> (&m_iAccurateOPCodeState), sizeof(m_iAccurateOPCodeState));
+    stream.write(reinterpret_cast<const char*> (&m_iReadCache), sizeof(m_iReadCache));
+}
+
+void Processor::LoadState(std::istream& stream)
+{
+    using namespace std;
+
+    u16 af;
+    u16 bc;
+    u16 de;
+    u16 hl;
+    u16 sp;
+    u16 pc;
+
+    stream.read(reinterpret_cast<char*> (&af), sizeof(af));
+    stream.read(reinterpret_cast<char*> (&bc), sizeof(bc));
+    stream.read(reinterpret_cast<char*> (&de), sizeof(de));
+    stream.read(reinterpret_cast<char*> (&hl), sizeof(hl));
+    stream.read(reinterpret_cast<char*> (&sp), sizeof(sp));
+    stream.read(reinterpret_cast<char*> (&pc), sizeof(pc));
+
+    AF.SetValue(af);
+    BC.SetValue(bc);
+    DE.SetValue(de);
+    HL.SetValue(hl);
+    SP.SetValue(sp);
+    PC.SetValue(pc);
+
+    stream.read(reinterpret_cast<char*> (&m_bIME), sizeof(m_bIME));
+    stream.read(reinterpret_cast<char*> (&m_bHalt), sizeof(m_bHalt));
+    stream.read(reinterpret_cast<char*> (&m_bBranchTaken), sizeof(m_bBranchTaken));
+    stream.read(reinterpret_cast<char*> (&m_bSkipPCBug), sizeof(m_bSkipPCBug));
+    stream.read(reinterpret_cast<char*> (&m_iCurrentClockCycles), sizeof(m_iCurrentClockCycles));
+    stream.read(reinterpret_cast<char*> (&m_iDIVCycles), sizeof(m_iDIVCycles));
+    stream.read(reinterpret_cast<char*> (&m_iTIMACycles), sizeof(m_iTIMACycles));
+    stream.read(reinterpret_cast<char*> (&m_iSerialBit), sizeof(m_iSerialBit));
+    stream.read(reinterpret_cast<char*> (&m_iSerialCycles), sizeof(m_iSerialCycles));
+    stream.read(reinterpret_cast<char*> (&m_iIMECycles), sizeof(m_iIMECycles));
+    stream.read(reinterpret_cast<char*> (&m_iUnhaltCycles), sizeof(m_iUnhaltCycles));
+    stream.read(reinterpret_cast<char*> (m_InterruptDelayCycles), sizeof(m_InterruptDelayCycles));
+    stream.read(reinterpret_cast<char*> (&m_bCGBSpeed), sizeof(m_bCGBSpeed));
+    stream.read(reinterpret_cast<char*> (&m_iSpeedMultiplier), sizeof(m_iSpeedMultiplier));
+    stream.read(reinterpret_cast<char*> (&m_iAccurateOPCodeState), sizeof(m_iAccurateOPCodeState));
+    stream.read(reinterpret_cast<char*> (&m_iReadCache), sizeof(m_iReadCache));
+}
+
+void Processor::SetGameSharkCheat(const char* szCheat)
+{
+    std::string code(szCheat);
+    for (std::string::iterator p = code.begin(); code.end() != p; ++p)
+        *p = toupper(*p);
+
+    if (code.length() == 8)
+    {
+        GameSharkCode gsc;
+
+        gsc.type = AsHex(code[0]) << 4 | AsHex(code[1]);
+        gsc.value = (AsHex(code[2]) << 4 | AsHex(code[3])) & 0xFF;
+        gsc.address = (AsHex(code[4]) << 4 | AsHex(code[5]) | AsHex(code[6]) << 12 | AsHex(code[7]) << 8) & 0xFFFF;
+
+        m_GameSharkList.push_back(gsc);
+    }
+}
+
+void Processor::ClearGameSharkCheats()
+{
+    m_GameSharkList.clear();
 }
 
 void Processor::InitOPCodeFunctors()

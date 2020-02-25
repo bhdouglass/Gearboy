@@ -20,9 +20,9 @@
 #ifndef PROCESSOR_H
 #define	PROCESSOR_H
 
+#include <list>
 #include "definitions.h"
 #include "SixteenBitRegister.h"
-#include "boot_roms.h"
 
 class Memory;
 
@@ -43,7 +43,7 @@ public:
     Processor(Memory* pMemory);
     ~Processor();
     void Init();
-    void Reset(bool bCGB, bool bootROM);
+    void Reset(bool bCGB);
     u8 Tick();
     void RequestInterrupt(Interrupts interrupt);
     void ResetTIMACycles();
@@ -52,7 +52,10 @@ public:
     bool CGBSpeed() const;
     void AddCycles(unsigned int cycles);
     bool InterruptIsAboutToRaise();
-    bool BootROMfinished() const;
+    void SaveState(std::ostream& stream);
+    void LoadState(std::istream& stream);
+    void SetGameSharkCheat(const char* szCheat);
+    void ClearGameSharkCheats();
 
 private:
     typedef void (Processor::*OPCptr) (void);
@@ -80,10 +83,16 @@ private:
     int m_InterruptDelayCycles[5];
     bool m_bCGBSpeed;
     int m_iSpeedMultiplier;
-    bool m_bEndOfBootROM;
-    bool m_bDuringBootROM;
     int m_iAccurateOPCodeState;
     u8 m_iReadCache;
+
+    struct GameSharkCode
+    {        
+        u8 type;
+        u16 address;
+        u8 value;
+    };
+    std::list<GameSharkCode> m_GameSharkList;
 
 private:
     u8 FetchOPCode();
@@ -93,6 +102,7 @@ private:
     void UpdateTimers();
     void UpdateSerial();
     void UpdateDelayedInterrupts();
+    void UpdateGameShark();
     void ClearAllFlags();
     void ToggleZeroFlagFromResult(u8 result);
     void SetFlag(u8 flag);

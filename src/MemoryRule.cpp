@@ -13,8 +13,8 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/ 
- * 
+ * along with this program.  If not, see http://www.gnu.org/licenses/
+ *
  */
 
 #include "MemoryRule.h"
@@ -53,14 +53,14 @@ void MemoryRule::RAMChanged()
 	}
 }
 
-void MemoryRule::SaveRam(std::ofstream&)
+void MemoryRule::SaveRam(std::ostream&)
 {
-    Log("Save RAM not implemented");
+    Log("MemoryRule::SaveRam not implemented");
 }
 
-bool MemoryRule::LoadRam(std::ifstream&, s32)
+bool MemoryRule::LoadRam(std::istream&, s32)
 {
-    Log("Load RAM not implemented");
+    Log("MemoryRule::LoadRam not implemented");
     return false;
 }
 
@@ -72,4 +72,56 @@ void MemoryRule::SetFileStore(std::string filestore)
 void MemoryRule::SetRamChangedCallback(RamChangedCallback callback)
 {
     m_pRamChangedCallback = callback;
+}
+
+size_t MemoryRule::GetRamSize()
+{
+    Log("MemoryRule::GetRamSize not implemented");
+    return 0;
+}
+
+size_t MemoryRule::GetRTCSize()
+{
+    Log("MemoryRule::GetRTCSize not implemented");
+    return 0;
+}
+
+u8* MemoryRule::GetRamBanks()
+{
+    Log("MemoryRule::GetRamBanks not implemented");
+    return NULL;
+}
+
+u8* MemoryRule::GetCurrentRamBank()
+{
+    Log("MemoryRule::GetCurrentRamBank not implemented");
+    return NULL;
+}
+
+u8* MemoryRule::GetRomBank0()
+{
+    Log("MemoryRule::GetRomBank0 not implemented");
+    return NULL;
+}
+
+u8* MemoryRule::GetCurrentRomBank1()
+{
+    Log("MemoryRule::GetCurrentRomBank1 not implemented");
+    return NULL;
+}
+
+u8* MemoryRule::GetRTCMemory()
+{
+    Log("MemoryRule::GetRTCMemory not implemented");
+    return NULL;
+}
+
+void MemoryRule::SaveState(std::ostream&)
+{
+    Log("MemoryRule::SaveState not implemented");
+}
+
+void MemoryRule::LoadState(std::istream&)
+{
+    Log("MemoryRule::LoadState not implemented");
 }

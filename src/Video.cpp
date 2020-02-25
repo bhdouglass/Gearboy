@@ -13,14 +13,13 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/ 
- * 
+ * along with this program.  If not, see http://www.gnu.org/licenses/
+ *
  */
 
 #include "Video.h"
 #include "Memory.h"
 #include "Processor.h"
-
 
 Video::Video(Memory* pMemory, Processor* pProcessor)
 {
@@ -103,7 +102,7 @@ bool Video::Tick(unsigned int &clockCycles, GB_Color* pColorFrameBuffer)
         {
             // During H-BLANK
             case 0:
-            {                
+            {
                 if (m_iStatusModeCounter >= 204)
                 {
                     m_iStatusModeCounter -= 204;
@@ -238,7 +237,10 @@ bool Video::Tick(unsigned int &clockCycles, GB_Color* pColorFrameBuffer)
                     {
                         while (m_iTileCycleCounter >= 3)
                         {
-                            RenderBG(m_iStatusModeLYCounter, m_iPixelCounter, 4);
+                            if (IsValidPointer(m_pColorFrameBuffer))
+                            {
+                                RenderBG(m_iStatusModeLYCounter, m_iPixelCounter, 4);
+                            }
                             m_iPixelCounter += 4;
                             m_iTileCycleCounter -= 3;
 
@@ -281,7 +283,7 @@ bool Video::Tick(unsigned int &clockCycles, GB_Color* pColorFrameBuffer)
     }
     // Screen disabled
     else
-    {   
+    {
         if (m_iScreenEnableDelayCycles > 0)
         {
             m_iScreenEnableDelayCycles -= clockCycles;
@@ -485,7 +487,7 @@ void Video::RenderBG(int line, int pixel, int count)
             {
                 map_tile = m_pMemory->Retrieve(map_tile_addr);
             }
-            
+
             u8 cgb_tile_attr = m_bCGB ? m_pMemory->ReadCGBLCDRAM(map_tile_addr, true) : 0;
             u8 cgb_tile_pal = m_bCGB ? (cgb_tile_attr & 0x07) : 0;
             bool cgb_tile_bank = m_bCGB ? IsSetBit(cgb_tile_attr, 3) : false;
@@ -802,4 +804,52 @@ u8 Video::GetIRQ48Signal() const
 void Video::SetIRQ48Signal(u8 signal)
 {
     m_IRQ48Signal = signal;
+}
+
+void Video::SaveState(std::ostream& stream)
+{
+    using namespace std;
+
+    stream.write(reinterpret_cast<const char*> (m_pFrameBuffer), GAMEBOY_WIDTH * GAMEBOY_HEIGHT);
+    stream.write(reinterpret_cast<const char*> (m_pSpriteXCacheBuffer), sizeof(int) * GAMEBOY_WIDTH * GAMEBOY_HEIGHT);
+    stream.write(reinterpret_cast<const char*> (m_pColorCacheBuffer), GAMEBOY_WIDTH * GAMEBOY_HEIGHT);
+    stream.write(reinterpret_cast<const char*> (&m_iStatusMode), sizeof(m_iStatusMode));
+    stream.write(reinterpret_cast<const char*> (&m_iStatusModeCounter), sizeof(m_iStatusModeCounter));
+    stream.write(reinterpret_cast<const char*> (&m_iStatusModeCounterAux), sizeof(m_iStatusModeCounterAux));
+    stream.write(reinterpret_cast<const char*> (&m_iStatusModeLYCounter), sizeof(m_iStatusModeLYCounter));
+    stream.write(reinterpret_cast<const char*> (&m_iScreenEnableDelayCycles), sizeof(m_iScreenEnableDelayCycles));
+    stream.write(reinterpret_cast<const char*> (&m_iStatusVBlankLine), sizeof(m_iStatusVBlankLine));
+    stream.write(reinterpret_cast<const char*> (&m_iPixelCounter), sizeof(m_iPixelCounter));
+    stream.write(reinterpret_cast<const char*> (&m_iTileCycleCounter), sizeof(m_iTileCycleCounter));
+    stream.write(reinterpret_cast<const char*> (&m_bScreenEnabled), sizeof(m_bScreenEnabled));
+    stream.write(reinterpret_cast<const char*> (m_CGBSpritePalettes), sizeof(m_CGBSpritePalettes));
+    stream.write(reinterpret_cast<const char*> (m_CGBBackgroundPalettes), sizeof(m_CGBBackgroundPalettes));
+    stream.write(reinterpret_cast<const char*> (&m_bScanLineTransfered), sizeof(m_bScanLineTransfered));
+    stream.write(reinterpret_cast<const char*> (&m_iWindowLine), sizeof(m_iWindowLine));
+    stream.write(reinterpret_cast<const char*> (&m_iHideFrames), sizeof(m_iHideFrames));
+    stream.write(reinterpret_cast<const char*> (&m_IRQ48Signal), sizeof(m_IRQ48Signal));
+}
+
+void Video::LoadState(std::istream& stream)
+{
+    using namespace std;
+
+    stream.read(reinterpret_cast<char*> (m_pFrameBuffer), GAMEBOY_WIDTH * GAMEBOY_HEIGHT);
+    stream.read(reinterpret_cast<char*> (m_pSpriteXCacheBuffer), sizeof(int) * GAMEBOY_WIDTH * GAMEBOY_HEIGHT);
+    stream.read(reinterpret_cast<char*> (m_pColorCacheBuffer), GAMEBOY_WIDTH * GAMEBOY_HEIGHT);
+    stream.read(reinterpret_cast<char*> (&m_iStatusMode), sizeof(m_iStatusMode));
+    stream.read(reinterpret_cast<char*> (&m_iStatusModeCounter), sizeof(m_iStatusModeCounter));
+    stream.read(reinterpret_cast<char*> (&m_iStatusModeCounterAux), sizeof(m_iStatusModeCounterAux));
+    stream.read(reinterpret_cast<char*> (&m_iStatusModeLYCounter), sizeof(m_iStatusModeLYCounter));
+    stream.read(reinterpret_cast<char*> (&m_iScreenEnableDelayCycles), sizeof(m_iScreenEnableDelayCycles));
+    stream.read(reinterpret_cast<char*> (&m_iStatusVBlankLine), sizeof(m_iStatusVBlankLine));
+    stream.read(reinterpret_cast<char*> (&m_iPixelCounter), sizeof(m_iPixelCounter));
+    stream.read(reinterpret_cast<char*> (&m_iTileCycleCounter), sizeof(m_iTileCycleCounter));
+    stream.read(reinterpret_cast<char*> (&m_bScreenEnabled), sizeof(m_bScreenEnabled));
+    stream.read(reinterpret_cast<char*> (m_CGBSpritePalettes), sizeof(m_CGBSpritePalettes));
+    stream.read(reinterpret_cast<char*> (m_CGBBackgroundPalettes), sizeof(m_CGBBackgroundPalettes));
+    stream.read(reinterpret_cast<char*> (&m_bScanLineTransfered), sizeof(m_bScanLineTransfered));
+    stream.read(reinterpret_cast<char*> (&m_iWindowLine), sizeof(m_iWindowLine));
+    stream.read(reinterpret_cast<char*> (&m_iHideFrames), sizeof(m_iHideFrames));
+    stream.read(reinterpret_cast<char*> (&m_IRQ48Signal), sizeof(m_IRQ48Signal));
 }

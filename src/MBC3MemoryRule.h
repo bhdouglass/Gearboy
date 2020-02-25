@@ -13,14 +13,30 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/ 
- * 
+ * along with this program.  If not, see http://www.gnu.org/licenses/
+ *
  */
 
 #ifndef MBC3MEMORYRULE_H
 #define	MBC3MEMORYRULE_H
 
 #include "MemoryRule.h"
+
+struct RTC_Registers
+{
+    s32 Seconds;
+    s32 Minutes;
+    s32 Hours;
+    s32 Days;
+    s32 Control;
+    s32 LatchedSeconds;
+    s32 LatchedMinutes;
+    s32 LatchedHours;
+    s32 LatchedDays;
+    s32 LatchedControl;
+    s32 LastTime;
+    s32 padding;
+};
 
 class MBC3MemoryRule : public MemoryRule
 {
@@ -31,8 +47,17 @@ public:
     virtual u8 PerformRead(u16 address);
     virtual void PerformWrite(u16 address, u8 value);
     virtual void Reset(bool bCGB);
-    virtual void SaveRam(std::ofstream &file);
-    virtual bool LoadRam(std::ifstream &file, s32 fileSize);
+    virtual void SaveRam(std::ostream &file);
+    virtual bool LoadRam(std::istream &file, s32 fileSize);
+    virtual size_t GetRamSize();
+    virtual size_t GetRTCSize();
+    virtual u8* GetRamBanks();
+    virtual u8* GetCurrentRamBank();
+    virtual u8* GetRomBank0();
+    virtual u8* GetCurrentRomBank1();
+    virtual u8* GetRTCMemory();
+    virtual void SaveState(std::ostream& stream);
+    virtual void LoadState(std::istream& stream);
 
 private:
     void UpdateRTC();
@@ -43,23 +68,12 @@ private:
     bool m_bRamEnabled;
     bool m_bRTCEnabled;
     u8* m_pRAMBanks;
-    s32 m_iRTCSeconds;
-    s32 m_iRTCMinutes;
-    s32 m_iRTCHours;
-    s32 m_iRTCDays;
-    s32 m_iRTCControl;
-    s32 m_iRTCLatchedSeconds;
-    s32 m_iRTCLatchedMinutes;
-    s32 m_iRTCLatchedHours;
-    s32 m_iRTCLatchedDays;
-    s32 m_iRTCLatchedControl;
     s32 m_iRTCLatch;
     u8 m_RTCRegister;
-    s32 m_RTCLastTime;
     s32 m_RTCLastTimeCache;
     int m_CurrentROMAddress;
     int m_CurrentRAMAddress;
+    RTC_Registers m_RTC;
 };
 
 #endif	/* MBC3MEMORYRULE_H */
-

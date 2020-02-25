@@ -13,8 +13,8 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/ 
- * 
+ * along with this program.  If not, see http://www.gnu.org/licenses/
+ *
  */
 
 #include "MBC5MemoryRule.h"
@@ -36,6 +36,19 @@ pMemory, pVideo, pInput, pCartridge, pAudio)
 MBC5MemoryRule::~MBC5MemoryRule()
 {
     SafeDeleteArray(m_pRAMBanks);
+}
+
+void MBC5MemoryRule::Reset(bool bCGB)
+{
+    m_bCGB = bCGB;
+    m_iCurrentRAMBank = 0;
+    m_iCurrentROMBank = 1;
+    m_iCurrentROMBankHi = 0;
+    m_bRamEnabled = false;
+    for (int i = 0; i < 0x20000; i++)
+        m_pRAMBanks[i] = 0xFF;
+    m_CurrentROMAddress = 0x4000;
+    m_CurrentRAMAddress = 0;
 }
 
 u8 MBC5MemoryRule::PerformRead(u16 address)
@@ -131,24 +144,11 @@ void MBC5MemoryRule::PerformWrite(u16 address, u8 value)
     }
 }
 
-void MBC5MemoryRule::Reset(bool bCGB)
-{
-    m_bCGB = bCGB;
-    m_iCurrentRAMBank = 0;
-    m_iCurrentROMBank = 1;
-    m_iCurrentROMBankHi = 0;
-    m_bRamEnabled = false;
-    for (int i = 0; i < 0x20000; i++)
-        m_pRAMBanks[i] = 0xFF;
-    m_CurrentROMAddress = 0x4000;
-    m_CurrentRAMAddress = 0;
-}
-
-void MBC5MemoryRule::SaveRam(std::ofstream & file)
+void MBC5MemoryRule::SaveRam(std::ostream & file)
 {
     Log("MBC5MemoryRule save RAM...");
     Log("MBC5MemoryRule saving %d banks...", m_pCartridge->GetRAMBankCount());
-    
+
     s32 ramSize = m_pCartridge->GetRAMBankCount() * 0x2000;
 
     for (s32 i = 0; i < ramSize; i++)
@@ -160,7 +160,7 @@ void MBC5MemoryRule::SaveRam(std::ofstream & file)
     Log("MBC5MemoryRule save RAM done");
 }
 
-bool MBC5MemoryRule::LoadRam(std::ifstream & file, s32 fileSize)
+bool MBC5MemoryRule::LoadRam(std::istream & file, s32 fileSize)
 {
     Log("MBC5MemoryRule load RAM...");
     Log("MBC5MemoryRule loading %d banks...", m_pCartridge->GetRAMBankCount());
@@ -181,6 +181,58 @@ bool MBC5MemoryRule::LoadRam(std::ifstream & file, s32 fileSize)
     }
 
     Log("MBC5MemoryRule load RAM done");
-    
+
     return true;
+}
+
+size_t MBC5MemoryRule::GetRamSize()
+{
+    return m_pCartridge->GetRAMBankCount() * 0x2000;
+}
+
+u8* MBC5MemoryRule::GetRamBanks()
+{
+    return m_pRAMBanks;
+}
+
+u8* MBC5MemoryRule::GetCurrentRamBank()
+{
+    return &m_pRAMBanks[m_CurrentRAMAddress];
+}
+
+u8* MBC5MemoryRule::GetRomBank0()
+{
+    return m_pMemory->GetMemoryMap() + 0x0000;
+}
+
+u8* MBC5MemoryRule::GetCurrentRomBank1()
+{
+    u8* pROM = m_pCartridge->GetTheROM();
+    return &pROM[m_CurrentROMAddress];
+}
+
+void MBC5MemoryRule::SaveState(std::ostream& stream)
+{
+    using namespace std;
+
+    stream.write(reinterpret_cast<const char*> (&m_iCurrentRAMBank), sizeof(m_iCurrentRAMBank));
+    stream.write(reinterpret_cast<const char*> (&m_iCurrentROMBank), sizeof(m_iCurrentROMBank));
+    stream.write(reinterpret_cast<const char*> (&m_iCurrentROMBankHi), sizeof(m_iCurrentROMBankHi));
+    stream.write(reinterpret_cast<const char*> (&m_bRamEnabled), sizeof(m_bRamEnabled));
+    stream.write(reinterpret_cast<const char*> (m_pRAMBanks), 0x20000);
+    stream.write(reinterpret_cast<const char*> (&m_CurrentROMAddress), sizeof(m_CurrentROMAddress));
+    stream.write(reinterpret_cast<const char*> (&m_CurrentRAMAddress), sizeof(m_CurrentRAMAddress));
+}
+
+void MBC5MemoryRule::LoadState(std::istream& stream)
+{
+    using namespace std;
+
+    stream.read(reinterpret_cast<char*> (&m_iCurrentRAMBank), sizeof(m_iCurrentRAMBank));
+    stream.read(reinterpret_cast<char*> (&m_iCurrentROMBank), sizeof(m_iCurrentROMBank));
+    stream.read(reinterpret_cast<char*> (&m_iCurrentROMBankHi), sizeof(m_iCurrentROMBankHi));
+    stream.read(reinterpret_cast<char*> (&m_bRamEnabled), sizeof(m_bRamEnabled));
+    stream.read(reinterpret_cast<char*> (m_pRAMBanks), 0x20000);
+    stream.read(reinterpret_cast<char*> (&m_CurrentROMAddress), sizeof(m_CurrentROMAddress));
+    stream.read(reinterpret_cast<char*> (&m_CurrentRAMAddress), sizeof(m_CurrentRAMAddress));
 }

@@ -13,8 +13,8 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/ 
- * 
+ * along with this program.  If not, see http://www.gnu.org/licenses/
+ *
  */
 
 #include <iostream>
@@ -43,7 +43,6 @@ Memory::Memory()
         m_HDMA[i] = 0;
     m_HDMASource = 0;
     m_HDMADestination = 0;
-    m_bDuringBootROM = false;
 }
 
 Memory::~Memory()
@@ -75,13 +74,12 @@ void Memory::Init()
     m_pWRAMBanks = new u8[0x8000];
     m_pLCDRAMBank1 = new u8[0x2000];
     m_pDisassembledMap = new stDisassemble[65536];
-    Reset(false, false);
+    Reset(false);
 }
 
-void Memory::Reset(bool bCGB, bool bootROM)
+void Memory::Reset(bool bCGB)
 {
     m_bCGB = bCGB;
-    m_bDuringBootROM = bootROM;
     InitPointer(m_pCommonMemoryRule);
     InitPointer(m_pIORegistersMemoryRule);
     InitPointer(m_pCurrentMemoryRule);
@@ -188,6 +186,11 @@ void Memory::SetIORule(IORegistersMemoryRule* pRule)
 MemoryRule* Memory::GetCurrentRule()
 {
     return m_pCurrentMemoryRule;
+}
+
+u8* Memory::GetMemoryMap()
+{
+    return m_pMap;
 }
 
 void Memory::Disassemble(u16 address, const char* szDisassembled)
@@ -369,7 +372,7 @@ void Memory::PerformGDMA(u8 value)
     m_pProcessor->AddCycles(clock_cycles * 4);
 }
 
-bool Memory::IsHDMAEnabled()
+bool Memory::IsHDMAEnabled() const
 {
     return m_bHDMAEnabled;
 }
@@ -414,8 +417,49 @@ void Memory::SetHDMARegister(int reg, u8 value)
     m_HDMA[reg - 1] = value;
 }
 
-u8 Memory::GetHDMARegister(int reg)
+u8 Memory::GetHDMARegister(int reg) const
 {
     return m_HDMA[reg - 1];
 }
 
+u8* Memory::GetCGBRAM()
+{
+    return m_pWRAMBanks;
+}
+
+int Memory::GetCurrentCGBRAMBank()
+{
+    return m_iCurrentWRAMBank;
+}
+
+void Memory::SaveState(std::ostream& stream)
+{
+    using namespace std;
+
+    stream.write(reinterpret_cast<const char*> (m_pMap), 65536);
+    stream.write(reinterpret_cast<const char*> (&m_iCurrentWRAMBank), sizeof(m_iCurrentWRAMBank));
+    stream.write(reinterpret_cast<const char*> (&m_iCurrentLCDRAMBank), sizeof(m_iCurrentLCDRAMBank));
+    stream.write(reinterpret_cast<const char*> (m_pWRAMBanks), 0x8000);
+    stream.write(reinterpret_cast<const char*> (m_pLCDRAMBank1), 0x2000);
+    stream.write(reinterpret_cast<const char*> (&m_bHDMAEnabled), sizeof(m_bHDMAEnabled));
+    stream.write(reinterpret_cast<const char*> (&m_iHDMABytes), sizeof(m_iHDMABytes));
+    stream.write(reinterpret_cast<const char*> (m_HDMA), sizeof(m_HDMA));
+    stream.write(reinterpret_cast<const char*> (&m_HDMASource), sizeof(m_HDMASource));
+    stream.write(reinterpret_cast<const char*> (&m_HDMADestination), sizeof(m_HDMADestination));
+}
+
+void Memory::LoadState(std::istream& stream)
+{
+    using namespace std;
+
+    stream.read(reinterpret_cast<char*> (m_pMap), 65536);
+    stream.read(reinterpret_cast<char*> (&m_iCurrentWRAMBank), sizeof(m_iCurrentWRAMBank));
+    stream.read(reinterpret_cast<char*> (&m_iCurrentLCDRAMBank), sizeof(m_iCurrentLCDRAMBank));
+    stream.read(reinterpret_cast<char*> (m_pWRAMBanks), 0x8000);
+    stream.read(reinterpret_cast<char*> (m_pLCDRAMBank1), 0x2000);
+    stream.read(reinterpret_cast<char*> (&m_bHDMAEnabled), sizeof(m_bHDMAEnabled));
+    stream.read(reinterpret_cast<char*> (&m_iHDMABytes), sizeof(m_iHDMABytes));
+    stream.read(reinterpret_cast<char*> (m_HDMA), sizeof(m_HDMA));
+    stream.read(reinterpret_cast<char*> (&m_HDMASource), sizeof(m_HDMASource));
+    stream.read(reinterpret_cast<char*> (&m_HDMADestination), sizeof(m_HDMADestination));
+}

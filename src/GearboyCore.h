@@ -13,8 +13,8 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/ 
- * 
+ * along with this program.  If not, see http://www.gnu.org/licenses/
+ *
  */
 
 #ifndef CORE_H
@@ -44,29 +44,43 @@ public:
     GearboyCore();
     ~GearboyCore();
     void Init();
-    void RunToVBlank(GB_Color* pFrameBuffer);
+    void RunToVBlank(GB_Color* pFrameBuffer, s16* pSampleBuffer, int* pSampleCount);
+    void RenderDMGFrame(GB_Color* pFrameBuffer) const;
     bool LoadROM(const char* szFilePath, bool forceDMG);
-    Memory* GetMemory();
-    Cartridge* GetCartridge();
+    bool LoadROMFromBuffer(const u8* buffer, int size, bool forceDMG);
     void KeyPressed(Gameboy_Keys key);
     void KeyReleased(Gameboy_Keys key);
     void Pause(bool paused);
     bool IsPaused();
     void ResetROM(bool forceDMG);
-    void EnableSound(bool enabled);
-    void ResetSound(bool soft = false);
+    void ResetROMPreservingRAM(bool forceDMG);
+    void ResetSound();
+    void SetSoundSampleRate(int rate);
     void SetDMGPalette(GB_Color& color1, GB_Color& color2, GB_Color& color3, GB_Color& color4);
-    bool SaveRam(const char* szPath=NULL);
+    void SaveRam();
+    void SaveRam(const char* szPath);
     void LoadRam();
     void LoadRam(const char* szPath);
+    void SaveState(int index);
+    void SaveState(const char* szPath, int index);
+    bool SaveState(u8* buffer, size_t& size);
+    bool SaveState(std::ostream& stream, size_t& size);
+    void LoadState(int index);
+    void LoadState(const char* szPath, int index);
+    bool LoadState(const u8* buffer, size_t size);
+    bool LoadState(std::istream& stream);
+    void SetCheat(const char* szCheat);
+    void ClearCheats();
     void SetRamModificationCallback(RamChangedCallback callback);
+    bool IsCGB();
+    Memory* GetMemory();
+    Cartridge* GetCartridge();
 
 private:
     void InitDMGPalette();
     void InitMemoryRules();
     bool AddMemoryRules();
     void Reset(bool bCGB);
-    void RenderDMGFrame(GB_Color* pFrameBuffer) const;
 
 private:
     Memory* m_pMemory;
@@ -87,10 +101,7 @@ private:
     bool m_bPaused;
     GB_Color m_DMGPalette[4];
     bool m_bForceDMG;
-    int m_bRTCUpdateCount;
-    bool m_bDuringBootROM;
-    bool m_bLoadRamPending;
-    char m_szLoadRamPendingPath[512];
+    int m_iRTCUpdateCount;
     RamChangedCallback m_pRamChangedCallback;
 };
 

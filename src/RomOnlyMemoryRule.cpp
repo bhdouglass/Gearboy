@@ -13,8 +13,8 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/ 
- * 
+ * along with this program.  If not, see http://www.gnu.org/licenses/
+ *
  */
 
 #include "RomOnlyMemoryRule.h"
@@ -34,6 +34,11 @@ pMemory, pVideo, pInput, pCartridge, pAudio)
 
 RomOnlyMemoryRule::~RomOnlyMemoryRule()
 {
+}
+
+void RomOnlyMemoryRule::Reset(bool bCGB)
+{
+    m_bCGB = bCGB;
 }
 
 u8 RomOnlyMemoryRule::PerformRead(u16 address)
@@ -74,12 +79,7 @@ void RomOnlyMemoryRule::PerformWrite(u16 address, u8 value)
         m_pMemory->Load(address, value);
 }
 
-void RomOnlyMemoryRule::Reset(bool bCGB)
-{
-    m_bCGB = bCGB;
-}
-
-void RomOnlyMemoryRule::SaveRam(std::ofstream &file)
+void RomOnlyMemoryRule::SaveRam(std::ostream &file)
 {
     Log("RomOnlyMemoryRule save RAM...");
 
@@ -92,10 +92,10 @@ void RomOnlyMemoryRule::SaveRam(std::ofstream &file)
     Log("RomOnlyMemoryRule save RAM done");
 }
 
-bool RomOnlyMemoryRule::LoadRam(std::ifstream &file, s32 fileSize)
+bool RomOnlyMemoryRule::LoadRam(std::istream &file, s32 fileSize)
 {
     Log("RomOnlyMemoryRule load RAM...");
-    
+
     if ((fileSize > 0) && (fileSize != 0x2000))
     {
         Log("RomOnlyMemoryRule incorrect size. Expected: %d Found: %d", 0x2000, fileSize);
@@ -110,6 +110,34 @@ bool RomOnlyMemoryRule::LoadRam(std::ifstream &file, s32 fileSize)
     }
 
     Log("RomOnlyMemoryRule load RAM done");
-    
+
     return true;
+}
+
+size_t RomOnlyMemoryRule::GetRamSize()
+{
+    return m_pCartridge->GetRAMBankCount() * 0x2000;
+}
+
+u8* RomOnlyMemoryRule::GetRamBanks()
+{
+    return m_pMemory->GetMemoryMap() + 0xA000;
+}
+
+u8* RomOnlyMemoryRule::GetCurrentRamBank()
+{
+    if (m_pCartridge->GetRAMSize() > 0)
+        return m_pMemory->GetMemoryMap() + 0xA000;
+    else
+        return NULL;
+}
+
+u8* RomOnlyMemoryRule::GetCurrentRomBank1()
+{
+    return m_pMemory->GetMemoryMap() + 0x4000;
+}
+
+u8* RomOnlyMemoryRule::GetRomBank0()
+{
+    return m_pMemory->GetMemoryMap() + 0x0000;
 }
