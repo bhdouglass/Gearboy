@@ -106,7 +106,11 @@ void EmulationRunner::run()
 void EmulationRunner::mute(bool m)
 {
     m_lock.lock();
-    m_core.EnableSound(!m);
+
+	qDebug() << "mute" << m;
+	// TODO fix this
+    //m_core.EnableSound(!m);
+
     m_lock.unlock();
 }
 
@@ -204,9 +208,7 @@ void EmulationRunner::save()
 	QString path = defaultSavePath();
    	if (!path.isNull()) {
 		qDebug() << "Saving Game to: " << path;
-		if (not m_core.SaveRam(path.toStdString().c_str())) {
-			qDebug() << "Failed to save ram to: " << path;
-		}
+		m_core.SaveRam(path.toStdString().c_str());
 	} else {
 		qDebug() << "No Game Loaded to Save";
 	}

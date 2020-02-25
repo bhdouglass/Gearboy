@@ -44,7 +44,7 @@ public:
     GearboyCore();
     ~GearboyCore();
     void Init();
-    void RunToVBlank(GB_Color* pFrameBuffer, s16* pSampleBuffer, int* pSampleCount);
+    void RunToVBlank(GB_Color* pFrameBuffer, s16* pSampleBuffer=NULL, int* pSampleCount=NULL);
     void RenderDMGFrame(GB_Color* pFrameBuffer) const;
     bool LoadROM(const char* szFilePath, bool forceDMG);
     bool LoadROMFromBuffer(const u8* buffer, int size, bool forceDMG);

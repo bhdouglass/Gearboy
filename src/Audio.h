@@ -13,8 +13,8 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/ 
- * 
+ * along with this program.  If not, see http://www.gnu.org/licenses/
+ *
  */
 
 #ifndef AUDIO_H
@@ -32,17 +32,21 @@ public:
     ~Audio();
     void Init();
     void Reset(bool bCGB, bool soft=false);
+    void SetSampleRate(int rate);
     void Enable(bool enabled);
     bool IsEnabled() const;
     u8 ReadAudioRegister(u16 address);
     void WriteAudioRegister(u16 address, u8 value);
-    void EndFrame();
+    void EndFrame(s16 *pSampleBuffer=NULL, int *pSampleCount=NULL);
+    void SaveState(std::ostream &stream);
+    void LoadState(std::istream &stream);
     void Tick(unsigned int clockCycles);
 
 private:
     bool m_bEnabled;
     Gb_Apu* m_pApu;
     Multi_Buffer* m_pBuffer;
+    int m_SampleRate;
     int m_Time;
     int m_AbsoluteTime;
     Sound_Queue* m_pSound;

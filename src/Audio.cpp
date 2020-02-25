@@ -13,8 +13,8 @@
  * GNU General Public License for more details.
 
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/ 
- * 
+ * along with this program.  If not, see http://www.gnu.org/licenses/
+ *
  */
 
 #include "Audio.h"
@@ -78,7 +78,7 @@ void Audio::Init()
 void Audio::Reset(bool bCGB, bool soft)
 {
     m_bCGB = bCGB;
-    
+
     if(!soft)
     {
         Gb_Apu::mode_t mode = m_bCGB ? Gb_Apu::mode_cgb : Gb_Apu::mode_dmg;
@@ -94,6 +94,15 @@ void Audio::Reset(bool bCGB, bool soft)
     }
 }
 
+void Audio::SetSampleRate(int rate)
+{
+    if (rate != m_SampleRate)
+    {
+        m_SampleRate = rate;
+        m_pBuffer->set_sample_rate(m_SampleRate);
+    }
+}
+
 void Audio::Enable(bool enabled)
 {
     m_bEnabled = enabled;
@@ -104,7 +113,7 @@ bool Audio::IsEnabled() const
     return m_bEnabled;
 }
 
-
+/*
 void Audio::EndFrame()
 {
 	m_pApu->end_frame(m_AbsoluteTime);
@@ -116,4 +125,54 @@ void Audio::EndFrame()
                 m_pSound->write(m_pSampleBuffer, count);
 			}
 	}
+}
+*/
+
+void Audio::EndFrame(s16 *pSampleBuffer, int *pSampleCount)
+{
+    m_pApu->end_frame(m_AbsoluteTime);
+    m_pBuffer->end_frame(m_AbsoluteTime);
+
+    int count = static_cast<int>(m_pBuffer->read_samples(m_pSampleBuffer, AUDIO_BUFFER_SIZE));
+
+    if (IsValidPointer(pSampleBuffer) && IsValidPointer(pSampleCount))
+    {
+        *pSampleCount = count;
+
+        for (int i = 0; i < count; i++)
+        {
+            pSampleBuffer[i] = m_pSampleBuffer[i];
+        }
+    }
+
+    //m_ElapsedCycles = 0;
+}
+
+void Audio::SaveState(std::ostream &stream)
+{
+    using namespace std;
+
+    gb_apu_state_t apu_state;
+
+    m_pApu->save_state(&apu_state);
+
+    stream.write(reinterpret_cast<const char *>(&m_AbsoluteTime), sizeof(m_AbsoluteTime));
+    stream.write(reinterpret_cast<const char *>(m_pSampleBuffer), sizeof(blip_sample_t) * AUDIO_BUFFER_SIZE);
+    stream.write(reinterpret_cast<const char *>(&apu_state), sizeof(apu_state));
+}
+
+void Audio::LoadState(std::istream &stream)
+{
+    using namespace std;
+
+    gb_apu_state_t apu_state;
+
+    stream.read(reinterpret_cast<char *>(&m_AbsoluteTime), sizeof(m_AbsoluteTime));
+    stream.read(reinterpret_cast<char *>(m_pSampleBuffer), sizeof(blip_sample_t) * AUDIO_BUFFER_SIZE);
+    stream.read(reinterpret_cast<char *>(&apu_state), sizeof(apu_state));
+
+    Gb_Apu::mode_t mode = m_bCGB ? Gb_Apu::mode_cgb : Gb_Apu::mode_dmg;
+    m_pApu->reset(mode);
+    m_pApu->load_state(apu_state);
+    m_pBuffer->clear();
 }
